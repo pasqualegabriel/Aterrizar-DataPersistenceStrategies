@@ -11,7 +11,7 @@ El TP se va a realizar en clase, a menos que estén muuuy complicados de tiempo.
 
 
 ## Entregas
-- [Entrega 1 - JDBC](enunciado/entrega1/entrega1.md)
+- [Entrega 1 - JDBC](enunciado/entrega1.md)
 - [Entrega 2 - ORM - Hibernate]
 - Entrega 3 - ORM - Hibernate performance
 - [Entrega 4 - NoSQL - Neo4j]
