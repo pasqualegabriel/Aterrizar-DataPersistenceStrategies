@@ -1,4 +1,4 @@
-package service;
+package Excepciones;
 
 @SuppressWarnings("all")
 public class InvalidValidationCode extends RuntimeException {

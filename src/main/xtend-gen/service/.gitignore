@@ -2,3 +2,11 @@
 /.Service.java._trace
 /.User.java._trace
 /.InvalidValidationCode.java._trace
+/.InvalidValidationCode.xtendbin
+/.Service.xtendbin
+/.User.xtendbin
+/.UserService.xtendbin
+/InvalidValidationCode.java
+/Service.java
+/User.java
+/UserService.java

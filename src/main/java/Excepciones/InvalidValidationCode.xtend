@@ -1,4 +1,4 @@
-package service
+package Excepciones
 
 class InvalidValidationCode extends RuntimeException {
 	

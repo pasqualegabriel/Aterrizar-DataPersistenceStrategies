@@ -1,5 +1,8 @@
 package service;
 
+import Excepciones.IdenticPasswords;
+import Excepciones.IncorrectUsernameOrPassword;
+import Excepciones.InvalidValidationCode;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.junit.Assert;
 import org.junit.Before;
@@ -9,7 +12,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.OngoingStubbing;
 import org.mockito.verification.VerificationMode;
-import service.InvalidValidationCode;
 import service.Service;
 import service.User;
 import userDAO.JDBCUserDAO;
@@ -33,8 +35,8 @@ public class TestUserService {
   
   @Test
   public void test000UnServiceSabeQueExisteUnUsuarioConNombreyMail() {
-    User _load = this.JDBCUserDAOMock.load("PepitaUser", "pepita@gmail.com");
-    OngoingStubbing<User> _when = Mockito.<User>when(_load);
+    User _loadForUsernameAndMail = this.JDBCUserDAOMock.loadForUsernameAndMail("PepitaUser", "pepita@gmail.com");
+    OngoingStubbing<User> _when = Mockito.<User>when(_loadForUsernameAndMail);
     _when.thenReturn(this.usuarioMock);
     boolean _existeUsuarioCon = this.serviceTest.existeUsuarioCon("PepitaUser", "pepita@gmail.com");
     Assert.assertTrue(_existeUsuarioCon);
@@ -43,8 +45,8 @@ public class TestUserService {
   @Test
   public void test000UnServiceSabeQueNoExisteUnUsuarioConNombreyMail() {
     RuntimeException excepcion = new RuntimeException();
-    User _load = this.JDBCUserDAOMock.load("PepitaUser", "pepita@gmail.com");
-    OngoingStubbing<User> _when = Mockito.<User>when(_load);
+    User _loadForUsernameAndMail = this.JDBCUserDAOMock.loadForUsernameAndMail("PepitaUser", "pepita@gmail.com");
+    OngoingStubbing<User> _when = Mockito.<User>when(_loadForUsernameAndMail);
     _when.thenThrow(excepcion);
     boolean _existeUsuarioCon = this.serviceTest.existeUsuarioCon("PepitaUser", "pepita@gmail.com");
     Assert.assertFalse(_existeUsuarioCon);
@@ -53,8 +55,8 @@ public class TestUserService {
   @Test
   public void test000SeRegistraUnUsuarioConNombrePepitaExitosamente() {
     RuntimeException excepcion = new RuntimeException();
-    User _load = this.JDBCUserDAOMock.load("3", "4");
-    OngoingStubbing<User> _when = Mockito.<User>when(_load);
+    User _loadForUsernameAndMail = this.JDBCUserDAOMock.loadForUsernameAndMail("3", "4");
+    OngoingStubbing<User> _when = Mockito.<User>when(_loadForUsernameAndMail);
     _when.thenThrow(excepcion);
     User pepita = this.serviceTest.singUp("1", "2", "3", "4", "5");
     VerificationMode _times = Mockito.times(1);
@@ -64,8 +66,8 @@ public class TestUserService {
   
   @Test(expected = RuntimeException.class)
   public void test000NoSeRegistraUnUsuarioConNombrePepitaExitosamente() {
-    User _load = this.JDBCUserDAOMock.load("3", "4");
-    OngoingStubbing<User> _when = Mockito.<User>when(_load);
+    User _loadForUsernameAndMail = this.JDBCUserDAOMock.loadForUsernameAndMail("3", "4");
+    OngoingStubbing<User> _when = Mockito.<User>when(_loadForUsernameAndMail);
     _when.thenReturn(this.usuarioMock);
     User pepita = this.serviceTest.singUp("1", "2", "3", "4", "5");
     VerificationMode _times = Mockito.times(0);
@@ -100,5 +102,80 @@ public class TestUserService {
       }
     }
     Assert.assertTrue(retorno);
+  }
+  
+  @Test
+  public void test000UnUsuarioSeLogueaExitosamente() {
+    User _load = this.JDBCUserDAOMock.load("pepita", "golondrina");
+    OngoingStubbing<User> _when = Mockito.<User>when(_load);
+    _when.thenReturn(this.usuarioMock);
+    User _signIn = this.serviceTest.signIn("pepita", "golondrina");
+    Assert.assertEquals(_signIn, this.usuarioMock);
+  }
+  
+  @Test
+  public void test000UnUsuarioNoSeLogueaExitosamente() {
+    boolean retorno = false;
+    IncorrectUsernameOrPassword excepcion = new IncorrectUsernameOrPassword("no va");
+    User _load = this.JDBCUserDAOMock.load("pepita", "golondrina");
+    OngoingStubbing<User> _when = Mockito.<User>when(_load);
+    _when.thenThrow(excepcion);
+    try {
+      this.serviceTest.signIn("pepita", "golondrina");
+    } catch (final Throwable _t) {
+      if (_t instanceof IncorrectUsernameOrPassword) {
+        final IncorrectUsernameOrPassword e = (IncorrectUsernameOrPassword)_t;
+        retorno = true;
+      } else {
+        throw Exceptions.sneakyThrow(_t);
+      }
+    }
+    Assert.assertTrue(retorno);
+  }
+  
+  @Test
+  public void test000UnUsuarioCambiaSuPasswordALaMismaPasswordQueTeniaAntesYElSistemaLeAvisaQueNoPuede() {
+    boolean retorno = false;
+    try {
+      this.serviceTest.changePassword("pepita", "golondrina", "golondrina");
+    } catch (final Throwable _t) {
+      if (_t instanceof IdenticPasswords) {
+        final IdenticPasswords e = (IdenticPasswords)_t;
+        retorno = true;
+      } else {
+        throw Exceptions.sneakyThrow(_t);
+      }
+    }
+    Assert.assertTrue(retorno);
+  }
+  
+  @Test
+  public void test000UnUsuarioIntenaCambiarSuPasswordPeroSuNickOContraseñaNoSonCorrectos() {
+    boolean retorno = false;
+    IncorrectUsernameOrPassword excepcion = new IncorrectUsernameOrPassword("no va");
+    User _load = this.JDBCUserDAOMock.load("pepita", "golondrina");
+    OngoingStubbing<User> _when = Mockito.<User>when(_load);
+    _when.thenThrow(excepcion);
+    try {
+      this.serviceTest.changePassword("pepita", "golondrina", "euforica");
+    } catch (final Throwable _t) {
+      if (_t instanceof IncorrectUsernameOrPassword) {
+        final IncorrectUsernameOrPassword e = (IncorrectUsernameOrPassword)_t;
+        retorno = true;
+      } else {
+        throw Exceptions.sneakyThrow(_t);
+      }
+    }
+    Assert.assertTrue(retorno);
+  }
+  
+  @Test
+  public void test000UnUsuarioIntenaCambiarSuPasswordExitosamente() {
+    User _load = this.JDBCUserDAOMock.load("pepita", "golondrina");
+    OngoingStubbing<User> _when = Mockito.<User>when(_load);
+    _when.thenReturn(this.usuarioMock);
+    this.serviceTest.changePassword("pepita", "golondrina", "euforica");
+    JDBCUserDAO _verify = Mockito.<JDBCUserDAO>verify(this.JDBCUserDAOMock);
+    _verify.update(this.usuarioMock);
   }
 }

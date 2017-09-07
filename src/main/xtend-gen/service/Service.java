@@ -1,9 +1,11 @@
 package service;
 
+import Excepciones.IdenticPasswords;
+import Excepciones.IncorrectUsernameOrPassword;
+import Excepciones.InvalidValidationCode;
 import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Pure;
-import service.InvalidValidationCode;
 import service.User;
 import service.UserService;
 import userDAO.UserDAO;
@@ -22,7 +24,7 @@ public class Service implements UserService {
     User _xifexpression = null;
     boolean _existeUsuarioCon = this.existeUsuarioCon(userName, mail);
     if (_existeUsuarioCon) {
-      throw new RuntimeException("nddo se puede Registrar el Usuario");
+      throw new RuntimeException("no se puede registrar el Usuario");
     } else {
       User _xblockexpression = null;
       {
@@ -60,11 +62,38 @@ public class Service implements UserService {
   
   @Override
   public User signIn(final String username, final String password) {
-    return null;
+    User _xtrycatchfinallyexpression = null;
+    try {
+      _xtrycatchfinallyexpression = this.userDAO.load(username, password);
+    } catch (final Throwable _t) {
+      if (_t instanceof RuntimeException) {
+        final RuntimeException e = (RuntimeException)_t;
+        throw new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos");
+      } else {
+        throw Exceptions.sneakyThrow(_t);
+      }
+    }
+    return _xtrycatchfinallyexpression;
   }
   
   @Override
   public void changePassword(final String username, final String oldPassword, final String newPassword) {
+    boolean _equals = oldPassword.equals(newPassword);
+    if (_equals) {
+      throw new IdenticPasswords("Las contraseñas no tienen que ser las mismas");
+    }
+    try {
+      User user = this.userDAO.load(username, oldPassword);
+      user.setPasword(newPassword);
+      this.userDAO.update(user);
+    } catch (final Throwable _t) {
+      if (_t instanceof RuntimeException) {
+        final RuntimeException e = (RuntimeException)_t;
+        throw new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos");
+      } else {
+        throw Exceptions.sneakyThrow(_t);
+      }
+    }
   }
   
   public boolean existeUsuarioCon(final String userName, final String mail) {
@@ -72,7 +101,7 @@ public class Service implements UserService {
     try {
       boolean _xblockexpression = false;
       {
-        this.userDAO.load(userName, mail);
+        this.userDAO.loadForUsernameAndMail(userName, mail);
         _xblockexpression = true;
       }
       _xtrycatchfinallyexpression = _xblockexpression;

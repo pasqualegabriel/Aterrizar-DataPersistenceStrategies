@@ -26,4 +26,9 @@ public class JDBCUserDAO implements UserDAO {
   public User loadForCode(final String string) {
     throw new UnsupportedOperationException("TODO: auto-generated method stub");
   }
+  
+  @Override
+  public User loadForUsernameAndMail(final String username, final String string2) {
+    throw new UnsupportedOperationException("TODO: auto-generated method stub");
+  }
 }

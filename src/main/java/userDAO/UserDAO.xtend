@@ -6,12 +6,12 @@ interface UserDAO {
 
 	def void save(User user)
 
-	def User load(String userName, String pasword)
+	def User load(String username, String pasword)
 
-	def void update(User userName)
-	
+	def void update(User username)
 	
 	// PREGUNTAR
-	def User loadForCode(String string)
+	def User loadForCode(String code)
 	
+	def User loadForUsernameAndMail(String username, String string2)
 }
