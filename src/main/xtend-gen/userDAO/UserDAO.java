@@ -4,13 +4,11 @@ import service.User;
 
 @SuppressWarnings("all")
 public interface UserDAO {
-  public abstract void save(final User user);
+  public abstract void save(final User oneUser);
   
-  public abstract User load(final String username, final String pasword);
+  public abstract User load(final User oneUser);
   
-  public abstract void update(final User username);
+  public abstract void update(final User oneUser);
   
-  public abstract User loadForCode(final String code);
-  
-  public abstract User loadForUsernameAndMail(final String username, final String string2);
+  public abstract void clearAll();
 }

@@ -3,6 +3,9 @@ package service;
 import Excepciones.IdenticPasswords;
 import Excepciones.IncorrectUsernameOrPassword;
 import Excepciones.InvalidValidationCode;
+import java.util.Date;
+import mailSender.Mail;
+import mailSender.Postman;
 import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Pure;
@@ -15,12 +18,16 @@ import userDAO.UserDAO;
 public class Service implements UserService {
   private UserDAO userDAO;
   
+  private Postman mailSender;
+  
   public Service(final UserDAO userDao) {
     this.userDAO = userDao;
+    Postman _postman = new Postman();
+    this.mailSender = _postman;
   }
   
   @Override
-  public User singUp(final String name, final String lastName, final String userName, final String mail, final String birthDate) {
+  public User singUp(final String name, final String lastName, final String userName, final String mail, final Date birthDate) {
     User _xifexpression = null;
     boolean _existeUsuarioCon = this.existeUsuarioCon(userName, mail);
     if (_existeUsuarioCon) {
@@ -30,11 +37,25 @@ public class Service implements UserService {
       {
         User usuario = new User(name, lastName, userName, mail, birthDate);
         this.userDAO.save(usuario);
-        _xblockexpression = usuario;
+        final User userWithCode = this.userDAO.load(usuario);
+        Mail _createValidationMail = this.createValidationMail(userWithCode);
+        this.mailSender.send(_createValidationMail);
+        _xblockexpression = userWithCode;
       }
       _xifexpression = _xblockexpression;
     }
     return _xifexpression;
+  }
+  
+  public Mail createValidationMail(final User user) {
+    Mail _xblockexpression = null;
+    {
+      String _validateCode = user.getValidateCode();
+      final String body = ("este es tu codigo de validacion " + _validateCode);
+      String _mail = user.getMail();
+      _xblockexpression = new Mail("Validacion de cuenta ", body, _mail, "Chafa1234@GilMail");
+    }
+    return _xblockexpression;
   }
   
   @Override
@@ -43,7 +64,9 @@ public class Service implements UserService {
     try {
       boolean _xblockexpression = false;
       {
-        User user = this.userDAO.loadForCode(code);
+        final User userExample = new User();
+        userExample.setValidateCode(code);
+        User user = this.userDAO.load(userExample);
         user.setValidate(true);
         this.userDAO.update(user);
         _xblockexpression = true;
@@ -64,7 +87,14 @@ public class Service implements UserService {
   public User signIn(final String username, final String password) {
     User _xtrycatchfinallyexpression = null;
     try {
-      _xtrycatchfinallyexpression = this.userDAO.load(username, password);
+      User _xblockexpression = null;
+      {
+        final User userExample = new User();
+        userExample.setUserName(username);
+        userExample.setUserPassword(password);
+        _xblockexpression = this.userDAO.load(userExample);
+      }
+      _xtrycatchfinallyexpression = _xblockexpression;
     } catch (final Throwable _t) {
       if (_t instanceof RuntimeException) {
         final RuntimeException e = (RuntimeException)_t;
@@ -77,14 +107,17 @@ public class Service implements UserService {
   }
   
   @Override
-  public void changePassword(final String username, final String oldPassword, final String newPassword) {
+  public void changePassword(final String userName, final String oldPassword, final String newPassword) {
     boolean _equals = oldPassword.equals(newPassword);
     if (_equals) {
       throw new IdenticPasswords("Las contraseñas no tienen que ser las mismas");
     }
     try {
-      User user = this.userDAO.load(username, oldPassword);
-      user.setPasword(newPassword);
+      final User userExample = new User();
+      userExample.setUserName(userName);
+      userExample.setUserPassword(newPassword);
+      User user = this.userDAO.load(userExample);
+      user.setUserPassword(newPassword);
       this.userDAO.update(user);
     } catch (final Throwable _t) {
       if (_t instanceof RuntimeException) {
@@ -101,7 +134,10 @@ public class Service implements UserService {
     try {
       boolean _xblockexpression = false;
       {
-        this.userDAO.loadForUsernameAndMail(userName, mail);
+        final User userExample = new User();
+        userExample.setUserName(userName);
+        userExample.setMail(mail);
+        this.userDAO.load(userExample);
         _xblockexpression = true;
       }
       _xtrycatchfinallyexpression = _xblockexpression;
@@ -123,5 +159,14 @@ public class Service implements UserService {
   
   public void setUserDAO(final UserDAO userDAO) {
     this.userDAO = userDAO;
+  }
+  
+  @Pure
+  public Postman getMailSender() {
+    return this.mailSender;
+  }
+  
+  public void setMailSender(final Postman mailSender) {
+    this.mailSender = mailSender;
   }
 }

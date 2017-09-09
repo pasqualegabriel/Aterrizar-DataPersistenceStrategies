@@ -4,14 +4,12 @@ import service.User
 
 interface UserDAO {
 
-	def void save(User user)
+	def void save(User oneUser)
 
-	def User load(String username, String pasword)
+	def User load(User oneUser)
 
-	def void update(User username)
+	def void update(User oneUser)
 	
-	// PREGUNTAR
-	def User loadForCode(String code)
-	
-	def User loadForUsernameAndMail(String username, String string2)
+	def void clearAll()
+
 }

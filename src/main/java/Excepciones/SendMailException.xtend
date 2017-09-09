@@ -1,9 +1,8 @@
 package Excepciones
 
-class InvalidValidationCode extends RuntimeException {
-	
+class SendMailException  extends RuntimeException {
+		
 	new(String message) {
 		super(message)
 	}
-
 }

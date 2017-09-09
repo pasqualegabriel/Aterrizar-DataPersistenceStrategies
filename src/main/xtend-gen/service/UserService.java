@@ -1,10 +1,11 @@
 package service;
 
+import java.util.Date;
 import service.User;
 
 @SuppressWarnings("all")
 public interface UserService {
-  public abstract User singUp(final String name, final String lastName, final String userName, final String mail, final String birthDate);
+  public abstract User singUp(final String name, final String lastName, final String userName, final String mail, final Date birthDate);
   
   public abstract boolean validate(final String code);
   

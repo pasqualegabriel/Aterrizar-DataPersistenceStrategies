@@ -1,5 +1,6 @@
 package service;
 
+import java.util.Date;
 import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtext.xbase.lib.Pure;
 
@@ -12,15 +13,21 @@ public class User {
   
   private String userName;
   
-  private String pasword;
+  private String userPassword;
   
   private String mail;
   
-  private String birthDate;
+  private Date birthDate;
+  
+  private String validateCode;
   
   private boolean validate;
   
-  public User(final String name, final String lastName, final String userName, final String mail, final String birthDate) {
+  public User() {
+    super();
+  }
+  
+  public User(final String name, final String lastName, final String userName, final String mail, final Date birthDate) {
     this.name = name;
     this.lastName = lastName;
     this.userName = userName;
@@ -57,12 +64,12 @@ public class User {
   }
   
   @Pure
-  public String getPasword() {
-    return this.pasword;
+  public String getUserPassword() {
+    return this.userPassword;
   }
   
-  public void setPasword(final String pasword) {
-    this.pasword = pasword;
+  public void setUserPassword(final String userPassword) {
+    this.userPassword = userPassword;
   }
   
   @Pure
@@ -75,12 +82,21 @@ public class User {
   }
   
   @Pure
-  public String getBirthDate() {
+  public Date getBirthDate() {
     return this.birthDate;
   }
   
-  public void setBirthDate(final String birthDate) {
+  public void setBirthDate(final Date birthDate) {
     this.birthDate = birthDate;
+  }
+  
+  @Pure
+  public String getValidateCode() {
+    return this.validateCode;
+  }
+  
+  public void setValidateCode(final String validateCode) {
+    this.validateCode = validateCode;
   }
   
   @Pure
