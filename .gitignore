@@ -3,6 +3,6 @@
 .project
 /target
 .idea/
-*generated-sources*
-/bin
-/xtend-gen
+**generated-sources*
+**/bin
+**/xtend-gen
