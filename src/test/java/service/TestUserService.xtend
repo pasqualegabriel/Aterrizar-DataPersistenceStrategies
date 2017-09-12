@@ -3,138 +3,165 @@ package service
 import org.junit.Before
 import org.junit.Test
 import static org.junit.Assert.*
-import static org.mockito.Mockito.*
-import org.mockito.MockitoAnnotations
-import org.mockito.Mock
 import userDAO.JDBCUserDAO
-import Excepciones.InvalidValidationCode
-import Excepciones.IncorrectUsernameOrPassword
-import Excepciones.IdenticPasswords
+import java.util.Date
+import userDAO.UserDAO
+import org.junit.After
 
 class TestUserService {
 	
-	Service           serviceTest
-	@Mock JDBCUserDAO JDBCUserDAOMock
-	@Mock User        usuarioMock
-	
+	Service serviceTest
+	UserDAO userDAO
+	User    userTest
 	
 	@Before
 	def void setUp(){
-		MockitoAnnotations.initMocks(this)
-		serviceTest = new Service(JDBCUserDAOMock)
-		
+		userDAO     = new JDBCUserDAO
+		serviceTest = new Service(userDAO)
+		userTest    = new User("Pepita","LaGolondrina","PepitaUser","pepitagolondrina@gmail.com","password",new Date())
+	}
+
+	@Test
+	def test000UnServiceSabeQueExisteUnUsuarioConNombreyMail(){	
+
+		userDAO.save(userTest)
+		assertTrue(serviceTest.existeUsuarioCon("PepitaUser","pepitagolondrina@gmail.com"))
+	}	
+	
+	@Test
+	def test001UnServiceSabeQueExisteUnUsuarioConNombreyMail(){	
+
+		assertFalse(serviceTest.existeUsuarioCon("PepitaUser","pepitagolondrina@gmail.com"))
+	}
+
+	@Test
+	def test002SeRegistraUnUsuarioExitosamente(){
+
+		serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepitagolondrina@gmail.com", "password",new Date())
+		  
+	    assertEquals(userTest.name, "Pepita")
+		assertEquals(userTest.lastName, "LaGolondrina")
+		assertEquals(userTest.userName, "PepitaUser")
+		assertEquals(userTest.mail, "pepitagolondrina@gmail.com")
+		assertEquals(userTest.validate, false)
 	}
 	
-//	
-//	@Test
-//	def test000UnServiceSabeQueExisteUnUsuarioConNombreyMail(){
-//		
-//		
-//		when(JDBCUserDAOMock.load(usuarioMock)).thenReturn(usuarioMock)
-//		
-//		assertTrue(serviceTest.existeUsuarioCon("PepitaUser", "pepita@gmail.com"))
-//		
-//	}	
-//	
-//	@Test
-//	def test000UnServiceSabeQueNoExisteUnUsuarioConNombreyMail(){
-//
-//		var excepcion = new RuntimeException 
-//
-//		when(JDBCUserDAOMock.load(usuarioMock)).thenThrow(excepcion)
-//		
-//		assertFalse(serviceTest.existeUsuarioCon("PepitaUser", "pepita@gmail.com"))
-//	}	
-//	
-//
-//	@Test
-//	def test000SeRegistraUnUsuarioConNombrePepitaExitosamente(){
-//		
-//		var excepcion = new RuntimeException 
-//		
-//		when(JDBCUserDAOMock.load(usuarioMock)).thenThrow(excepcion)
-//		var pepita =serviceTest.singUp("1","2","3","4","5")
-//		
-//		/**Falta hacer Mock y verificar la parte de hacer el codigo y mandar mail */
-//		
-//	    verify(JDBCUserDAOMock, times(1)).save(pepita)
-//	}
-//	
-//	@Test (expected=typeof(RuntimeException))
-//	def test000NoSeRegistraUnUsuarioConNombrePepitaExitosamente(){
-//		
-//		when(JDBCUserDAOMock.loadForUsernameAndMail("3","4")).thenReturn(usuarioMock)
-//		var pepita =serviceTest.singUp("1","2","3","4","5")
-//		
-//	    verify(JDBCUserDAOMock, times(0)).save(pepita)
-//	}
-//	
-//	@Test
-//	def test000UnUsuarioValidaSuCodigoExitosamente(){
-//		
-//		when(JDBCUserDAOMock.loadForCode("a")).thenReturn(usuarioMock)
-//		
-//		
-//		assertTrue(serviceTest.validate("a"))
-//	}
-//	
-//	@Test 
-//	def test000UnUsuarioAlValidaSuCodigoNoExisteDichoCodigo(){
-//		var retorno= false
-//		var excepcion = new RuntimeException 
-//		
-//		when(JDBCUserDAOMock.loadForCode("a")).thenThrow(excepcion)
-//		try{ serviceTest.validate("a")}
-//		catch(InvalidValidationCode e) {retorno= true}
-//		assertTrue(retorno)
-//	}
-//	
-//	@Test 
-//	def test000UnUsuarioSeLogueaExitosamente(){
-//		when(JDBCUserDAOMock.load("pepita","golondrina")).thenReturn(usuarioMock)
-//		
-//		assertEquals (serviceTest.signIn("pepita","golondrina"), usuarioMock)
-//	}
-//	
-//	@Test 
-//	def test000UnUsuarioNoSeLogueaExitosamente(){
-//		var retorno= false
-//		var excepcion = new IncorrectUsernameOrPassword("no va")
-//		
-//		when(JDBCUserDAOMock.load("pepita","golondrina")).thenThrow(excepcion)
-//		try{ serviceTest.signIn("pepita","golondrina")}
-//		catch(IncorrectUsernameOrPassword e) {retorno= true}
-//		assertTrue(retorno)
-//	}
-//	
-//	@Test 
-//	def test000UnUsuarioCambiaSuPasswordALaMismaPasswordQueTeniaAntesYElSistemaLeAvisaQueNoPuede(){
-//		var retorno= false
-//		
-//		try{ serviceTest.changePassword("pepita","golondrina","golondrina")}
-//		catch(IdenticPasswords e) {retorno= true}
-//		assertTrue(retorno)
-//	}
-//	
-//	@Test 
-//	def test000UnUsuarioIntenaCambiarSuPasswordPeroSuNickOContraseñaNoSonCorrectos(){
-//		var retorno= false
-//		var excepcion = new IncorrectUsernameOrPassword("no va")
-//		
-//		when(JDBCUserDAOMock.load("pepita","golondrina")).thenThrow(excepcion)
-//		try{ serviceTest.changePassword("pepita","golondrina","euforica")}
-//		catch(IncorrectUsernameOrPassword e) {retorno= true}
-//		assertTrue(retorno)
-//	}
-//	
-//	@Test 
-//	def test000UnUsuarioIntenaCambiarSuPasswordExitosamente(){
-//		
-//		when(JDBCUserDAOMock.load("pepita","golondrina")).thenReturn(usuarioMock)
-//		serviceTest.changePassword("pepita","golondrina","euforica")
-//		verify(JDBCUserDAOMock).update(usuarioMock)
-//	}
-//	
+	@Test(expected=RuntimeException)
+	def test003NoSeRegistraUnUsuarioConNombrePepitaExitosamentePorqueYaExisteEseUsuario(){
+
+		serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepita@gmail.com", "password",new Date())
+		
+		assertEquals(serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepitagolondrina@gmail.com", "password",new Date()),
+		             "no se puede registrar el Usuario")
+	}
+	
+	@Test(expected=RuntimeException)
+	def test004NoSeRegistraUnUsuarioConNombrePepitaExitosamentePorqueYaExisteEseMail(){
+
+		serviceTest.singUp("Pepita","LaGolondrina","pepita","pepita@gmail.com", "password",new Date())
+		
+		assertEquals(serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepita@gmail.com", "password",new Date()),
+		             "no se puede registrar el Usuario")
+	}
+	
+	@Test
+	def test005UnUsuarioValidaSuCodigoExitosamente(){
+		
+		var newUser = serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepita@gmail.com","password",new Date())
+		
+		assertFalse(newUser.validate)
+		
+        var isValid = serviceTest.validate("1234567890PepitaUser")
+        
+        var userExample      = new User
+        userExample.userName = "PepitaUser"
+		var user             = userDAO.load(userExample)
+		
+		assertTrue(isValid)
+	    assertEquals(user.name, "Pepita")
+		assertEquals(user.lastName, "LaGolondrina")
+		assertEquals(user.userName, "PepitaUser")
+		assertEquals(user.mail, "pepita@gmail.com")
+		assertTrue(user.validate)
+	}
+	
+	
+	@Test(expected=RuntimeException)
+	def test006UnUsuarioAlValidaSuCodigoNoExisteDichoCodigo(){
+
+		serviceTest.singUp("Pepita","LaGolondrina","pepita","pepita@gmail.com", "password",new Date())
+		val isValid = serviceTest.validate("1234567890PepitaUser")
+		
+		assertEquals(isValid, "El codigo no es correcto")
+	}
+
+	@Test 
+	def test007UnUsuarioSeLogueaExitosamente(){
+		
+		serviceTest.singUp("Pepita","LaGolondrina","pepitaUser","pepita@gmail.com", "password",new Date())
+		serviceTest.validate("1234567890pepitaUser")
+		
+		val user = serviceTest.signIn("pepitaUser","password")
+		
+	    assertEquals(user.name, "Pepita")
+		assertEquals(user.lastName, "LaGolondrina")
+		assertEquals(user.userName, "pepitaUser")
+		assertEquals(user.mail, "pepita@gmail.com")
+	}
+	
+	@Test(expected=typeof(RuntimeException))
+	def test008UnUsuarioNoSeLogueaExitosamentePorqueNoSeValido(){
+		
+		serviceTest.singUp("Pepita","LaGolondrina","pepitaUser","pepita@gmail.com", "password",new Date())
+		
+		assertEquals(serviceTest.signIn("pepitaUser","password"), 
+		"El usuario o la contrasenia introducidos no son correctos")
+	}
+	
+	@Test(expected=typeof(RuntimeException))
+	def test009UnUsuarioNoSeLogueaExitosamentePorqueNoExiste(){
+		
+		assertEquals(serviceTest.signIn("usuarioNoExistente","passwordNoExistente"), 
+		"El usuario o la contrasenia introducidos no son correctos")
+	}
+	
+	@Test 
+	def test010UnUsuarioCambiaSuPasswordExitosamente(){
+		
+		serviceTest.singUp("Pepita","LaGolondrina","pepitaUser","pepita@gmail.com", "password",new Date())
+		
+		serviceTest.changePassword("pepitaUser","password","newPassword")
+		
+		var userExample      = new User
+        userExample.userName = "pepitaUser"
+		var user = userDAO.load(userExample)
+		
+	    assertEquals(user.userPassword, "newPassword")
+	}
+
+	@Test(expected=typeof(RuntimeException))
+	def test011UnUsuarioCambiaSuPasswordALaMismaPasswordQueTeniaAntesYElSistemaLeAvisaQueNoPuede(){
+		
+		serviceTest.singUp("Pepita","LaGolondrina","pepitaUser","pepita@gmail.com", "password",new Date())
+		
+		serviceTest.changePassword("pepitaUser","password","password")
+		// Error = "Las contraseñas no tienen que ser las mismas"
+	}
+	
+	@Test(expected=typeof(RuntimeException))
+	def test012UnUsuarioIntenaCambiarSuPasswordPeroSuNickOContraseñaNoSonCorrectos(){
+		
+		serviceTest.singUp("Pepita","LaGolondrina","pepitaUser","pepita@gmail.com", "password",new Date())
+		
+		serviceTest.changePassword("userFaild","password","newPassword")
+		// Error = "El usuario o la contrasenia introducidos no son correctos"
+	}
+	
+	@After
+	def void tearDown(){
+		userDAO.clearAll
+		
+	}
 }
 
 

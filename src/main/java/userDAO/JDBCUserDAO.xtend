@@ -20,18 +20,17 @@ class JDBCUserDAO implements UserDAO{
 		}
 	}
 
-
 	override void save(User aUser) {
+		
 		this.executeWithConnection([conn | 				
-			var ps = conn.prepareStatement("INSERT INTO user (firstName, lastName, userName, pasword, mail, birthDate,validateCode, validate) VALUES (?,?,?,?,?,?,?,?)")
-			ps.setString(1, aUser.name)
-			ps.setString(2, aUser.lastName)
-			ps.setString(3, aUser.userName)
-			ps.setString(4, aUser.userPassword)
-			ps.setString(5, aUser.mail)
-			ps.setLong(6, aUser.birthDate.time)
-			ps.setString(7, aUser.validateCode)
-			ps.setBoolean(8, aUser.validate)
+			var ps = conn.prepareStatement("INSERT INTO user (firstName, lastName, userName, pasword, mail, birthDate, validate) VALUES (?,?,?,?,?,?,?)")
+			ps.setString( 1, aUser.name)
+			ps.setString( 2, aUser.lastName)
+			ps.setString( 3, aUser.userName)
+			ps.setString( 4, aUser.userPassword)
+			ps.setString( 5, aUser.mail)
+			ps.setLong(   6, aUser.birthDate.time)
+			ps.setBoolean(7, aUser.validate)
 			
 			ps.execute
 
@@ -43,40 +42,37 @@ class JDBCUserDAO implements UserDAO{
 			null
 		])
 	}	
+	
 	override update(User aUser) {
+		
 		this.executeWithConnection([conn | 				
-			var ps = conn.prepareStatement("UPDATE user SET firstName = ?, lastName = ?, userName = ?, pasword = ?, mail = ?, birthDate = ?, validateCode = ?, validate = ? WHERE userName = ?")
-		    ps.setString(1, aUser.name)
-			ps.setString(2, aUser.lastName)
-			ps.setString(3, aUser.userName)
-			ps.setString(4, aUser.userPassword)
-			ps.setString(5, aUser.mail)
-			ps.setLong(6, aUser.birthDate.time)
-			ps.setString(7, aUser.validateCode)
-			ps.setBoolean(8, aUser.validate)
-			ps.setString(9, aUser.userName)
+			var ps = conn.prepareStatement("UPDATE user SET firstName = ?, lastName = ?, userName = ?, pasword = ?, mail = ?, birthDate = ?, validate = ? WHERE userName = ?")
+		    ps.setString( 1, aUser.name)
+			ps.setString( 2, aUser.lastName)
+			ps.setString( 3, aUser.userName)
+			ps.setString( 4, aUser.userPassword)
+			ps.setString( 5, aUser.mail)
+			ps.setLong(   6, aUser.birthDate.time)
+			ps.setBoolean(7, aUser.validate)
+			ps.setString( 8, aUser.userName)
 			
 			ps.execute
 			ps.close
 			null
 		])
-	}
-	
-
-	
+	}	
 	
 	override load(User oneUser) {
 		
 		return this.executeWithConnection([conn |
 			var filters = newArrayList(
-				"firstName" -> new StringEvaluator(oneUser.name),
-				"lastName" -> new StringEvaluator(oneUser.lastName),
-				"userName" -> new StringEvaluator(oneUser.userName),
-				"pasword" -> new StringEvaluator(oneUser.userPassword),
-				"mail" -> new StringEvaluator(oneUser.mail),
-				"birthDate"-> new DateEvaluator(oneUser.birthDate),
-				"validateCode"-> new StringEvaluator(oneUser.validateCode),
-				"validate"-> new BooleanEvaluator(oneUser.validate)
+				"firstName"   -> new StringEvaluator(oneUser.name),
+				"lastName"    -> new StringEvaluator(oneUser.lastName),
+				"userName"    -> new StringEvaluator(oneUser.userName),
+				"pasword"     -> new StringEvaluator(oneUser.userPassword),
+				"mail"        -> new StringEvaluator(oneUser.mail),
+				"birthDate"   -> new DateEvaluator(oneUser.birthDate),
+				"validate"    -> new BooleanEvaluator(oneUser.validate)
 			).filter[pair| pair.value.value != null]
 			
 			val filterCondition = new StringBuilder()
@@ -105,28 +101,22 @@ class JDBCUserDAO implements UserDAO{
 					throw new RuntimeException("Existe mas de un user")
 				}
 				
-				aUser = new User
-				aUser.name= resultSet.getString("firstName")
-				aUser.lastName= resultSet.getString("lastName")
-				aUser.userName= resultSet.getString("userName")
-				aUser.userPassword= resultSet.getString("pasword")
-				aUser.mail= resultSet.getString("mail")
-				aUser.birthDate= new Date(resultSet.getLong("birthDate"))
-				aUser.validateCode= resultSet.getString("validateCode")
-				aUser.validate= resultSet.getBoolean("validate")
-				
-				
-			
+				aUser              = new User
+				aUser.name         = resultSet.getString("firstName")
+				aUser.lastName     = resultSet.getString("lastName")
+				aUser.userName     = resultSet.getString("userName")
+				aUser.userPassword = resultSet.getString("pasword")
+				aUser.mail         = resultSet.getString("mail")
+				aUser.birthDate    = new Date(resultSet.getLong("birthDate"))
+				aUser.validate     = resultSet.getBoolean("validate")
 			}
 			
 			ps.close
 		    aUser
 		])
 	}
-	
-
-	
-		/**
+		
+	/**
 	 * Ejecuta un bloque de codigo contra una conexion.
 	 */
 	def <T> T executeWithConnection(Function1<Connection, T> bloque) {

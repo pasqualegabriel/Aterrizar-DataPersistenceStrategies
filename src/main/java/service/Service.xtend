@@ -12,63 +12,64 @@ import java.util.Date
 @Accessors
 class Service implements UserService {
 
-	UserDAO 	userDAO
-	Postman		mailSender
+	UserDAO	userDAO
+	Postman	mailSender
 
 	new(UserDAO userDao) {
-		userDAO 	= userDao
-		mailSender	= new Postman
+		userDAO    = userDao
+		mailSender = new Postman
 		
 	}
 
-	override singUp(String name, String lastName, String userName, String mail, Date birthDate) {
+	override singUp(String name, String lastName, String userName, String mail, String password, Date birthDate) {
 		
-		if(this.existeUsuarioCon(userName,mail)) {throw new RuntimeException("no se puede registrar el Usuario")} 
+		if(this.existeUsuarioCon(userName, mail)) {
+			throw new RuntimeException("no se puede registrar el Usuario")
+		} 
 		else {
-			var usuario = new User(name,lastName,userName,mail,birthDate)
+			var usuario        = new User(name, lastName, userName, mail, password, birthDate)
+			var aleatorio      = "1234567890"
+			var validationCode = aleatorio + userName
+			var body           = "este es tu codigo de validacion " + validationCode
+			var aMail          = new Mail("Validacion de cuenta ", body , mail, "AterrizarAdmin@gmail.com")
+			mailSender.send(aMail)
 			userDAO.save(usuario)
-			val userWithCode = userDAO.load(usuario)
-			mailSender.send(this.createValidationMail(userWithCode))
-			userWithCode
+			usuario
 		}
-		
-	}
-	
-	def  createValidationMail(User user) {
-		val body = "este es tu codigo de validacion " +   user.validateCode
-		new Mail("Validacion de cuenta ", body ,user.mail,"Chafa1234@GilMail")
-		
 		
 	}
 
 	override validate(String code) {
 		
 		try {
-			val userExample = new User()
-			userExample.validateCode = code
-			var user = userDAO.load(userExample)
-			user.validate=true
+			var userExample      = new User()
+			var userName         = code.substring(10, code.length) 
+			userExample.userName = userName
+			var user             = userDAO.load(userExample)
+			user.validate        = true
 			userDAO.update(user)
 			true
-		} catch (RuntimeException e) {throw new InvalidValidationCode("El codigo no es correcto")}
-		
-		
+		} 
+		catch (RuntimeException e) {
+			throw new InvalidValidationCode("El codigo no es correcto")
+		}
 	}
 
 	override signIn(String username, String password) {
 		
-		try {// Intenta buscar al usuario con ese nombre y el password
-			 
-			  val userExample			= new User	
-			  userExample.userName 		= username
-			  userExample.userPassword 	= password
-			  
-			  userDAO.load(userExample)
+		val userExample			= new User	
+		userExample.userName 		= username
+		userExample.userPassword 	= password
+		  
+		var user = userDAO.load(userExample)
+		  
+		if(user != null && user.validate){
 			
-		} catch (RuntimeException e) { // De levantar una excepcion el dao al hacer load al usuario
-			// tira una excepcion explicando que el usuario o la contraseña no son correctos
-			throw new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos")
-		}	
+			user
+		} 
+		else{
+			throw new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos")		  	
+		}
 	}
 	
 	override changePassword(String userName, String oldPassword, String newPassword) {
@@ -77,14 +78,13 @@ class Service implements UserService {
 		
 		try {
 			
-			val userExample					= new User 
-			userExample.userName 			= userName
-			userExample.userPassword		= newPassword	
+			val userExample		 = new User 
+			userExample.userName = userName
 			
 			// Intenta buscar al usuario con ese nombre y el password viejo
 			var user = userDAO.load(userExample)
 			// una vez lo encuentra, le setea el nuevo password
-			user.userPassword= newPassword
+			user.userPassword = newPassword
 			// y finalmente persiste los cambios al usuario
 			userDAO.update(user)
 			
@@ -97,20 +97,11 @@ class Service implements UserService {
 
 	def existeUsuarioCon(String userName, String mail) {
 
-		try {
-			
-			val userExample			= new User
-			userExample.userName 	= userName
-			userExample.mail 		= mail	
-			// Intenta retornar el usuario sino hace el catch
-			userDAO.load(userExample)
-			true
-			
-		} catch (RuntimeException  e) {
-			// Si falla, retorna false
-			return false
-		}
-		
+		val userExample		 = new User
+		userExample.userName = userName
+		userExample.mail     = mail	
+		var user = userDAO.load(userExample)
+		user != null
 	}
 
 

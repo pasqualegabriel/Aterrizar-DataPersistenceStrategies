@@ -12,21 +12,21 @@ class User {
 	String 	userPassword
 	String 	mail
 	Date 	birthDate
-	String 	validateCode
-	boolean validate
+	Boolean validate
 
 	new(){
 		super()
 	}
 	
-	new(String name, String lastName, String userName, String mail, Date birthDate) {
-		this.name 	   = name
-		this.lastName  = lastName
-		this.userName  = userName
-		this.mail      = mail
-		this.birthDate = birthDate
-		this.validate  = false
-			
+	new(String name, String lastName, String userName, String mail, String userPassword, Date birthDate) {
+		
+		this.name 	      = name
+		this.lastName     = lastName
+		this.userName     = userName
+		this.mail         = mail
+		this.userPassword = userPassword
+		this.birthDate    = birthDate
+		this.validate     = false
 	}
 
 }

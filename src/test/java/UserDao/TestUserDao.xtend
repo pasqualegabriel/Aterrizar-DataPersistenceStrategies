@@ -11,58 +11,92 @@ import org.junit.After
 
 class TestUserDao {
 	
-	
 	UserDAO userDAO
-	User userTest
+	User    userTest
+	
 	@Before
 	def void setUp(){
-		userDAO  =   new JDBCUserDAO
-		userTest = new User("Pepita","LaGolondrina" , "euforica", "pepitagolondrina@gmail.com", new Date())
-		userTest.validateCode= "golond"
-		userTest.userPassword= "123123"
-
+		userDAO  = new JDBCUserDAO
+		userTest = new User("Pepita","LaGolondrina","euforica","pepitagolondrina@gmail.com", "password", new Date())
 	}
 	
 	@Test
 	def test00AlGuardarYLuegoRecuperarSeObtieneObjetosSimilares() {
+		
 		userDAO.save(userTest)
 		
-		var ejemplo = new User()
-		ejemplo.name= "Pepita"
-		ejemplo.mail= "pepitagolondrina@gmail.com"
+		var ejemplo  = new User()
+		ejemplo.name = "Pepita"
+		ejemplo.mail = "pepitagolondrina@gmail.com"
 		
-	
 		val otherUser = userDAO.load(ejemplo)
 		assertEquals(userTest.name, otherUser.name)
 		assertEquals(userTest.lastName, otherUser.lastName)
 		assertEquals(userTest.userName, otherUser.userName)
 		assertEquals(userTest.mail, otherUser.mail)
 		assertEquals(userTest.birthDate, otherUser.birthDate)
-		assertEquals(userTest.validateCode, otherUser.validateCode)
 		assertEquals(userTest.validate, otherUser.validate)
 
-
 		assertTrue(userTest != otherUser);
-		assertTrue(true)
 	}
 
 	@Test
-	def test00SeUpdateaAPepita() {
+	def test01SeUpdateaAPepita() {
+		
 		userDAO.save(userTest)
 		
-		userTest.name= "Dionisia"
-		userTest.lastName= "golovieja"
+		userTest.name     = "Dionisia"
+		userTest.lastName = "golovieja"
+		userTest.validate = true
 		
 		userDAO.update(userTest)
+			
+		var ejemplo      = new User()
+		ejemplo.userName = "euforica"
 		
+		var otherUser    = userDAO.load(ejemplo)
 		
-		var ejemplo = new User()
-		ejemplo.userName= "euforica"
-		
-		var otherUser = userDAO.load(ejemplo)
-		
-		assertEquals(otherUser.name, "Dionisia")
+		assertEquals(otherUser.name,     "Dionisia")
 		assertEquals(otherUser.lastName, "golovieja")
+		assertTrue(otherUser.validate)
+	}
+	
+	@Test
+	def test02AlGuardarYLuegoRecuperarBuscandoPorMailSeObtieneObjetosSimilares() {
+		
+		userDAO.save(userTest)
+		
+		var ejemplo  = new User()
+		ejemplo.mail = "pepitagolondrina@gmail.com"
+		
+		val otherUser = userDAO.load(ejemplo)
+		assertEquals(userTest.name, otherUser.name)
+		assertEquals(userTest.lastName, otherUser.lastName)
+		assertEquals(userTest.userName, otherUser.userName)
+		assertEquals(userTest.mail, otherUser.mail)
+		assertEquals(userTest.birthDate, otherUser.birthDate)
+		assertEquals(userTest.validate, otherUser.validate)
+
+		assertTrue(userTest != otherUser);
+	}
+	
+	@Test
+	def test03AlGuardarYLuegoRecuperarBuscandoPorUserNameSeObtieneObjetosSimilares() {
+		
+		userDAO.save(userTest)
+		
+		var ejemplo  = new User()
+		ejemplo.userName = "euforica"
+		
+		val otherUser = userDAO.load(ejemplo)
+		assertEquals(userTest.name, otherUser.name)
+		assertEquals(userTest.lastName, otherUser.lastName)
+		assertEquals(userTest.userName, otherUser.userName)
+		assertEquals(userTest.mail, otherUser.mail)
+		assertEquals(userTest.birthDate, otherUser.birthDate)
+		assertEquals(userTest.validate, otherUser.validate)
+
+		assertTrue(userTest != otherUser);
 	}
 	
 	@After
