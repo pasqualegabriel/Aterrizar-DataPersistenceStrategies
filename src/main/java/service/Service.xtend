@@ -5,19 +5,22 @@ import userDAO.UserDAO
 import Excepciones.InvalidValidationCode
 import Excepciones.IncorrectUsernameOrPassword
 import Excepciones.IdenticPasswords
-import mailSender.Mail
-import mailSender.Postman
 import java.util.Date
+import mailSender.EmailService
 
 @Accessors
 class Service implements UserService {
 
 	UserDAO	userDAO
-	Postman	mailSender
-
-	new(UserDAO userDao) {
+	EmailService	mailSender
+	MailGenerator generadorDeMail
+	CodeGenerator generadorDeCodigo
+	
+	new(UserDAO userDao, MailGenerator unGeneradorDeMail, CodeGenerator unGeneradorDeCodigo, EmailService unMailService) {
 		userDAO    = userDao
-		mailSender = new Postman
+		mailSender = unMailService
+		generadorDeMail = unGeneradorDeMail
+		generadorDeCodigo= unGeneradorDeCodigo
 		
 	}
 
@@ -27,26 +30,26 @@ class Service implements UserService {
 			throw new RuntimeException("no se puede registrar el Usuario")
 		} 
 		else {
-			var usuario        = new User(name, lastName, userName, mail, password, birthDate)
-			var aleatorio      = "1234567890"
-			var validationCode = aleatorio + userName
-			var body           = "este es tu codigo de validacion " + validationCode
-			var aMail          = new Mail("Validacion de cuenta ", body , mail, "AterrizarAdmin@gmail.com")
+			var usuario          = new User(name, lastName, userName, mail, password, birthDate)
+			var codigo 		     = generadorDeCodigo.generarCodigo
+			var validationCode   = codigo + userName
+			usuario.validateCode = validationCode
+			var aMail            = generadorDeMail.generarMail(validationCode, mail)
 			mailSender.send(aMail)
-			userDAO.save(usuario)
+			userDAO   .save(usuario)
 			usuario
 		}
 		
 	}
+	
+
 
 	override validate(String code) {
-		// Preguntar por que devuelve true si en caso de no ser valido levanta excepcion, no devuelve nunca false
 		try {
-			var userExample      = new User()
-			var userName         = code.substring(10, code.length) 
-			userExample.userName = userName
-			var user             = userDAO.load(userExample)
-			user.validate        = true
+			var userExample    	     = new User()
+			userExample.validateCode = code
+			var user             	 = userDAO.load(userExample)
+			user.validate       	 = true
 			userDAO.update(user)
 			true
 		} 

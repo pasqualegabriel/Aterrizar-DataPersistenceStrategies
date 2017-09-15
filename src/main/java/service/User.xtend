@@ -13,6 +13,7 @@ class User {
 	String 	mail
 	Date 	birthDate
 	Boolean validate
+	String  validateCode
 
 	new(){
 		super()
@@ -27,6 +28,7 @@ class User {
 		this.userPassword = userPassword
 		this.birthDate    = birthDate
 		this.validate     = false
+		this.validateCode = ""
 	}
 
 }

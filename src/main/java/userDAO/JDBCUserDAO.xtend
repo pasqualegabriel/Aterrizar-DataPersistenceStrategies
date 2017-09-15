@@ -23,7 +23,7 @@ class JDBCUserDAO implements UserDAO{
 	override void save(User aUser) {
 		
 		this.executeWithConnection([conn | 				
-			var ps = conn.prepareStatement("INSERT INTO user (firstName, lastName, userName, pasword, mail, birthDate, validate) VALUES (?,?,?,?,?,?,?)")
+			var ps = conn.prepareStatement("INSERT INTO user (firstName, lastName, userName, pasword, mail, birthDate, validate, validateCode) VALUES (?,?,?,?,?,?,?,?)")
 			ps.setString( 1, aUser.name)
 			ps.setString( 2, aUser.lastName)
 			ps.setString( 3, aUser.userName)
@@ -31,6 +31,7 @@ class JDBCUserDAO implements UserDAO{
 			ps.setString( 5, aUser.mail)
 			ps.setLong(   6, aUser.birthDate.time)
 			ps.setBoolean(7, aUser.validate)
+			ps.setString( 8, aUser.validateCode)
 			
 			ps.execute
 
@@ -46,7 +47,7 @@ class JDBCUserDAO implements UserDAO{
 	override update(User aUser) {
 		
 		this.executeWithConnection([conn | 				
-			var ps = conn.prepareStatement("UPDATE user SET firstName = ?, lastName = ?, userName = ?, pasword = ?, mail = ?, birthDate = ?, validate = ? WHERE userName = ?")
+			var ps = conn.prepareStatement("UPDATE user SET firstName = ?, lastName = ?, userName = ?, pasword = ?, mail = ?, birthDate = ?, validate = ?, validateCode = ? WHERE userName = ?")
 		    ps.setString( 1, aUser.name)
 			ps.setString( 2, aUser.lastName)
 			ps.setString( 3, aUser.userName)
@@ -54,7 +55,8 @@ class JDBCUserDAO implements UserDAO{
 			ps.setString( 5, aUser.mail)
 			ps.setLong(   6, aUser.birthDate.time)
 			ps.setBoolean(7, aUser.validate)
-			ps.setString( 8, aUser.userName)
+			ps.setString( 8, aUser.validateCode)
+			ps.setString( 9, aUser.userName)
 			
 			ps.execute
 			ps.close
@@ -72,7 +74,8 @@ class JDBCUserDAO implements UserDAO{
 				"pasword"     -> new StringEvaluator(oneUser.userPassword),
 				"mail"        -> new StringEvaluator(oneUser.mail),
 				"birthDate"   -> new DateEvaluator(oneUser.birthDate),
-				"validate"    -> new BooleanEvaluator(oneUser.validate)
+				"validate"    -> new BooleanEvaluator(oneUser.validate),
+				"validateCode"-> new StringEvaluator(oneUser.validateCode)
 			).filter[pair| pair.value.value != null]
 			
 			val filterCondition = new StringBuilder()
@@ -110,6 +113,7 @@ class JDBCUserDAO implements UserDAO{
 				aUser.mail         = resultSet.getString("mail")
 				aUser.birthDate    = new Date(resultSet.getLong("birthDate"))
 				aUser.validate     = resultSet.getBoolean("validate")
+				aUser.validateCode = resultSet.getString("validateCode")
 			}
 			
 			ps.close

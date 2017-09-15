@@ -116,6 +116,8 @@ class TestUserDao {
 		assertTrue(true)
 	}
 	
+
+	
 	@After
 	def void tearDown(){
 		userDAO.clearAll

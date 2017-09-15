@@ -7,17 +7,32 @@ import userDAO.JDBCUserDAO
 import java.util.Date
 import userDAO.UserDAO
 import org.junit.After
+import mailSender.EmailService
+import mailSender.Postman
+import static org.mockito.Mockito.*
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
+import mailSender.Mail
 
 class TestUserService {
 	
 	Service serviceTest
 	UserDAO userDAO
 	User    userTest
+	@Mock CodeGenerator unGeneradorDeCodigo
+	@Mock EmailService unMailService
+	@Mock MailGenerator generatorMail
+	@Mock Mail unMail
 	
 	@Before
 	def void setUp(){
+		MockitoAnnotations.initMocks(this)
+		when(unGeneradorDeCodigo.generarCodigo).thenReturn("1234567890")
+		when(generatorMail.generarMail("1234567890pepitaUser","pepitagolondrina@gmail.com")).thenReturn(unMail)
 		userDAO     = new JDBCUserDAO
-		serviceTest = new Service(userDAO)
+	    unMailService = new Postman
+	    generatorMail = new SimpleMailer
+		serviceTest = new Service(userDAO, generatorMail, unGeneradorDeCodigo, unMailService)
 		userTest    = new User("Pepita","LaGolondrina","PepitaUser","pepitagolondrina@gmail.com","password",new Date())
 	}
 
@@ -90,7 +105,7 @@ class TestUserService {
 	def test006UnUsuarioAlValidaSuCodigoNoExisteDichoCodigo(){
 
 		serviceTest.singUp("Pepita","LaGolondrina","pepita","pepita@gmail.com", "password",new Date())
-		// el userName del codigo no coincide con ningun usuario en la base de datos y por eso levanta al exepcion
+
 		val isValid = serviceTest.validate("1234567890PepitaUser")
 		
 		assertEquals(isValid, "El codigo no es correcto")
@@ -157,6 +172,15 @@ class TestUserService {
 		serviceTest.changePassword("userFaild","password","newPassword")
 		// Error = "El usuario o la contrasenia introducidos no son correctos"
 	}
+	
+	@Test(expected=typeof(RuntimeException))
+	def test013CuandoUnUsuarioSeRegistraSeEnviaUnMail(){
+		
+		serviceTest.singUp("Pepita","LaGolondrina","pepitaUser","pepita@gmail.com", "password",new Date())
+		
+		verify(unMailService).send(unMail)
+	}
+	
 	
 	@After
 	def void tearDown(){
