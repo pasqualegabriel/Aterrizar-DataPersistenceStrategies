@@ -12,7 +12,7 @@ El TP se va a realizar en clase, a menos que estén muuuy complicados de tiempo.
 
 ## Entregas
 - [Entrega 1 - JDBC](enunciado/entrega1.md)
-- [Entrega 2 - ORM - Hibernate]
+- [Entrega 2 - ORM - Hibernate](enunciado/entrega2.md)
 - Entrega 3 - ORM - Hibernate performance
 - [Entrega 4 - NoSQL - Neo4j]
 - [Entrega 5 - NoSQL - MongoDB]
