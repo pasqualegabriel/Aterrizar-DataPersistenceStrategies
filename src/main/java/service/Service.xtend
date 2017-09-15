@@ -40,7 +40,7 @@ class Service implements UserService {
 	}
 
 	override validate(String code) {
-		
+		// Preguntar por que devuelve true si en caso de no ser valido levanta excepcion, no devuelve nunca false
 		try {
 			var userExample      = new User()
 			var userName         = code.substring(10, code.length) 
@@ -57,7 +57,7 @@ class Service implements UserService {
 
 	override signIn(String username, String password) {
 		
-		val userExample			= new User	
+		val userExample				= new User	
 		userExample.userName 		= username
 		userExample.userPassword 	= password
 		  
@@ -97,7 +97,7 @@ class Service implements UserService {
 
 	def existeUsuarioCon(String userName, String mail) {
 
-		val userExample		 = new User
+		var userExample		 = new User
 		userExample.userName = userName
 		userExample.mail     = mail	
 		var user = userDAO.load(userExample)

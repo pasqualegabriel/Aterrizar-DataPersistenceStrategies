@@ -29,7 +29,7 @@ class TestUserService {
 	}	
 	
 	@Test
-	def test001UnServiceSabeQueExisteUnUsuarioConNombreyMail(){	
+	def test001UnServiceSabeQueNoExisteUnUsuarioConNombreyMail(){	
 
 		assertFalse(serviceTest.existeUsuarioCon("PepitaUser","pepitagolondrina@gmail.com"))
 	}
@@ -37,16 +37,16 @@ class TestUserService {
 	@Test
 	def test002SeRegistraUnUsuarioExitosamente(){
 
-		serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepitagolondrina@gmail.com", "password",new Date())
+		var user = serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepitagolondrina@gmail.com", "password",new Date())
 		  
-	    assertEquals(userTest.name, "Pepita")
-		assertEquals(userTest.lastName, "LaGolondrina")
-		assertEquals(userTest.userName, "PepitaUser")
-		assertEquals(userTest.mail, "pepitagolondrina@gmail.com")
-		assertEquals(userTest.validate, false)
+	    assertEquals(user.name, "Pepita")
+		assertEquals(user.lastName, "LaGolondrina")
+		assertEquals(user.userName, "PepitaUser")
+		assertEquals(user.mail, "pepitagolondrina@gmail.com")
+		assertEquals(user.validate, false)
 	}
 	
-	@Test(expected=RuntimeException)
+	@Test(expected=typeof(RuntimeException))
 	def test003NoSeRegistraUnUsuarioConNombrePepitaExitosamentePorqueYaExisteEseUsuario(){
 
 		serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepita@gmail.com", "password",new Date())
@@ -90,6 +90,7 @@ class TestUserService {
 	def test006UnUsuarioAlValidaSuCodigoNoExisteDichoCodigo(){
 
 		serviceTest.singUp("Pepita","LaGolondrina","pepita","pepita@gmail.com", "password",new Date())
+		// el userName del codigo no coincide con ningun usuario en la base de datos y por eso levanta al exepcion
 		val isValid = serviceTest.validate("1234567890PepitaUser")
 		
 		assertEquals(isValid, "El codigo no es correcto")

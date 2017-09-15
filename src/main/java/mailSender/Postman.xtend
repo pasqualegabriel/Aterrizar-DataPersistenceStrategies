@@ -6,11 +6,13 @@ class Postman implements EmailService {
 	
 	
 	override void send(Mail aMail){
-	try{
 		
-		
-		
-	}catch(RuntimeException e ){ throw new SendMailException("No se pudo enviar el mail")}	
+		try{
+				
+		}
+		catch(RuntimeException e ){ 
+			throw new SendMailException("No se pudo enviar el mail")
+		}	
 		
 	}
 }

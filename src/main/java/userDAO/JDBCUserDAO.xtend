@@ -101,6 +101,7 @@ class JDBCUserDAO implements UserDAO{
 					throw new RuntimeException("Existe mas de un user")
 				}
 				
+				
 				aUser              = new User
 				aUser.name         = resultSet.getString("firstName")
 				aUser.lastName     = resultSet.getString("lastName")
@@ -138,7 +139,7 @@ class JDBCUserDAO implements UserDAO{
 	def Connection openConnection(String url) {
 		try {
 			//La url de conexion no deberia estar harcodeada aca
-			return DriverManager.getConnection("jdbc:mysql://localhost:3306/a_cara_de_perro_aterrizar?user=root&password=bocajuniors");
+			return DriverManager.getConnection("jdbc:mysql://localhost:3306/a_cara_de_perro_aterrizar?user=persistencia&password=persistencia");
 		} catch (SQLException e) {
 			throw new RuntimeException("No se puede establecer una conexion", e);
 		}

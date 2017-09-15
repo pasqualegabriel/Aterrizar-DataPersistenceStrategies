@@ -77,7 +77,7 @@ class TestUserDao {
 		assertEquals(userTest.birthDate, otherUser.birthDate)
 		assertEquals(userTest.validate, otherUser.validate)
 
-		assertTrue(userTest != otherUser);
+		assertTrue(userTest != otherUser)
 	}
 	
 	@Test
@@ -96,13 +96,30 @@ class TestUserDao {
 		assertEquals(userTest.birthDate, otherUser.birthDate)
 		assertEquals(userTest.validate, otherUser.validate)
 
-		assertTrue(userTest != otherUser);
+		assertTrue(userTest != otherUser)
+	}
+	
+	@Test
+	def test04AlBuscarUnUsuarioNoExistenteNoDevuelveNada() {
+		
+		var ejemplo  = new User()
+		ejemplo.mail = "juan@gmail.com"
+
+		assertNull(userDAO.load(ejemplo))
+	}
+	
+	@Test
+	def test05SeIntentaUpdatearUnUserNoExistente() {
+		userDAO.update(userTest)
+		
+		
+		assertTrue(true)
 	}
 	
 	@After
 	def void tearDown(){
 		userDAO.clearAll
-		
+		// Preguntar si hay alguna manera de saber la cantidad de usuarios
 	}
 	
 }
