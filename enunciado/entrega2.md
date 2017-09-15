@@ -12,8 +12,15 @@ Cada tramo tiene un origen y un destino, hora de llegada y de salida, un precio 
 
 De los asientos se sabe que tienen un número que los identifica en un tramo, una categoría, que puede ser: Primera, Business, Turista.
 
-Cada categoría tiene un factor de precio, que  junto con el precio del tramo,  calcula el costo que tiene un asiento.
+Cada categoría tiene un factor de precio (como porcentaje ), que  junto con el precio del tramo,  calcula el costo que tiene un asiento.
 
+Los factores por categoría son:
+- *Turista* 10%
+- *Business* 25%
+- *Primera* 40%
+
+Por ejemplo: un asiento, de categoría Business de un tramo Buenos Aires - San Pablo con un precio base de $10.000, 
+tiene como precio de venta $12.500.
 
 
 ### Compras y Reservas
