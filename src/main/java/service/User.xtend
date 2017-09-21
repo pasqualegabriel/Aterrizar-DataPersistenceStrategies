@@ -2,6 +2,9 @@ package service
 
 import org.eclipse.xtend.lib.annotations.Accessors
 import java.util.Date
+import java.util.List
+import asientoServicio.Reserva
+import asientoServicio.Compra
 
 @Accessors
 class User {
@@ -14,9 +17,14 @@ class User {
 	Date 	birthDate
 	Boolean validate
 	String  validateCode
-
+	Reserva reserva 
+	Double monedero
+	List<Compra> compras   = newArrayList
+	
+	
 	new(){
 		super()
+		monedero		  = 0.00
 	}
 	
 	new(String name, String lastName, String userName, String mail, String userPassword, Date birthDate) {
@@ -29,6 +37,10 @@ class User {
 		this.birthDate    = birthDate
 		this.validate     = false
 		this.validateCode = ""
+		monedero		  = 0.00
 	}
+	
+	
+	
 
 }
