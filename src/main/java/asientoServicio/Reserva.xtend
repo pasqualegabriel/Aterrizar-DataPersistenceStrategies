@@ -24,6 +24,8 @@ class Reserva {
 		asientos.stream.mapToDouble[it.calcularPrecio].sum()
 	}
 	
-
+	def invalidar(){
+		estaValidado = false
+	}
 	
 }

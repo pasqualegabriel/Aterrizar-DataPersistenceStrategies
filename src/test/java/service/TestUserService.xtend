@@ -13,6 +13,10 @@ import static org.mockito.Mockito.*
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import mailSender.Mail
+import Excepciones.ExceptionUsuarioExistente
+import Excepciones.InvalidValidationCode
+import Excepciones.IncorrectUsernameOrPassword
+import Excepciones.IdenticPasswords
 
 class TestUserService {
 	
@@ -61,22 +65,24 @@ class TestUserService {
 		assertEquals(user.validate, false)
 	}
 	
-	@Test(expected=typeof(RuntimeException))
+	@Test(expected=ExceptionUsuarioExistente)
 	def test003NoSeRegistraUnUsuarioConNombrePepitaExitosamentePorqueYaExisteEseUsuario(){
 
-		serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepita@gmail.com", "password",new Date())
+		serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepita@gmail.com",  "password",new Date())
 		
-		assertEquals(serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepitagolondrina@gmail.com", "password",new Date()),
-		             "no se puede registrar el Usuario")
+		serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepita2@gmail.com", "password",new Date())
+		             
+		fail()
 	}
 	
-	@Test(expected=RuntimeException)
+	@Test(expected=ExceptionUsuarioExistente)
 	def test004NoSeRegistraUnUsuarioConNombrePepitaExitosamentePorqueYaExisteEseMail(){
 
-		serviceTest.singUp("Pepita","LaGolondrina","pepita","pepita@gmail.com", "password",new Date())
+		serviceTest.singUp("Pepita","LaGolondrina","pepita",    "pepita@gmail.com", "password",new Date())
 		
-		assertEquals(serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepita@gmail.com", "password",new Date()),
-		             "no se puede registrar el Usuario")
+		serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepita@gmail.com", "password",new Date())
+		            
+		fail()
 	}
 	
 	@Test
@@ -101,14 +107,14 @@ class TestUserService {
 	}
 	
 	
-	@Test(expected=RuntimeException)
+	@Test(expected=InvalidValidationCode)
 	def test006UnUsuarioAlValidaSuCodigoNoExisteDichoCodigo(){
 
 		serviceTest.singUp("Pepita","LaGolondrina","pepita","pepita@gmail.com", "password",new Date())
 
-		val isValid = serviceTest.validate("1234567890PepitaUser")
+		serviceTest.validate("1234567890pepitaUser")
 		
-		assertEquals(isValid, "El codigo no es correcto")
+		fail()
 	}
 
 	@Test 
@@ -155,7 +161,7 @@ class TestUserService {
 	    assertEquals(user.userPassword, "newPassword")
 	}
 
-	@Test(expected=typeof(RuntimeException))
+	@Test(expected=IdenticPasswords)
 	def test011UnUsuarioCambiaSuPasswordALaMismaPasswordQueTeniaAntesYElSistemaLeAvisaQueNoPuede(){
 		
 		serviceTest.singUp("Pepita","LaGolondrina","pepitaUser","pepita@gmail.com", "password",new Date())
@@ -164,7 +170,7 @@ class TestUserService {
 		// Error = "Las contraseñas no tienen que ser las mismas"
 	}
 	
-	@Test(expected=typeof(RuntimeException))
+	@Test(expected=IncorrectUsernameOrPassword)
 	def test012UnUsuarioIntenaCambiarSuPasswordPeroSuNickOContraseñaNoSonCorrectos(){
 		
 		serviceTest.singUp("Pepita","LaGolondrina","pepitaUser","pepita@gmail.com", "password",new Date())
@@ -172,15 +178,7 @@ class TestUserService {
 		serviceTest.changePassword("userFaild","password","newPassword")
 		// Error = "El usuario o la contrasenia introducidos no son correctos"
 	}
-	
-	@Test(expected=typeof(RuntimeException))
-	def test013CuandoUnUsuarioSeRegistraSeEnviaUnMail(){
-		
-		serviceTest.singUp("Pepita","LaGolondrina","pepitaUser","pepita@gmail.com", "password",new Date())
-		
-		verify(unMailService).send(unMail)
-	}
-	
+
 	
 	@After
 	def void tearDown(){

@@ -33,24 +33,22 @@ class TestReservaCompraDeAsientos {
 	
 	@Test
 	def test000UnatestReservaCompraDeAsientosPuedeReservarUnAsientoParaUnUsuarioExitosamente(){
-			var reservaResultado =testReservaCompraDeAsientos.reservar(asientoDoc,usuarioDoc)
+		
+			var reservaResultado = testReservaCompraDeAsientos.reservar(asientoDoc,usuarioDoc)
+			
 			assertTrue(usuarioDoc.reserva.equals(reservaResultado))
 			assertTrue(reservaResultado.asientos.contains(asientoDoc))
 			assertEquals(asientoDoc.reserva,reservaResultado)
 	}
 
-	@Test
+	@Test(expected=ExepcionReserva)
 	def test001UnatestReservaCompraDeAsientosNoPuedeReservarUnAsientoParaUnUsuarioExitosamentePorqueYaEstabaReservado(){
-		var resultado = false
+		
 		testReservaCompraDeAsientos.reservar(asientoDoc,usuarioDoc)
 		
-		try{
-			 testReservaCompraDeAsientos.reservar(asientoDoc,usuarioDoc)
-		}
-		catch(ExepcionReserva e){
-			resultado = true
-		}
-		assertTrue(resultado)
+		testReservaCompraDeAsientos.reservar(asientoDoc,usuarioDoc)
+		
+        fail()
 	}
 	
 	@Test
@@ -59,19 +57,14 @@ class TestReservaCompraDeAsientos {
 		assertEquals(reservaResultado.asientos.size,asientosDoc.size)
 	}
 	
-	@Test
+	@Test(expected=ExepcionReserva)
 	def test003UnaTestReservaCompraDeAsientosNoPuedeReservarVariosAsientosParaUnUsuarioExitosamentePorqueAlMenosUnoEstabaReservado(){
-		var resultado = false
+
+		testReservaCompraDeAsientos.reservarAsientos(asientosDoc,usuarioDoc)
+
 		testReservaCompraDeAsientos.reservarAsientos(asientosDoc,usuarioDoc)
 		
-		try{
-			testReservaCompraDeAsientos.reservarAsientos(asientosDoc,usuarioDoc)
-		}
-		catch(ExepcionReserva e){
-			resultado = true
-		}
-		
-		assertTrue(resultado)
+		fail()
 	}
 	
 	@Test
@@ -89,42 +82,28 @@ class TestReservaCompraDeAsientos {
 		
 	}
 	
-	@Test
+	@Test(expected=ExepcionCompra)
 	def test006UnaTestReservaCompraDeAsientosNoPuedeRealizarUnaCompraParaUnUsuarioExitosamentePorQueNoLeAlcanzaElEfectivo(){
-		var resultado = false 
-		usuarioDoc.monedero = 30.00
+			
+			usuarioDoc.monedero = 30.00
 		
-		try{
 			var reservaResultado = testReservaCompraDeAsientos.reservar(asientoDoc,usuarioDoc)
 			testReservaCompraDeAsientos.comprar(reservaResultado, usuarioDoc)
-		}
-		catch(ExepcionCompra e){
-			resultado= true
-		}
-		assertTrue(resultado)
-		assertNotNull(usuarioDoc.reserva)
-		assertTrue(usuarioDoc.compras.isEmpty)
-		assertEquals(usuarioDoc.monedero,30, 0.00000000001)
+			fail()
+
 	}
 	
 
-	@Test
+	@Test(expected=ExepcionCompra)
 	def test007UnaTestReservaCompraDeAsientosNoPuedeRealizarUnaCompraParaUnUsuarioExitosamentePorqueLaReservaEsInvalida(){
-		var resultado = false 
+
 		usuarioDoc.monedero = 300.00
 		var reservaResultado = testReservaCompraDeAsientos.reservar(asientoDoc,usuarioDoc)
-		
-		try{
-			testReservaCompraDeAsientos.reservarAsientos(asientosDoc,usuarioDoc)
-			testReservaCompraDeAsientos.comprar(reservaResultado, usuarioDoc)
-		}
-		catch(ExepcionCompra e){
-			resultado= true
-		}
-		assertTrue(resultado)
-		assertNotNull(usuarioDoc.reserva)
-		assertTrue(usuarioDoc.compras.isEmpty)
-		assertEquals(usuarioDoc.monedero,300.00, 0.00000000001)
+
+		testReservaCompraDeAsientos.reservarAsientos(asientosDoc,usuarioDoc)
+		testReservaCompraDeAsientos.comprar(reservaResultado, usuarioDoc)
+		fail()
+
 	}
 	
 }

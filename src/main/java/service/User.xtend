@@ -40,6 +40,14 @@ class User {
 		monedero		  = 0.00
 	}
 	
+	def validateAccount() {
+		validate = true
+	}
+	
+	def isValid() {
+		this != null && validate
+	}
+	
 	
 	
 

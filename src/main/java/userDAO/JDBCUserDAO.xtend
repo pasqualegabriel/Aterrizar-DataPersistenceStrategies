@@ -19,11 +19,10 @@ class JDBCUserDAO implements UserDAO{
 			throw new RuntimeException("No se puede encontrar la clase del driver", e);
 		}
 	}
-
-	override void save(User aUser) {
-		
+	
+	def prepareStatement(User aUser, String aPrepareStatement, Boolean isUpdate){
 		this.executeWithConnection([conn | 				
-			var ps = conn.prepareStatement("INSERT INTO user (firstName, lastName, userName, pasword, mail, birthDate, validate, validateCode) VALUES (?,?,?,?,?,?,?,?)")
+			var ps = conn.prepareStatement(aPrepareStatement)
 			ps.setString( 1, aUser.name)
 			ps.setString( 2, aUser.lastName)
 			ps.setString( 3, aUser.userName)
@@ -33,35 +32,27 @@ class JDBCUserDAO implements UserDAO{
 			ps.setBoolean(7, aUser.validate)
 			ps.setString( 8, aUser.validateCode)
 			
-			ps.execute
-
-			if (ps.getUpdateCount() != 1) {
-				throw new RuntimeException("No se inserto el Usuario " + aUser)
+			if(isUpdate){
+				ps.setString( 9, aUser.userName)
 			}
-			ps.close
-
-			null
-		])
-	}	
-	
-	override update(User aUser) {
-		
-		this.executeWithConnection([conn | 				
-			var ps = conn.prepareStatement("UPDATE user SET firstName = ?, lastName = ?, userName = ?, pasword = ?, mail = ?, birthDate = ?, validate = ?, validateCode = ? WHERE userName = ?")
-		    ps.setString( 1, aUser.name)
-			ps.setString( 2, aUser.lastName)
-			ps.setString( 3, aUser.userName)
-			ps.setString( 4, aUser.userPassword)
-			ps.setString( 5, aUser.mail)
-			ps.setLong(   6, aUser.birthDate.time)
-			ps.setBoolean(7, aUser.validate)
-			ps.setString( 8, aUser.validateCode)
-			ps.setString( 9, aUser.userName)
 			
 			ps.execute
 			ps.close
 			null
 		])
+		
+	}
+
+	override void save(User aUser) {
+		
+		prepareStatement(aUser, "INSERT INTO user (firstName, lastName, userName, pasword, mail, birthDate, validate, validateCode) VALUES (?,?,?,?,?,?,?,?)", false)
+
+	}	
+	
+	override update(User aUser) {
+ 				
+		prepareStatement(aUser,"UPDATE user SET firstName = ?, lastName = ?, userName = ?, pasword = ?, mail = ?, birthDate = ?, validate = ?, validateCode = ? WHERE userName = ?", true)
+	
 	}	
 	
 	override load(User oneUser) {
