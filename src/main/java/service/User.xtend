@@ -43,10 +43,8 @@ class User {
 	def validateAccount() {
 		validate = true
 	}
-	
-	def isValid() {
-		this != null && validate
-	}
+
+
 	
 	
 	

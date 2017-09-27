@@ -30,33 +30,32 @@ class Service implements UserService {
 		if(this.existeUsuarioCon(userName, mail)) {
 			throw new ExceptionUsuarioExistente("no se puede registrar el Usuario")
 		} 
-		else {
-			var usuario          = new User(name, lastName, userName, mail, password, birthDate)
-			var codigo 		     = generadorDeCodigo.generarCodigo
-			var validationCode   = codigo + userName
-			usuario.validateCode = validationCode
-			var aMail            = generadorDeMail.generarMail(validationCode, mail)
-			mailSender.send(aMail)
-			userDAO   .save(usuario)
-			usuario
-		}
+		
+		var usuario          = new User(name, lastName, userName, mail, password, birthDate)
+		var codigo 		     = generadorDeCodigo.generarCodigo
+		var validationCode   = codigo + userName
+		usuario.validateCode = validationCode
+		var aMail            = generadorDeMail.generarMail(validationCode, mail)
+		mailSender.send(aMail)
+		userDAO   .save(usuario)
+		usuario
+		
 		
 	}
 	
 
 
 	override validate(String code) {
-		try {
+		
 			var userExample    	     = new User()
 			userExample.validateCode = code
 			var user             	 = userDAO.load(userExample)
+			
+			isUserNull(user,new InvalidValidationCode("El codigo no es correcto"))
+			
 			user.validateAccount
 			userDAO.update(user)
-			true
-		} 
-		catch (NullPointerException e) {
-			throw new InvalidValidationCode("El codigo no es correcto")
-		}
+			true		
 	}
 
 	override signIn(String username, String password) {
@@ -67,40 +66,39 @@ class Service implements UserService {
 		  
 		var user = userDAO.load(userExample)
 		  
-		if(user.isValid){
-			
-			user
-		} 
-		else{
-			throw new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos")		  	
+		if(user== null || !user.validate){
+			throw new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos")
 		}
+		user 
+
 	}
 	
 	override changePassword(String userName, String oldPassword, String newPassword) {
-		// Se valida que las passwords no sean identicas
 		if (oldPassword.equals(newPassword)) throw new IdenticPasswords("Las contraseñas no tienen que ser las mismas")
+					
+		val userExample		 = new User 
+		userExample.userName = userName
+	
+		var user = userDAO.load(userExample)
+		isUserNull(user,new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos"))
+	
+		user.userPassword = newPassword
 		
-		try {
-			
-			val userExample		 = new User 
-			userExample.userName = userName
-			
-			// Intenta buscar al usuario con ese nombre 
-			var user = userDAO.load(userExample)
-			// una vez lo encuentra, le setea el nuevo password
-			user.userPassword = newPassword
-			// y finalmente persiste los cambios al usuario
-			userDAO.update(user)
-			
-		} catch (NullPointerException e)  { // De levantar una excepcion el dao al hacer load al usuario
-			// tira una excepcion explicando que el usuario o la contraseña no son correctos
-			throw new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos")
-		}
+		userDAO.update(user)
+		
+		
 	
 	}
+	
+	def void isUserNull(User user, RuntimeException exception) {
+		if(user==null) throw exception
+	}
+	
 
-	def existeUsuarioCon(String userName, String mail) {
+	
 
+
+	def existeUsuarioCon(String userName, String mail){
 		var userExampleWithUserName	 = new User
 		var userExampleWithMail		 = new User
 		userExampleWithMail.userName = userName
