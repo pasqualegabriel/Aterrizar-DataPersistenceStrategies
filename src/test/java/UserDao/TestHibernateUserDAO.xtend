@@ -42,39 +42,34 @@ class TestHibernateUserDAO {
 			assertEquals(userTest.birthDate, otherUser.birthDate)
 			assertEquals(userTest.validate, otherUser.validate)
 
-			assertTrue(userTest == otherUser);
+			assertTrue(userTest == otherUser)
 			
 			null
 		}]
-	
 		
 	}
 	
-//	@Test
-//	def void test() {
-//		Runner.runInSession[ {
-//			userDAO.save(userTest)
-//			null
-//		}]
-//		
-//		Runner.runInSession[ {
-//			var otherUser = userDAO.load(userTest)
-//		
-//			assertEquals(userTest.name, otherUser.name)
-//			assertEquals(userTest.lastName, otherUser.lastName)
-//			assertEquals(userTest.userName, otherUser.userName)
-//			assertEquals(userTest.mail, otherUser.mail)
-//			assertEquals(userTest.birthDate, otherUser.birthDate)
-//
-//			assertEquals(userTest.validate, otherUser.validate)
-//
-//			assertTrue(userTest != otherUser);
-//			null
-//		}]
-//			
-//		
-//	}
-//	
+	@Test
+	def void testAlGuardarYUpdatearAUnUsuarioSeVerificaQueSePersistieronLosCambios() {
+	
+		Runner.runInSession[ {
+	
+			userDAO.save(userTest)
+			
+			assertEquals(userTest.lastName, "LaGolondrina")
+			
+			userTest.lastName = "newUserName"
+			
+			userDAO.update(userTest)
+			
+			var otherUser = userDAO.load(userTest)
+
+			assertEquals(otherUser.lastName, "newUserName")
+
+			null
+		}]
+		
+	}
 	
 	@After
 	def void tearDown(){

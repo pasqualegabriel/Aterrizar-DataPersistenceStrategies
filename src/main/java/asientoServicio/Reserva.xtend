@@ -22,6 +22,7 @@ class Reserva {
 	
 	LocalDateTime horaRealizada	
 	boolean	      estaValidado	
+	
 	@OneToOne 
 	User usuario
 	
