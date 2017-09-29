@@ -6,9 +6,9 @@
 	<session-factory>
 		<!-- Database connection settings -->
 		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="connection.url">jdbc:mysql://localhost:3307/employees</property>
-		<property name="connection.username">root</property>
-		<property name="connection.password">root</property>
+		<property name="connection.url">jdbc:mysql://localhost:3306/aterrizar</property>
+		<property name="connection.username">persistencia</property>
+		<property name="connection.password">persistencia</property>
 
 		<!-- SQL dialect -->
 		<property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
@@ -19,11 +19,12 @@
 		<!-- Echo all executed SQL to stdout -->
 		<property name="show_sql">true</property>
 		
-		<property name="hibernate.hbm2ddl.auto">validate</property>
+		<property name="hibernate.hbm2ddl.auto">create-drop</property>
 
-		<mapping class="unq.tpi.persistencia.performance.model.Department" />
-		<mapping class="unq.tpi.persistencia.performance.model.Employee" />
-		<mapping class="unq.tpi.persistencia.performance.model.Salary" />
+		<mapping class="service.User"/>
+		<mapping class="asientoServicio.Compra"/>
+		<mapping class="asientoServicio.Reserva"/>
+		
 	
 	</session-factory>
 </hibernate-configuration>

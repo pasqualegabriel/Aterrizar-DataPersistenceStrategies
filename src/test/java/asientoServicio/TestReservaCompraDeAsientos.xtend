@@ -10,6 +10,11 @@ import Excepciones.ExepcionReserva
 import categorias.Turista
 import aereolinea.Asiento
 import aereolinea.Tramo
+import categorias.Business
+import categorias.Primera
+import userDAO.UserDAO
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
 
 class TestReservaCompraDeAsientos {
 	
@@ -18,11 +23,12 @@ class TestReservaCompraDeAsientos {
 	User			usuarioDoc
 	List<Asiento>	asientosDoc=newArrayList
 	Reserva 		reserva
-		
+	@Mock UserDAO userDAO
+	
 	@Before
 	def void setUp(){
-
-		testReservaCompraDeAsientos	= new ReservaCompraDeAsientos
+		MockitoAnnotations.initMocks(this)
+		testReservaCompraDeAsientos	= new ReservaCompraDeAsientos(userDAO)
 		asientoDoc					= new Asiento(new Tramo(200.00),new Turista)
 		usuarioDoc					= new User
 		reserva						= new Reserva
@@ -68,15 +74,16 @@ class TestReservaCompraDeAsientos {
 	}
 	
 	@Test
-	def test004UnaTestReservaCompraDeAsientosPuedeRealizarUnaCompraParaUnUsuarioExitosamente(){
+	def test004UnTestReservaCompraDeAsientosPuedeRealizarUnaCompraParaUnUsuarioExitosamente(){
 		
 		assertTrue(usuarioDoc.compras.isEmpty)
-		var reservaResultado = testReservaCompraDeAsientos.reservarAsientos(asientosDoc,usuarioDoc)
+		var reservaResultado = testReservaCompraDeAsientos.reservarAsientos(asientosDoc, usuarioDoc)
 		
 		usuarioDoc.monedero = 300.00
 		
 		var compraResultado  = testReservaCompraDeAsientos.comprar(reservaResultado, usuarioDoc)
 		assertNull(usuarioDoc.reserva)
+		assertTrue(asientosDoc.stream.allMatch[it.duenio.equals(usuarioDoc)])
 		assertTrue(usuarioDoc.compras.contains(compraResultado))
 		assertEquals(usuarioDoc.monedero,80, 0.00000000001)
 		
@@ -105,6 +112,31 @@ class TestReservaCompraDeAsientos {
 		fail()
 
 	}
+	
+	@Test
+	def test007UnTestReservaDevuelvelLosAsientosDisponiblesDeUnTramo(){
+		var unUsuario = new User
+		var asiento1 = new Asiento(new Tramo(100.00),new Turista)
+		var asiento2 = new Asiento(new Tramo(200.00),new Business)
+		var asiento3 = new Asiento(new Tramo(300.00),new Primera)
+		
+		unUsuario.monedero = 2000.00
+		usuarioDoc.monedero = 2000.00
+		testReservaCompraDeAsientos.reservar(asiento1,unUsuario)
+		
+		var reservaResultado = testReservaCompraDeAsientos.reservar(asiento2,usuarioDoc)
+		testReservaCompraDeAsientos.comprar(reservaResultado, usuarioDoc)
+		
+		var unTramoTest = new Tramo
+		unTramoTest.asientos.add(asiento1)
+		unTramoTest.asientos.add(asiento2)
+		unTramoTest.asientos.add(asiento3)
+
+		assertEquals(unTramoTest.asientosDisponibles.size, 1)
+
+
+	}
+
 	
 }
 

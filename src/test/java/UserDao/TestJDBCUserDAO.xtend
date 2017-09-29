@@ -9,7 +9,7 @@ import service.User
 import java.util.Date
 import org.junit.After
 
-class TestUserDao {
+class TestJDBCUserDAO {
 	
 	UserDAO userDAO
 	User    userTest
@@ -121,7 +121,6 @@ class TestUserDao {
 	@After
 	def void tearDown(){
 		userDAO.clearAll
-		// Preguntar si hay alguna manera de saber la cantidad de usuarios
 	}
 	
 }

@@ -5,8 +5,16 @@ import java.util.List
 import Excepciones.ExepcionCompra
 import Excepciones.ExepcionReserva
 import aereolinea.Asiento
+import aereolinea.Tramo
+import userDAO.UserDAO
 
 class ReservaCompraDeAsientos implements AsientoService{
+	
+	UserDAO userDAO
+	
+	new(UserDAO unUserDAO){
+		userDAO=unUserDAO
+	}
 	
 	override reservar(Asiento unAsiento, User unUsuario) {
 		
@@ -15,7 +23,6 @@ class ReservaCompraDeAsientos implements AsientoService{
 			unaReserva.asientos.add(unAsiento)	
 			unAsiento.reserva = unaReserva
 			agregarReservaAUsuario(unUsuario,unaReserva)
-			
 			unaReserva
 		}else{
 			throw new ExepcionReserva("No se puede realizar esta reserva por que el asiento ya esta reservado")
@@ -49,9 +56,9 @@ class ReservaCompraDeAsientos implements AsientoService{
 		if(puedeComprar(unReserva,unUsuario)){
 			
 			unUsuario.monedero = unUsuario.monedero - unReserva.calcularPrecio
-			var unaCompra= new Compra(unReserva.asientos)
-			unUsuario.compras.add(unaCompra)
-			unUsuario.reserva = null
+			var unaCompra = new Compra(unReserva.asientos, unUsuario)
+			unUsuario.agregarCompra(unaCompra)
+			userDAO.save(unUsuario)
 			unaCompra
 		}else{
 			throw new ExepcionCompra("No se pudo efectuar la compra")
@@ -65,15 +72,14 @@ class ReservaCompraDeAsientos implements AsientoService{
 	
 	
 
-	/** PReguntar si hay q testiar un getter aca si es q es un geter  */
+	/** Preguntar si hay q testiar un getter aca si es q es un geter  */
 	override compras(User usuario) {
 		usuario.compras
 	}
-//	
-//	override disponibles(Object tramo, User usuario) {
-//
-//	}
 	
+	override disponibles(Tramo unTramo) {
+		unTramo.asientosDisponibles
+	}
 	
 	
 
