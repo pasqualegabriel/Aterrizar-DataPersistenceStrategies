@@ -12,6 +12,7 @@ import javax.persistence.Column
 import javax.persistence.OneToMany
 import javax.persistence.CascadeType
 
+
 @Accessors
 @Entity
 class Reserva {
@@ -24,7 +25,8 @@ class Reserva {
 	List<Asiento> asientos	
 	
 	LocalDateTime horaRealizada	
-	boolean	      estaValidado	
+	boolean	      estaValidado
+	
 	
 	new(){
 		asientos = newArrayList	
@@ -50,5 +52,6 @@ class Reserva {
 	def void asignarleAsientos(List<Asiento> unosAsientos){
 		asientos.addAll(unosAsientos)
 	}
+	
 	
 }

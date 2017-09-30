@@ -33,7 +33,7 @@ class TestHibernateBusqueda {
 	@Before
 	def void setUp(){
 		
-		userDAO  = new HibernateUserDAO
+		userDAO  		= new HibernateUserDAO
 		busquedaService = new BusquedaHibernate
 		usuario         = new User("Pepita","LaGolondrina","euforica","pepitagolondrina@gmail.com", "password", new Date)
 		vuelo           = new Vuelo(new Aereolinea)

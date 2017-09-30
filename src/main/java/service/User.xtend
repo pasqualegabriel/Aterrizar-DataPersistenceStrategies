@@ -34,10 +34,10 @@ class User {
 	Double  monedero
 	
 	@OneToMany(mappedBy="comprador", cascade=CascadeType.ALL)
-	List<Compra> compras   = newArrayList
+	List<Compra> compras   =newArrayList
 	
-	@OneToOne
-	@JoinColumn(name="reserva_id")
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="id")
 	Reserva reserva 
 	
 	@Transient
@@ -47,8 +47,8 @@ class User {
 	new(){
 		super()
 		monedero		  = 0.00
-		compras			  = newArrayList
-		reserva			  = null
+		reserva  		  = null
+		
 	}
 	
 	new(String name, String lastName, String userName, String mail, String userPassword, Date birthDate) {
@@ -76,6 +76,7 @@ class User {
 	def agregarBusqueda(Busqueda busqueda) {
 		//busquedas.add(busqueda)
 	}
+	
 
 
 	

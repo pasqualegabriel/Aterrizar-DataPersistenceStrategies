@@ -58,12 +58,11 @@ class ReservaCompraDeAsientos implements AsientoService{
 			unUsuario.monedero = unUsuario.monedero - unReserva.calcularPrecio
 			var unaCompra = new Compra(unReserva.asientos, unUsuario)
 			unUsuario.agregarCompra(unaCompra)
-			userDAO.save(unUsuario)
+			userDAO.update(unUsuario)
 			unaCompra
 		}else{
 			throw new ExepcionCompra("No se pudo efectuar la compra")
-		}
-			
+		}	
 	}
 	
 	def puedeComprar(Reserva unReserva, User unUsuario){

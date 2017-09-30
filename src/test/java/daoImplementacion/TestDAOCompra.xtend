@@ -6,60 +6,79 @@ import static org.junit.Assert.*
 import runner.Runner
 import org.junit.After
 import asientoServicio.Compra
-import dao.CompraDAO
+
 import service.User
 import aereolinea.Asiento
 import java.util.List
+import asientoServicio.Reserva
+import dao.UserDAO
+import java.util.Date
 
 class TestDAOCompra {
 	Compra 			compraDoc
-	CompraDAO		compraDAOSuj
-	User			usuarioDOC
 	List<Asiento>	asientos
+	Reserva 	reservaDoc	
+	UserDAO 	userDAOSuj
+	User    	userDoc
 	
 	@Before
 	def void setUp(){
-		asientos =newArrayList
+		asientos 				=newArrayList
 		asientos.add(new Asiento)
-		usuarioDOC      = new User
-		usuarioDOC.name = "Pepita"
-		compraDoc		= new Compra(asientos,usuarioDOC)
-		compraDAOSuj	= new HibernateCompraDAO
+		userDAOSuj  		  	= new HibernateUserDAO
+		userDoc 		 	  	= new User("Pepita","LaGolondrina","euforica","pepitagolondrina@gmail.com", "password", new Date())
+		compraDoc				= new Compra(asientos,userDoc)
+		reservaDoc			  	= new Reserva
+
+		userDoc.reserva		  	= reservaDoc
+
 		
 	}
-	
 	@Test
 	def void testHacerUnSaveYLuegoUnLoadSeObtieneMismoObjetosEnLaMismaSession(){
 		
 	
 		Runner.runInSession[ {
-			compraDAOSuj.save(compraDoc)
-			var otherPurchase = compraDAOSuj.load(compraDoc)
-			assertEquals(compraDoc.asientos,otherPurchase.asientos)
-			assertEquals(compraDoc.asientos.size,otherPurchase.asientos.size)
-			assertEquals(compraDoc.comprador,otherPurchase.comprador)
-			assertEquals(compraDoc.comprador.name,otherPurchase.comprador.name)
-			assertEquals(compraDoc,otherPurchase)
+			assertEquals(0,userDoc.compras.size)
+			userDoc.agregarCompra(compraDoc)
+			userDAOSuj.save(userDoc)
+			
+			var otherUser = userDAOSuj.load(userDoc)
+			assertEquals(1,otherUser.compras.size)
+			assertEquals(userDoc.compras.size,otherUser.compras.size)
+			assertEquals(userDoc.compras.stream.anyMatch[it.asientos.size.equals(1)], otherUser.compras.stream.anyMatch[it.asientos.size.equals(1)])
+			
+			
+
+			assertEquals(userDoc.compras.stream.anyMatch[it.comprador.equals(userDoc)],otherUser.compras.stream.anyMatch[it.comprador.equals(userDoc)])
+			
+			assertEquals(userDoc.compras.stream.anyMatch[it.comprador.equals(userDoc.name)],otherUser.compras.stream.anyMatch[it.comprador.equals(userDoc.name)])
+			assertEquals(userDoc.compras,otherUser.compras)
 			null
 		}]
 	}
+	
 	@Test
 	def void testAlHacerUnSaveYCerrarLaSeccionCuandoAbrimosUnaNuevaYHacemosLoadLasIntanciasDelObjetoSonDiferentes(){
 			
 		Runner.runInSession[ {
-	
-			compraDAOSuj.save(compraDoc)
+			assertEquals(0,userDoc.compras.size)
+			userDoc.agregarCompra(compraDoc)
+			userDAOSuj.save(userDoc)
 			null
 		}]
 	
 	
 		Runner.runInSession[ {
-			var otherPurchase = compraDAOSuj.load(compraDoc)
-			assertNotEquals(compraDoc.asientos,otherPurchase.asientos)
-			assertEquals(compraDoc.asientos.size,otherPurchase.asientos.size)
-			assertNotEquals(compraDoc.comprador,otherPurchase.comprador)
-			assertEquals(compraDoc.comprador.name,otherPurchase.comprador.name)
-			assertNotEquals(compraDoc,otherPurchase)
+			var otherUser = userDAOSuj.load(userDoc)
+			
+			assertEquals(1,otherUser.compras.size)
+			assertEquals(userDoc.compras.size,otherUser.compras.size)
+			assertEquals(userDoc.compras.stream.anyMatch[it.asientos.size.equals(1)], otherUser.compras.stream.anyMatch[it.asientos.size.equals(1)])
+			assertNotEquals(userDoc.compras.stream.anyMatch[it.comprador.equals(userDoc)],otherUser.compras.stream.anyMatch[it.comprador.equals(userDoc)])
+			assertEquals(userDoc.compras.stream.anyMatch[it.comprador.equals(userDoc.name)],otherUser.compras.stream.anyMatch[it.comprador.equals(userDoc.name)])
+			assertNotEquals(userDoc.compras,otherUser.compras)
+			
 			null
 		}]
 	}
@@ -70,24 +89,18 @@ class TestDAOCompra {
 		Runner.runInSession[ {
 
 			/**asserts antes de guardar la reserva */
-			assertEquals(1,compraDoc.asientos.size)
-			assertEquals("Pepita",compraDoc.comprador.name)
-			compraDAOSuj.save(compraDoc)
+			userDoc.agregarCompra(compraDoc)
+			assertTrue(userDoc.compras.stream.anyMatch[it.asientos.size.equals(1)])		
+			userDAOSuj.save(userDoc)
 			/**-------------------------------------------- */
 			/** Modifico A la reserva para el update */
 			asientos.add(new Asiento)
-			var userDoc2 		= new  User()
-			userDoc2.name		= "Peron"
-			compraDoc.comprador	= userDoc2
-			compraDoc.asientos	= asientos
-			
-
-			compraDAOSuj.update(compraDoc)
+			userDAOSuj.update(userDoc)
 			/**-------------------------------------------- */
 			/**asserts despues de hacer el update y volver a traer a la reserva */
-			var otherReservation = compraDAOSuj.load(compraDoc)
-			assertEquals(2,otherReservation.asientos.size)
-			assertEquals("Peron",otherReservation.comprador.name)
+			var otherUser = userDAOSuj.load(userDoc)
+			assertTrue(otherUser.compras.stream.anyMatch[it.asientos.size.equals(2)])
+
 			null
 		}]
 		
@@ -99,6 +112,6 @@ class TestDAOCompra {
 	
 	@After
 	def void tearDown(){
-		compraDAOSuj.clearAll
+		userDAOSuj.clearAll
 	}
 }

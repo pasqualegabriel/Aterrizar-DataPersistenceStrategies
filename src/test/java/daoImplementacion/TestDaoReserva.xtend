@@ -6,33 +6,43 @@ import static org.junit.Assert.*
 import runner.Runner
 
 import asientoServicio.Reserva
-import dao.ReservaDAO
+
 import org.junit.After
+import service.User
+import dao.UserDAO
+import java.util.Date
 import aereolinea.Asiento
 
-
 class TestDaoReserva {
-	Reserva 	reservaSuj
-	ReservaDAO 	reservaDAODoc
+	
+	Reserva 	reservaDoc	
+	UserDAO 	userDAOSuj
+	User    	userDoc
 	
 	@Before
 	def void setUp(){
-		reservaSuj		= new Reserva()
-		reservaDAODoc	= new HibernateReservaDAO
+		
+		reservaDoc			  = new Reserva
+		userDAOSuj  		  = new HibernateUserDAO
+		userDoc 		 	  = new User("Loca","LaGolondrina","euforica","pepitagolondrina@gmail.com", "password", new Date())
+		userDoc.reserva		  = reservaDoc
 	}
 	
+	
 	@Test
-	def void testAlGuardarYLuegoRecuperarSeObtieneMismoObjetos(){
+	def void testAlHacerUnSaveYLuegoRecuperarSeObtieneMismoObjetosEnLaMismaSession(){
 		
 	
 		Runner.runInSession[ {
 	
-			reservaDAODoc.save(reservaSuj)
-			var otherReservation = reservaDAODoc.load(reservaSuj)
-			assertEquals(reservaSuj.asientos,otherReservation.asientos)
-			assertEquals(reservaSuj.horaRealizada,otherReservation.horaRealizada)
-			assertEquals(reservaSuj.estaValidado,otherReservation.estaValidado)
-			assertEquals(reservaSuj,otherReservation)
+			userDAOSuj.save(userDoc)
+			var otherUser = userDAOSuj.load(userDoc)
+			assertEquals(userDoc.reserva.asientos,otherUser.reserva.asientos)
+			assertEquals(userDoc.reserva.asientos.size,otherUser.reserva.asientos.size)
+			assertEquals(userDoc.reserva.horaRealizada,otherUser.reserva.horaRealizada)
+			assertEquals(userDoc.reserva.estaValidado,otherUser.reserva.estaValidado)
+			assertEquals(userDoc.reserva,otherUser.reserva)
+
 			null
 		}]
 	}
@@ -41,18 +51,18 @@ class TestDaoReserva {
 			
 		Runner.runInSession[ {
 	
-			reservaDAODoc.save(reservaSuj)
+			userDAOSuj.save(userDoc)
 			null
 		}]
 	
 	
 		Runner.runInSession[ {
-			var otherReservation = reservaDAODoc.load(reservaSuj)
-			assertNotEquals(reservaSuj.asientos,otherReservation.asientos)
-			assertEquals(reservaSuj.asientos.size,otherReservation.asientos.size)
-			//assertEquals(reservaSuj.horaRealizada,otherReservation.horaRealizada)
-			assertEquals(reservaSuj.estaValidado,otherReservation.estaValidado)
-			assertNotEquals(reservaSuj,otherReservation)
+			var otherUser = userDAOSuj.load(userDoc)
+			assertNotEquals(userDoc.reserva.asientos,otherUser.reserva.asientos)
+			assertEquals(userDoc.reserva.asientos.size,otherUser.reserva.asientos.size)
+			//assertEquals(userDoc.reserva.horaRealizada,otherUser.reserva.horaRealizada)///ARREGLAR LO DE LOS DATE
+			assertEquals(userDoc.reserva.estaValidado,otherUser.reserva.estaValidado)
+			assertNotEquals(userDoc.reserva,otherUser.reserva)
 			null
 		}]
 	}
@@ -63,21 +73,21 @@ class TestDaoReserva {
 		Runner.runInSession[ {
 
 			/**asserts antes de guardar la reserva */
-			assertEquals(0,reservaSuj.asientos.size)
-			assertTrue(reservaSuj.estaValidado)	
-			reservaDAODoc.save(reservaSuj)
+			assertEquals(0,userDoc.reserva.asientos.size)
+			assertTrue(userDoc.reserva.estaValidado)	
+			userDAOSuj.save(userDoc)
 			
 			/** Modifico A la reserva para el update */
 			var asientos =newArrayList
 			asientos.add(new Asiento)
-			reservaSuj.asignarleAsientos(asientos)
-			reservaSuj.invalidar
-			reservaDAODoc.update(reservaSuj)
-			var otherReservation = reservaDAODoc.load(reservaSuj)
+			reservaDoc.asignarleAsientos(asientos)
+			reservaDoc.invalidar
+			userDAOSuj.update(userDoc)
+			var otherUser = userDAOSuj.load(userDoc)
 			
 			/**asserts despues de hacer el update y volver a traer a la reserva */
-			assertEquals(1,otherReservation.asientos.size)
-			assertFalse(otherReservation.estaValidado)
+			assertEquals(1,otherUser.reserva.asientos.size)
+			assertFalse(otherUser.reserva.estaValidado)
 			
 			null
 		}]
@@ -88,6 +98,6 @@ class TestDaoReserva {
 	
 	@After
 	def void tearDown(){
-		reservaDAODoc.clearAll
+		userDAOSuj.clearAll
 	}
 }
