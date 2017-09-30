@@ -15,6 +15,7 @@ import Busqueda.Busqueda
 import javax.persistence.Transient
 import javax.persistence.Column
 
+
 @Accessors
 @Entity
 class User {

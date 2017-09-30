@@ -10,6 +10,7 @@ import javax.persistence.Id
 import javax.persistence.GeneratedValue
 import javax.persistence.Column
 import javax.persistence.OneToMany
+import javax.persistence.CascadeType
 
 @Accessors
 @Entity
@@ -19,17 +20,15 @@ class Reserva {
 	@GeneratedValue
 	@Column(name="id")
 	int id
-	@OneToMany
-	List<Asiento> asientos 		
+	@OneToMany(mappedBy="reserva", cascade=CascadeType.ALL)
+	List<Asiento> asientos	
 	
 	LocalDateTime horaRealizada	
 	boolean	      estaValidado	
 	
 	new(){
-
-		asientos 		= 	newArrayList
+		asientos = newArrayList	
 		estaValidado	=	true
-		asientos 		=	newArrayList
 		horaRealizada	= 	LocalDateTime.now
 		
 	}
@@ -47,6 +46,9 @@ class Reserva {
 	
 	def invalidar(){
 		estaValidado = false
+	}
+	def void asignarleAsientos(List<Asiento> unosAsientos){
+		asientos.addAll(unosAsientos)
 	}
 	
 }
