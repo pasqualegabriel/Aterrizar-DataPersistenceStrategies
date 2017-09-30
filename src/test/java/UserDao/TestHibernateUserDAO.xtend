@@ -71,8 +71,41 @@ class TestHibernateUserDAO {
 		
 	}
 	
+//	@Test
+//	def void test() {
+//	
+//		Runner.runInSession[ {
+//	
+//			userDAO.save(userTest)
+//			null
+//		}]
+//	
+//		Runner.runInSession[ {
+//			
+//			var otherUser = userDAO.load(userTest)
+//		
+//			assertEquals(userTest.name, otherUser.name)
+//			assertEquals(userTest.lastName, otherUser.lastName)
+//			assertEquals(userTest.userName, otherUser.userName)
+//			assertEquals(userTest.mail, otherUser.mail)
+//			assertEquals(userTest.birthDate, otherUser.birthDate)
+//			assertEquals(userTest.validate, otherUser.validate)
+//
+//			assertTrue(userTest == otherUser)
+//			
+//			null
+//		}]
+//
+	
 	@After
 	def void tearDown(){
 		userDAO.clearAll
 	}
 }
+
+
+
+
+
+
+

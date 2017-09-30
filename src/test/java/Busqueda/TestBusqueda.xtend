@@ -4,7 +4,7 @@ import org.junit.Test
 import static org.junit.Assert.*
 import org.junit.Before
 
-class BusquedaTest {
+class TestBusqueda {
 	
 	Filtro unFiltroSimple
 	Filtro otroFiltroSimple
@@ -73,13 +73,69 @@ class BusquedaTest {
 	}
 	
 	@Test
-	def testFiltroCompuestoConCampoAerolinaYValorPepita(){
+	def testFiltroCompuestoAdnConCampoAerolinaYValorPepita(){
 		
 		
 		var filtroSimple = new FiltroAnd(unFiltroSimple, otroFiltroSimple)
 
-		assertEquals(filtroSimple.getFiltro, "(asiento.nombreAerolinea == Pepita) and (asiento.destino == Bs As)")
+		assertEquals(filtroSimple.getFiltro, "(asiento.nombreAerolinea == Pepita) and (asiento.origen == Bs As)")
 	}
+	
+	@Test
+	def testFiltroCompuestoOrConCampoAerolinaYValorPepita(){
+		
+		
+		var filtroSimple = new FiltroOr(unFiltroSimple, otroFiltroSimple)
+
+		assertEquals(filtroSimple.getFiltro, "(asiento.nombreAerolinea == Pepita) or (asiento.origen == Bs As)")
+	}
+	
+	@Test
+	def testCosto(){
+		
+		
+		var costo = new Costo
+
+		assertEquals(costo.criterio, "costo")
+	}
+	
+	@Test
+	def testEscala(){
+		
+		
+		var costo = new Escala
+
+		assertEquals(costo.criterio, "tramo")
+	}
+	
+	@Test
+	def testDuracion(){
+		
+		
+		var costo = new Duracion
+
+		assertEquals(costo.criterio, "duracion")
+	}
+	
+	@Test
+	def testAscendente(){
+		
+		
+		var ascendente = new Ascendente
+
+		assertEquals(ascendente.orden, "ASC")
+	}
+	
+	@Test
+	def testDescendente(){
+		
+		
+		var descendente = new Descendente
+
+		assertEquals(descendente.orden, "DESC")
+	}
+	
+
 }
 
 

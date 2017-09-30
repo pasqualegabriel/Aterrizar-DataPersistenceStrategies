@@ -1,5 +1,0 @@
-package busquedaService
-
-class Busqueda {
-	
-}

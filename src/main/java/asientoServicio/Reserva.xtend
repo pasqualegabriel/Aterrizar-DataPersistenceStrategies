@@ -9,22 +9,21 @@ import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Transient
 import service.User
-import javax.persistence.OneToOne
+import javax.persistence.GeneratedValue
+import javax.persistence.Column
 
 @Accessors
 @Entity
 class Reserva {
 	//Estructura
-	@Id
+	@Id @GeneratedValue
+	@Column(name = "reserva_id")
 	int id
 	@Transient
 	List<Asiento> asientos 		
 	
 	LocalDateTime horaRealizada	
 	boolean	      estaValidado	
-	
-	@OneToOne 
-	User usuario
 	
 	new(){
 		
@@ -39,7 +38,6 @@ class Reserva {
 	
 	new(User unUsuario){
 		this()
-		usuario = unUsuario
 		
 	}
 	

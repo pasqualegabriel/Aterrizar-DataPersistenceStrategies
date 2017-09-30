@@ -19,6 +19,10 @@ class Asiento {
 		
 	}
 	
+	def getPrecio(){
+		tramo.precio + categoria.porcentaje * tramo.precio
+	}
+	
 	/** verifica si el asiento esta reservado o expiro */
 	def estaReservado() {
 		reserva != null && !reserva.expiroReserva 

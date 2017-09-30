@@ -18,12 +18,8 @@ class HibernateUserDAO implements UserDAO {
 	}
 	
 	override update(User oneUser) {
-		
 		val session = Runner.getCurrentSession
-		
 		session.update(oneUser)
-
-		
 	}
 	
 	override clearAll() {

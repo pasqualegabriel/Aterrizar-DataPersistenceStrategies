@@ -23,7 +23,7 @@ class TestReservaCompraDeAsientos {
 	User			usuarioDoc
 	List<Asiento>	asientosDoc=newArrayList
 	Reserva 		reserva
-	@Mock UserDAO userDAO
+	@Mock UserDAO   userDAO
 	
 	@Before
 	def void setUp(){

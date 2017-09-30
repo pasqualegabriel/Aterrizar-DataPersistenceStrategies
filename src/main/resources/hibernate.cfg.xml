@@ -24,7 +24,6 @@
 		<mapping class="service.User"/>
 		<mapping class="asientoServicio.Compra"/>
 		<mapping class="asientoServicio.Reserva"/>
-		
 	
 	</session-factory>
 </hibernate-configuration>

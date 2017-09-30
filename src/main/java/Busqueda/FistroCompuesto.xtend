@@ -13,7 +13,7 @@ abstract class FistroCompuesto implements Filtro{
 	def String comparator()
 	
 	override getFiltro(){
-		filterOne.getFiltro + comparator + filterTwo.getFiltro
+		"(" + filterOne.getFiltro + ")" + comparator + "(" + filterTwo.getFiltro + ")"
 	}
 	
 }
