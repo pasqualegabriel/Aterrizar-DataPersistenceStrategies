@@ -6,7 +6,7 @@ import Excepciones.ExepcionCompra
 import Excepciones.ExepcionReserva
 import aereolinea.Asiento
 import aereolinea.Tramo
-import userDAO.UserDAO
+import dao.UserDAO
 
 class ReservaCompraDeAsientos implements AsientoService{
 	

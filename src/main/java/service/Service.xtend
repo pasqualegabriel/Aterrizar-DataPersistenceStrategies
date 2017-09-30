@@ -1,13 +1,14 @@
 package service
 
 import org.eclipse.xtend.lib.annotations.Accessors
-import userDAO.UserDAO
+
 import Excepciones.InvalidValidationCode
 import Excepciones.IncorrectUsernameOrPassword
 import Excepciones.IdenticPasswords
 import java.util.Date
 import mailSender.EmailService
 import Excepciones.ExceptionUsuarioExistente
+import dao.UserDAO
 
 @Accessors
 class Service implements UserService {

@@ -12,9 +12,9 @@ import aereolinea.Asiento
 import aereolinea.Tramo
 import categorias.Business
 import categorias.Primera
-import userDAO.UserDAO
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import dao.UserDAO
 
 class TestReservaCompraDeAsientos {
 	

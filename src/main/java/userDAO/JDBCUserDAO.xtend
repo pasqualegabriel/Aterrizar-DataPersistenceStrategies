@@ -8,6 +8,7 @@ import java.sql.DriverManager
 import org.eclipse.xtext.xbase.lib.Functions.Function1
 import java.sql.PreparedStatement
 import java.util.Date
+import dao.UserDAO
 
 @Accessors
 class JDBCUserDAO implements UserDAO{

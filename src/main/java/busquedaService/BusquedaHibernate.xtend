@@ -5,7 +5,7 @@ import runner.Runner
 import org.hibernate.query.Query
 import aereolinea.Asiento
 import Busqueda.Busqueda
-import userDAO.HibernateUserDAO
+import daoImplementacion.HibernateUserDAO
 
 class BusquedaHibernate implements BusquedaService{
 	

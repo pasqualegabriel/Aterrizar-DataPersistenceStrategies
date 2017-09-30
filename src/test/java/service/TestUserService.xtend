@@ -5,7 +5,6 @@ import org.junit.Test
 import static org.junit.Assert.*
 import userDAO.JDBCUserDAO
 import java.util.Date
-import userDAO.UserDAO
 import org.junit.After
 import mailSender.EmailService
 import mailSender.Postman
@@ -17,6 +16,7 @@ import Excepciones.ExceptionUsuarioExistente
 import Excepciones.InvalidValidationCode
 import Excepciones.IncorrectUsernameOrPassword
 import Excepciones.IdenticPasswords
+import dao.UserDAO
 
 class TestUserService {
 	

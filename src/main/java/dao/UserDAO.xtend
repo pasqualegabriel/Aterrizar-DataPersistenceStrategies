@@ -1,4 +1,4 @@
-package userDAO
+package dao
 
 import service.User
 

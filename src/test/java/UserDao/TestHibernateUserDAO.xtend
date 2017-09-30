@@ -3,15 +3,17 @@ package UserDao
 import org.junit.Before
 import org.junit.Test
 import static org.junit.Assert.*
-import userDAO.UserDAO
+
 import service.User
 import java.util.Date
 import org.junit.After
-import userDAO.HibernateUserDAO
+
 import runner.Runner
 import asientoServicio.Compra
 import aereolinea.Asiento
 import java.util.ArrayList
+import dao.UserDAO
+import daoImplementacion.HibernateUserDAO
 
 class TestHibernateUserDAO {
 		
