@@ -1,8 +1,15 @@
 package aereolinea
 
 import org.eclipse.xtend.lib.annotations.Accessors
+import java.util.List
 
 @Accessors
-abstract class Vuelo {
+class Vuelo {
+	List<Tramo> tramos = newArrayList
+
+	Aereolinea aerolinea
 	
+	new(Aereolinea unaAerolinea){
+		aerolinea= unaAerolinea
+	}
 }

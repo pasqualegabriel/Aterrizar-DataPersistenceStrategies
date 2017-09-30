@@ -6,11 +6,12 @@ import asientoServicio.Reserva
 import service.User
 import javax.persistence.Id
 import javax.persistence.GeneratedValue
-import javax.persistence.Column
 import javax.persistence.ManyToOne
 import javax.persistence.Entity
 import javax.persistence.OneToOne
 import javax.persistence.JoinTable
+import javax.persistence.CascadeType
+import org.hibernate.annotations.Formula
 
 @Accessors
 @Entity
@@ -18,21 +19,20 @@ class Asiento {
 	
 	@Id
 	@GeneratedValue
-	@Column(name="id")
 	int id
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	Reserva   reserva
 	
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	Tramo	  tramo
 	
-	@ManyToOne
-	@JoinTable(name="id")
+	@ManyToOne (cascade=CascadeType.ALL)
 	Categoria categoria
 	
 	@OneToOne
 	@JoinTable(name="name")
 	User      duenio
+	
 	 
 	new(){
 		super()
@@ -41,6 +41,7 @@ class Asiento {
 	new(Tramo unTramo,Categoria unaCategoria){
 		tramo= unTramo
 		categoria=unaCategoria
+	
 		
 	}
 	
@@ -50,8 +51,7 @@ class Asiento {
 	
 	/** verifica si el asiento esta reservado o expiro */
 	def estaReservado() {
-		reserva != null && !reserva.expiroReserva 
-				
+		reserva != null && !reserva.expiroReserva 		
 	}
 	
 	/** Calcula el precio del asiento */
@@ -66,6 +66,11 @@ class Asiento {
 	
 	def agregarDuenio(User comprador) {
 		duenio = comprador
+	}
+	
+	
+	def String nombreCategoria() {
+		categoria.nombreCategoria
 	}
 	
 }

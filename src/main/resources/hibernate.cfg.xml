@@ -26,7 +26,7 @@
 		<mapping class="asientoServicio.Reserva"/>
 		<mapping class="aereolinea.Asiento"/>
 		<mapping class="aereolinea.Tramo"/>
-		<mapping class="categorias.Categoria"/>
+	 	<mapping class="categorias.Categoria"/>
 		<mapping class="categorias.Business"/>
 		<mapping class="categorias.Primera"/>
 		<mapping class="categorias.Turista"/>

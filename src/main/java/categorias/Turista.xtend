@@ -7,10 +7,12 @@ class Turista extends Categoria {
 
 	new(){
 		super()
+		nombre = "Turista"
 	}
 	
 	override porcentaje() {
 		10.00
 	}
 	
+
 }

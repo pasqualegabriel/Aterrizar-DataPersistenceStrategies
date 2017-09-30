@@ -8,6 +8,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.GeneratedValue
+import javax.persistence.Transient
 
 @Accessors
 @Entity
@@ -26,13 +27,16 @@ class Tramo {
 	Date fechaDeLlegada
 	Date fechaDeSalida
 	Double precio
+	@Transient
+	Vuelo vuelo
 	
 	new(){
 		super()
 	}
 	
-	new(Double unPrecioBase){
+	new(Double unPrecioBase, Vuelo unVuelo){
 		precio=unPrecioBase
+		vuelo = unVuelo
 	}
 	
 	def asientosDisponibles() {

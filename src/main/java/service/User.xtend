@@ -20,7 +20,7 @@ import javax.persistence.Column
 class User {
 	
 	@Id
-	@Column(name="pepita")
+	@Column(name="name")
 	String 	name
 	String 	lastName
 	String 	userName
@@ -73,7 +73,7 @@ class User {
 	}
 	
 	def agregarBusqueda(Busqueda busqueda) {
-		busquedas.add(busqueda)
+		//busquedas.add(busqueda)
 	}
 
 

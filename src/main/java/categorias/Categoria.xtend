@@ -15,5 +15,12 @@ abstract class Categoria {
 	@Column(name="id")
 	int id
 	
+	String nombre
+	
 	def abstract Double porcentaje()
+	
+	def String nombreCategoria(){
+		nombre
+	}
+	
 }

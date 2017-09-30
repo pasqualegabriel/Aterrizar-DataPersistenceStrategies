@@ -9,6 +9,7 @@ class Primera extends Categoria {
 	
 	new(){
 		super()
+		nombre = "Primera"
 	}
 	
 	override porcentaje() {

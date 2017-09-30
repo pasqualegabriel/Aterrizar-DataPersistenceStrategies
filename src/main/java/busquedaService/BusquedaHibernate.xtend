@@ -13,9 +13,9 @@ class BusquedaHibernate implements BusquedaService{
 		
 		val session = Runner.getCurrentSession
 		
-		var hql = "SELECT * FROM asiento " +
+		var hql = "FROM Asiento a" +
 		" WHERE " + busqueda.filtro +
-		" ORDER BY " + busqueda.criterio + " , " + busqueda.orden + ";"
+		" ORDER BY " + busqueda.criterio + " " + busqueda.orden
 		
 		var Query<Asiento> query = session.createQuery(hql,  Asiento)
 		

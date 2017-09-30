@@ -8,17 +8,20 @@ import org.junit.Test
 import categorias.Primera
 import categorias.Business
 import categorias.Turista
+import aereolinea.Vuelo
+import aereolinea.Aereolinea
 
 class TestAsiento {
 	
 	Asiento 	testAsiento
 	Tramo		tramoDoc
 	Categoria 	categoriaDoc
-	
+	Vuelo       vuelo
 	
 	@Before
 	def void setUp(){
-		tramoDoc   		= new Tramo(10.00)
+		vuelo           = new Vuelo(new Aereolinea)
+		tramoDoc   		= new Tramo(10.00, vuelo)
 		categoriaDoc	= new Primera
 		testAsiento		= new Asiento(tramoDoc,categoriaDoc)
 		

@@ -15,7 +15,7 @@ class FiltroSimple implements Filtro{
 	}
 	
 	override getFiltro() {
-		campo.campo + " == " + valor
+		campo.campo + " = " + valor
 	}
 	
 }
