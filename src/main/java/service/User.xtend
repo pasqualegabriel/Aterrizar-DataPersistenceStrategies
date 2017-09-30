@@ -12,9 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne
 import javax.persistence.JoinColumn
 import Busqueda.Busqueda
-import javax.persistence.Transient
 import javax.persistence.Column
-
 
 @Accessors
 @Entity
@@ -27,7 +25,6 @@ class User {
 	String 	userName
 	String 	userPassword
 	String 	mail
-
 	Date 	birthDate
 	Boolean validate
 	String  validateCode
@@ -39,9 +36,8 @@ class User {
 	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="id")
 	Reserva reserva 
-	
-	@Transient
-	//@OneToMany(mappedBy="comprador", cascade=CascadeType.ALL)
+
+	@OneToMany(cascade=CascadeType.ALL)
 	List<Busqueda> busquedas
 
 	new(){

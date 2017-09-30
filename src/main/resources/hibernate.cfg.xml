@@ -31,6 +31,26 @@
 		<mapping class="categorias.Primera"/>
 		<mapping class="categorias.Turista"/>
 		<mapping class="aereolinea.Destino"/> 
+		<mapping class="Busqueda.Busqueda"/> 
+		<mapping class="Busqueda.Filtro"/> 
+		<mapping class="Busqueda.FiltroSimple"/> 
+		<mapping class="Busqueda.FiltroCompuesto"/> 
+		<mapping class="Busqueda.Campo"/>
+		<mapping class="Busqueda.CampoAerolinea"/> 
+		<mapping class="Busqueda.CampoCategoria"/> 
+		<mapping class="Busqueda.CampoDestino"/> 
+		<mapping class="Busqueda.CampoOrigen"/> 
+		<mapping class="Busqueda.FechaDeLlegada"/> 
+		<mapping class="Busqueda.FechaDeSalida"/>  
+		<mapping class="Busqueda.FiltroAnd"/> 
+		<mapping class="Busqueda.FiltroOr"/> 
+		<mapping class="Busqueda.Criterio"/> 
+		<mapping class="Busqueda.Costo"/> 
+		<mapping class="Busqueda.Escala"/> 
+		<mapping class="Busqueda.Duracion"/> 
+		<mapping class="Busqueda.Orden"/> 
+		<mapping class="Busqueda.Ascendente"/> 
+		<mapping class="Busqueda.Descendente"/> 
 	
 	</session-factory>
 </hibernate-configuration>

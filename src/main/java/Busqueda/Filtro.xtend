@@ -1,6 +1,19 @@
 package Busqueda
 
-interface Filtro {
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.GeneratedValue
+import javax.persistence.Column
+import org.eclipse.xtend.lib.annotations.Accessors
+
+@Accessors
+@Entity
+abstract class Filtro {
 	
-	def String getFiltro()
+	@Id
+	@Column(name="id")
+    @GeneratedValue
+	int id
+	
+	def abstract String getFiltro()
 }

@@ -41,8 +41,6 @@ class Asiento {
 	new(Tramo unTramo,Categoria unaCategoria){
 		tramo= unTramo
 		categoria=unaCategoria
-	
-		
 	}
 	
 	def getPrecio(){

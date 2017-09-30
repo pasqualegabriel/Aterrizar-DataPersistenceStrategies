@@ -17,6 +17,7 @@ import aereolinea.Vuelo
 import aereolinea.Aereolinea
 import categorias.Primera
 import asientoServicio.Reserva
+import org.junit.After
 
 class TestHibernateBusqueda {
 		
@@ -32,8 +33,8 @@ class TestHibernateBusqueda {
 		
 	@Before
 	def void setUp(){
-		
-		userDAO  		= new HibernateUserDAO
+
+		userDAO         = new HibernateUserDAO
 		busquedaService = new BusquedaHibernate
 		usuario         = new User("Pepita","LaGolondrina","euforica","pepitagolondrina@gmail.com", "password", new Date)
 		vuelo           = new Vuelo(new Aereolinea)
@@ -41,18 +42,18 @@ class TestHibernateBusqueda {
 		reserva 		= new Reserva
 		categoria    	= new Primera
 		asiento			= new Asiento(tramo, categoria)
-		asiento.reserva= reserva
+		asiento.reserva = reserva
 	}
 	
 	@Test
 	def void testBusquedaHibernate(){
 		
-		var filtro     = new FiltroSimple(new CampoCategoria, "'Primera'") 
-		                 // y CampoAerolinea ya funcionan
-		var costo      = new Costo //y Escala funcionan, falta Duracion
-		var ascendente = new Descendente //y Ascendente funcionan
+		var filtro     = new FiltroSimple(new CampoCategoria, "Primera") 
+		                 // CampoCategoria ya funcionan
+		var costo      = new Costo //Costo y Escala funcionan, falta Duracion
+		var ascendente = new Ascendente //Descendente y Ascendente funcionan
 		
-		busqueda = new Busqueda(filtro, costo, ascendente)
+		busqueda       = new Busqueda(filtro, costo, ascendente)
 		
 		Runner.runInSession[ {
 			
@@ -62,9 +63,24 @@ class TestHibernateBusqueda {
 			userDAO.save(usuario)
 			
 			assertEquals(busquedaService.buscar(busqueda, usuario).size, 1)	
+			
+
 			null
 		}]
+	}
+	
+	@After
+	def void tearDown(){
+		userDAO.clearAll
 	}
 
 	
 }
+
+
+
+
+
+
+
+

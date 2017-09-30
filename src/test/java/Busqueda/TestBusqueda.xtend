@@ -6,8 +6,8 @@ import org.junit.Before
 
 class TestBusqueda {
 	
-	Filtro unFiltroSimple
-	Filtro otroFiltroSimple
+	Filtro   unFiltroSimple
+	Filtro   otroFiltroSimple
 	
 	@Before
 	def void setUp(){
@@ -17,51 +17,51 @@ class TestBusqueda {
 	}
 	
 	@Test
-	def testElCampoAerolineaDevuelve     (){
+	def testCampoAerolinea(){
 		
 		var campoAerolinea = new CampoAerolinea
 		
-		assertEquals(campoAerolinea.getCampo, "asiento.nombreAerolinea")
+		assertEquals(campoAerolinea.getCampo, "a.tramo.vuelo.aerolinea.nombre")
 	}
 	
 	@Test
-	def testElCampoCategoriaDevuelve     (){
+	def testCampoCategoria(){
 		
 		var campoAerolinea = new CampoCategoria
 		
-		assertEquals(campoAerolinea.getCampo, "asiento.nombreCategoria")
+		assertEquals(campoAerolinea.getCampo, "a.categoria.nombre")
 	}
 	
 	@Test
-	def testElCampoFechaDeSalidaDevuelve     (){
+	def testCampoFechaDeSalida(){
 		
 		var campoAerolinea = new FechaDeSalida
 		
-		assertEquals(campoAerolinea.getCampo, "asiento.fechaDeSalida")
+		assertEquals(campoAerolinea.getCampo, "a.tramo.fechaDeSalida")
 	}
 	
 	@Test
-	def testElCampoFechaDeEntradaDevuelve     (){
+	def testCampoFechaDeEntrada(){
 		
-		var campoAerolinea = new FechaDeEntrada
+		var campoAerolinea = new FechaDeLlegada
 		
-		assertEquals(campoAerolinea.getCampo, "asiento.fechaDeEntrada")
+		assertEquals(campoAerolinea.getCampo, "a.tramo.fechaDeLlegada")
 	}
 	
 	@Test
-	def testElCampoOrigenDevuelve     (){
+	def testCampoOrigen(){
 		
 		var campoAerolinea = new CampoOrigen
 		
-		assertEquals(campoAerolinea.getCampo, "asiento.origen")
+		assertEquals(campoAerolinea.getCampo, "a.tramo.destinoOrigen.nombre")
 	}
 	
 	@Test
-	def testElCampoDestinoDevuelve     (){
+	def testCampoDestino(){
 		
 		var campoAerolinea = new CampoDestino
 		
-		assertEquals(campoAerolinea.getCampo, "asiento.destino")
+		assertEquals(campoAerolinea.getCampo, "a.tramo.destinoLlegada.nombre")
 	}
 	
 	@Test
@@ -69,58 +69,56 @@ class TestBusqueda {
 		
 		var filtroSimple = new FiltroSimple(new CampoAerolinea, "Pepita")
 
-		assertEquals(filtroSimple.getFiltro, "asiento.nombreAerolinea == Pepita")
+		assertEquals(filtroSimple.getFiltro, "a.tramo.vuelo.aerolinea.nombre = 'Pepita'")
 	}
 	
 	@Test
-	def testFiltroCompuestoAdnConCampoAerolinaYValorPepita(){
+	def testFiltroCompuestoAndConPrimerFiltroSimpleConCampoAerolinaYValorPepitaYSegundoFiltroSimpleConCampoOrigenYValorBsAs(){
 		
 		
-		var filtroSimple = new FiltroAnd(unFiltroSimple, otroFiltroSimple)
+		var filtroCompuestoAnd = new FiltroAnd(unFiltroSimple, otroFiltroSimple)
 
-		assertEquals(filtroSimple.getFiltro, "(asiento.nombreAerolinea == Pepita) and (asiento.origen == Bs As)")
+		assertEquals(filtroCompuestoAnd.getFiltro, 
+		"(a.tramo.vuelo.aerolinea.nombre = 'Pepita') and (a.tramo.destinoOrigen.nombre = 'Bs As')")
 	}
 	
 	@Test
-	def testFiltroCompuestoOrConCampoAerolinaYValorPepita(){
+	def testFiltroCompuestoOrConPrimerFiltroSimpleConCampoAerolinaYValorPepitaYSegundoFiltroSimpleConCampoOrigenYValorBsAs(){
 		
 		
-		var filtroSimple = new FiltroOr(unFiltroSimple, otroFiltroSimple)
+		var filtroCompuestoOr = new FiltroOr(unFiltroSimple, otroFiltroSimple)
 
-		assertEquals(filtroSimple.getFiltro, "(asiento.nombreAerolinea == Pepita) or (asiento.origen == Bs As)")
+		assertEquals(filtroCompuestoOr.getFiltro, 
+		"(a.tramo.vuelo.aerolinea.nombre = 'Pepita') or (a.tramo.destinoOrigen.nombre = 'Bs As')")
 	}
 	
 	@Test
 	def testCosto(){
 		
-		
 		var costo = new Costo
 
-		assertEquals(costo.criterio, "costo")
+		assertEquals(costo.criterio, "a.tramo.precio")
 	}
 	
 	@Test
 	def testEscala(){
-		
-		
+	
 		var costo = new Escala
 
-		assertEquals(costo.criterio, "tramo")
+		assertEquals(costo.criterio, "a.tramo")
 	}
 	
 	@Test
 	def testDuracion(){
-		
-		
+
 		var costo = new Duracion
 
-		assertEquals(costo.criterio, "duracion")
+		assertEquals(costo.criterio, "a.tramo.duracion")
 	}
 	
 	@Test
 	def testAscendente(){
-		
-		
+
 		var ascendente = new Ascendente
 
 		assertEquals(ascendente.orden, "ASC")
@@ -128,14 +126,12 @@ class TestBusqueda {
 	
 	@Test
 	def testDescendente(){
-		
-		
+
 		var descendente = new Descendente
 
 		assertEquals(descendente.orden, "DESC")
 	}
 	
-
 }
 
 
