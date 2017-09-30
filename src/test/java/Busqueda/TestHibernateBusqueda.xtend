@@ -17,6 +17,7 @@ import aereolinea.Vuelo
 import aereolinea.Aereolinea
 import categorias.Primera
 import asientoServicio.Reserva
+import org.junit.After
 
 class TestHibernateBusqueda {
 		
@@ -68,7 +69,10 @@ class TestHibernateBusqueda {
 		}]
 	}
 	
-
+	@After
+	def void tearDown(){
+		userDAO.clearAll
+	}
 
 	
 }

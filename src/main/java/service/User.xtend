@@ -48,10 +48,7 @@ class User {
 	}
 	
 	new(String name, String lastName, String userName, String mail, String userPassword, Date birthDate) {
-		super()
-		monedero		  = 0.00
-		compras			  = newArrayList
-		reserva			  = null
+		this()
 		this.name 	      = name
 		this.lastName     = lastName
 		this.userName     = userName
@@ -73,7 +70,7 @@ class User {
 	}
 	
 	def agregarBusqueda(Busqueda busqueda) {
-		busquedas.add(busqueda)
+		//busquedas.add(busqueda)
 	}
 
 
