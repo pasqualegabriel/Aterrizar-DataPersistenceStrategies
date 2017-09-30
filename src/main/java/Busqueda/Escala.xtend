@@ -1,6 +1,6 @@
 package Busqueda
 
-class Escala implements Criterio{
+class Escala extends Criterio{
 	
 	override getCriterio() {
 		"tramo"

@@ -24,7 +24,7 @@ class SessionFactoryProvider {
 		INSTANCE = null
 	}
 	
-	 private new() {
+	private new() {
 		var configuration = new Configuration
 		configuration.configure("hibernate.cfg.xml")
 		this.sessionFactory = configuration.buildSessionFactory

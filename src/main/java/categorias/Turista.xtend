@@ -1,6 +1,13 @@
 package categorias
 
-class Turista implements Categoria {
+import org.eclipse.xtend.lib.annotations.Accessors
+
+@Accessors
+class Turista extends Categoria {
+
+	new(){
+		super()
+	}
 	
 	override porcentaje() {
 		10.00

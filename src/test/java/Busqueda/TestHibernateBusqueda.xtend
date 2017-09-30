@@ -7,6 +7,7 @@ import busquedaService.BusquedaService
 import busquedaService.BusquedaHibernate
 import service.User
 import java.util.Date
+import runner.Runner
 
 class TestHibernateBusqueda {
 		
@@ -22,7 +23,7 @@ class TestHibernateBusqueda {
 	}
 	
 	@Test
-	def testBusquedaHibernate(){
+	def void testBusquedaHibernate(){
 		
 		var filtro     = new FiltroSimple(new CampoAerolinea, "Pepita")
 		var costo      = new Costo
@@ -30,6 +31,10 @@ class TestHibernateBusqueda {
 		
 		busqueda = new Busqueda(filtro, costo, ascendente)
 		
-		assertEquals(busquedaService.buscar(busqueda, usuario).size, 1)
+		Runner.runInSession[ {
+			
+			assertEquals(busquedaService.buscar(busqueda, usuario).size, 1)	
+			null
+		}]
 	}
 }

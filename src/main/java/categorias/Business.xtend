@@ -1,6 +1,16 @@
 package categorias
 
-class Business  implements Categoria{
+import javax.persistence.Entity
+import org.eclipse.xtend.lib.annotations.Accessors
+
+@Entity
+@Accessors
+class Business extends Categoria{
+	
+	new(){
+		super()
+		
+	}
 	
 	override porcentaje() {
 		

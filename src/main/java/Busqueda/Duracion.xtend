@@ -1,6 +1,6 @@
 package Busqueda
 
-class Duracion implements Criterio{
+class Duracion extends Criterio{
 	
 	override getCriterio() {
 		"duracion"

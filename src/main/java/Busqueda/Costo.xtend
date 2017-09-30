@@ -1,6 +1,6 @@
 package Busqueda
 
-class Costo implements Criterio{
+class Costo extends Criterio{
 	
 	override getCriterio() {
 		"costo"

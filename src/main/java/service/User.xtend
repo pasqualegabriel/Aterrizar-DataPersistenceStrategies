@@ -13,12 +13,14 @@ import javax.persistence.OneToOne
 import javax.persistence.JoinColumn
 import Busqueda.Busqueda
 import javax.persistence.Transient
+import javax.persistence.Column
 
 @Accessors
 @Entity
 class User {
 	
 	@Id
+	@Column(name="pepita")
 	String 	name
 	String 	lastName
 	String 	userName

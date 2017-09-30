@@ -8,11 +8,13 @@ import javax.persistence.Entity
 import javax.persistence.Transient
 import javax.persistence.Id
 import javax.persistence.ManyToOne
+import javax.persistence.GeneratedValue
 
 @Accessors
 @Entity
 class Compra {
 	@Id
+	@GeneratedValue
 	int id
 	
 	@ManyToOne
@@ -23,8 +25,7 @@ class Compra {
 	
 	new(){
 		super()
-		id = 1
-		
+
 	}
 	
 	new(List<Asiento> unosAsientos, User unUsuario) {

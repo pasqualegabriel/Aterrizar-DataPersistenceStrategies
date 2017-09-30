@@ -1,6 +1,6 @@
 package Busqueda
 
-class CampoOrigen  implements Campo{
+class CampoOrigen extends Campo{
 
 	override getCampo() {
 		"asiento.origen"

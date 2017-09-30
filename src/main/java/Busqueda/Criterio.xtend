@@ -1,7 +1,7 @@
 package Busqueda
 
-interface Criterio {
+abstract class Criterio {
 	
-	def String getCriterio()
+	def abstract String getCriterio()
 	
 }

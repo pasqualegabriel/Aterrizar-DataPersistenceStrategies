@@ -7,40 +7,33 @@ import java.time.LocalDateTime
 import aereolinea.Asiento
 import javax.persistence.Entity
 import javax.persistence.Id
-import javax.persistence.Transient
-import service.User
 import javax.persistence.GeneratedValue
 import javax.persistence.Column
+import javax.persistence.OneToMany
 
 @Accessors
 @Entity
 class Reserva {
 	//Estructura
-	@Id @GeneratedValue
-	@Column(name = "reserva_id")
+	@Id
+	@GeneratedValue
+	@Column(name="id")
 	int id
-	@Transient
+	@OneToMany
 	List<Asiento> asientos 		
 	
 	LocalDateTime horaRealizada	
 	boolean	      estaValidado	
 	
 	new(){
-		
-		id=0 
+
 		asientos 		= 	newArrayList
 		estaValidado	=	true
-		asientos 		=	null
+		asientos 		=	newArrayList
 		horaRealizada	= 	LocalDateTime.now
 		
 	}
-	
-	
-	new(User unUsuario){
-		this()
-		
-	}
-	
+
 	def expiroReserva() {
 		var minutosDespuesDeReservar = Math.abs(LocalTime.now.toSecondOfDay - horaRealizada.toLocalTime.toSecondOfDay) / 60
 	    minutosDespuesDeReservar >= 5/*minutos de reserva */ || !estaValidado

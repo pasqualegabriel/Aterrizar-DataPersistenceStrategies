@@ -1,6 +1,6 @@
 package Busqueda
 
-class FechaDeEntrada implements Campo{
+class FechaDeEntrada extends Campo{
 
 	override getCampo() {
 		"asiento.fechaDeEntrada"

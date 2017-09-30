@@ -38,13 +38,13 @@ class TestReservaCompraDeAsientos {
 	}
 	
 	@Test
-	def test000UnatestReservaCompraDeAsientosPuedeReservarUnAsientoParaUnUsuarioExitosamente(){
+	def testUnaReservaCompraDeAsientosPuedeReservarUnAsientoParaUnUsuarioExitosamente(){
 		
-			var reservaResultado = testReservaCompraDeAsientos.reservar(asientoDoc,usuarioDoc)
+		var reservaResultado = testReservaCompraDeAsientos.reservar(asientoDoc,usuarioDoc)
 			
-			assertTrue(usuarioDoc.reserva.equals(reservaResultado))
-			assertTrue(reservaResultado.asientos.contains(asientoDoc))
-			assertEquals(asientoDoc.reserva,reservaResultado)
+		assertTrue(usuarioDoc.reserva.equals(reservaResultado))
+		assertTrue(reservaResultado.asientos.contains(asientoDoc))
+		assertEquals(asientoDoc.reserva,reservaResultado)
 	}
 
 	@Test(expected=ExepcionReserva)

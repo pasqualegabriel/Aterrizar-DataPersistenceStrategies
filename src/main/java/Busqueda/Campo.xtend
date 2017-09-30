@@ -1,7 +1,7 @@
 package Busqueda
 
-interface Campo {
+abstract class Campo {
 	
-	def String getCampo()
+	def abstract String getCampo()
 	
 }

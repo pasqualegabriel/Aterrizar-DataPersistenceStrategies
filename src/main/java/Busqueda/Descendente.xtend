@@ -1,6 +1,6 @@
 package Busqueda
 
-class Descendente implements Orden{
+class Descendente extends Orden{
 	
 	override getOrden() {
 		"DESC"

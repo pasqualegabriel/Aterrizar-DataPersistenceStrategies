@@ -1,6 +1,6 @@
 package Busqueda
 
-class CampoAerolinea implements Campo{
+class CampoAerolinea extends Campo{
 
 	override getCampo() {
 		"asiento.nombreAerolinea"

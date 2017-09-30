@@ -1,7 +1,7 @@
 package Busqueda
 
-interface Orden {
+abstract class Orden {
 	
-	def String getOrden()
+	def abstract String getOrden()
 	
 }

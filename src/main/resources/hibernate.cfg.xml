@@ -22,8 +22,15 @@
 		<property name="hibernate.hbm2ddl.auto">create-drop</property>
 
 		<mapping class="service.User"/>
-		<mapping class="asientoServicio.Compra"/>
+ 		<mapping class="asientoServicio.Compra"/>
 		<mapping class="asientoServicio.Reserva"/>
+		<mapping class="aereolinea.Asiento"/>
+		<mapping class="aereolinea.Tramo"/>
+		<mapping class="categorias.Categoria"/>
+		<mapping class="categorias.Business"/>
+		<mapping class="categorias.Primera"/>
+		<mapping class="categorias.Turista"/>
+		<mapping class="aereolinea.Destino"/> 
 	
 	</session-factory>
 </hibernate-configuration>
