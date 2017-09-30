@@ -11,7 +11,6 @@ import javax.persistence.Entity
 import javax.persistence.OneToOne
 import javax.persistence.JoinTable
 import javax.persistence.CascadeType
-import org.hibernate.annotations.Formula
 
 @Accessors
 @Entity
