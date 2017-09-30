@@ -5,10 +5,14 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import aereolinea.Asiento
 import service.User
 import javax.persistence.Entity
-import javax.persistence.Transient
 import javax.persistence.Id
 import javax.persistence.ManyToOne
 import javax.persistence.GeneratedValue
+import javax.persistence.OneToMany
+
+import javax.persistence.FetchType
+
+import javax.persistence.CascadeType
 
 @Accessors
 @Entity
@@ -17,10 +21,10 @@ class Compra {
 	@GeneratedValue
 	int id
 	
-	@ManyToOne
+	@ManyToOne(fetch= FetchType.LAZY, cascade=CascadeType.ALL)
 	User comprador
-	
-	@Transient
+
+	@OneToMany(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	List<Asiento> asientos
 	
 	new(){
@@ -32,6 +36,11 @@ class Compra {
 		this()
 		comprador=unUsuario
 		asientos=unosAsientos
+		agregarDuenios(unUsuario)
+		
+	}
+	
+	def void agregarDuenios(User unUsuario) {
 		asientos.forEach[it.agregarDuenio(unUsuario)]
 	}
 	
