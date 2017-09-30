@@ -3,16 +3,25 @@ package Busqueda
 import org.eclipse.xtend.lib.annotations.Accessors
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.OneToOne
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 
 @Accessors
 @Entity
 class Busqueda {
 	
 	@Id
-	int id
+	int      id
 	
+	@OneToOne
+	@JoinColumn(name="id")
 	Filtro   unFiltro
+	
+	@ManyToOne
 	Criterio unCriterio
+	
+	@ManyToOne
 	Orden    unOrden
 	
 	new(){

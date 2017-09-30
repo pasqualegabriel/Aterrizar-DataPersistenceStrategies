@@ -1,8 +1,15 @@
 package Busqueda
+import javax.persistence.Entity
+import org.eclipse.xtend.lib.annotations.Accessors
+import javax.persistence.ManyToOne
 
-class FiltroSimple implements Filtro{
+@Accessors
+@Entity
+class FiltroSimple extends Filtro{
 	
 	String valor
+	
+	@ManyToOne
 	Campo campo
 	
 	new(){
@@ -15,7 +22,7 @@ class FiltroSimple implements Filtro{
 	}
 	
 	override getFiltro() {
-		campo.campo + " = " + valor
+		campo.campo + " = '" + valor + "'"
 	}
 	
 }

@@ -12,9 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne
 import javax.persistence.JoinColumn
 import Busqueda.Busqueda
-import javax.persistence.Transient
 import javax.persistence.Column
-
 
 @Accessors
 @Entity
@@ -27,7 +25,6 @@ class User {
 	String 	userName
 	String 	userPassword
 	String 	mail
-
 	Date 	birthDate
 	Boolean validate
 	String  validateCode
@@ -36,12 +33,11 @@ class User {
 	@OneToMany(mappedBy="comprador", cascade=CascadeType.ALL)
 	List<Compra> compras   = newArrayList
 	
-	@OneToOne
-	@JoinColumn(name="reserva_id")
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="id")
 	Reserva reserva 
-	
-	@Transient
-	//@OneToMany(mappedBy="comprador", cascade=CascadeType.ALL)
+
+	@OneToMany(cascade=CascadeType.ALL)
 	List<Busqueda> busquedas
 
 	new(){
@@ -52,7 +48,10 @@ class User {
 	}
 	
 	new(String name, String lastName, String userName, String mail, String userPassword, Date birthDate) {
-		this()
+		super()
+		monedero		  = 0.00
+		compras			  = newArrayList
+		reserva			  = null
 		this.name 	      = name
 		this.lastName     = lastName
 		this.userName     = userName
@@ -74,7 +73,7 @@ class User {
 	}
 	
 	def agregarBusqueda(Busqueda busqueda) {
-		//busquedas.add(busqueda)
+		busquedas.add(busqueda)
 	}
 
 

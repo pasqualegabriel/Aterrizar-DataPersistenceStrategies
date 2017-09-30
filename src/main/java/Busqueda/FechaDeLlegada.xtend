@@ -4,14 +4,13 @@ import javax.persistence.Entity
 
 @Accessors
 @Entity
-class CampoOrigen extends Campo{
+class FechaDeLlegada extends Campo{
 	
 	new(){
 		super()
 	}
 	
 	override getCampo() {
-		"a.tramo.destinoOrigen.nombre"
+		"a.tramo.fechaDeLlegada"
 	}
-	
 }
