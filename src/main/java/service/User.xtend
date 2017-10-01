@@ -38,7 +38,7 @@ class User {
 	Reserva reserva 
 
 	@OneToMany(cascade=CascadeType.ALL)
-	List<Busqueda> busquedas
+	List<Busqueda> busquedas =newArrayList
 
 	new(){
 		super()
@@ -70,13 +70,6 @@ class User {
 	}
 	
 	def agregarBusqueda(Busqueda busqueda) {
-		//busquedas.add(busqueda)
-	}
-	
-
-
-	
-	
-	
-
+		busquedas.add(busqueda)
+	}	
 }

@@ -51,6 +51,8 @@
 		<mapping class="Busqueda.Orden"/> 
 		<mapping class="Busqueda.Ascendente"/> 
 		<mapping class="Busqueda.Descendente"/> 
+		<mapping class="aereolinea.Vuelo"/> 
+		<mapping class="aereolinea.Aereolinea"/> 
 	
 	</session-factory>
 </hibernate-configuration>

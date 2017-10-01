@@ -17,4 +17,8 @@ class Destino {
 	new(){
 		super()
 	}
+	
+	new(String unNombre){
+		nombre= unNombre
+	}
 }

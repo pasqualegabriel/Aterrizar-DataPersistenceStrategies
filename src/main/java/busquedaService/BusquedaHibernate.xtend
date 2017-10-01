@@ -6,6 +6,7 @@ import org.hibernate.query.Query
 import aereolinea.Asiento
 import Busqueda.Busqueda
 import daoImplementacion.HibernateUserDAO
+import Excepciones.IlegalQueryException
 
 class BusquedaHibernate implements BusquedaService{
 	
@@ -14,10 +15,15 @@ class BusquedaHibernate implements BusquedaService{
 		val session = Runner.getCurrentSession
 		
 		var hql = "FROM Asiento a" +
-		" WHERE " + busqueda.filtro +
-		" ORDER BY " + busqueda.criterio + " " + busqueda.orden
+		" WHERE " + busqueda.queryFiltro +
+		" ORDER BY " + busqueda.queryCriterio + " " + busqueda.queryOrden 
 		
-		var Query<Asiento> query = session.createQuery(hql,  Asiento)
+		var Query<Asiento> query
+		try{
+			query = session.createQuery(hql,  Asiento)
+		}catch(IllegalArgumentException q){
+			throw new IlegalQueryException("Query not fun")
+		}
 		
 		val userDAO = new HibernateUserDAO
 		usuario.agregarBusqueda(busqueda)
@@ -28,16 +34,36 @@ class BusquedaHibernate implements BusquedaService{
 			null
 		}]
 		
-		return query.getResultList
+		query.getResultList
 
 	}
-	
+
 	override list(User usuario) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		
+
+		
+		val session = Runner.getCurrentSession
+		var s = " (select busquedas_id as id from User_Busqueda u where u.User_name = '" + usuario.name + "')"
+		
+		
+		var hql = "from Busqueda b " + 
+                 "where b.id in" + s
+
+//		var hql = "select a.id, a.criterio_id, a.orden_id  FROM Busqueda a " + 
+//		" leaf join (from User_Busqueda u where User_name = '" + usuario.name + "') b" +
+//       				" ON b.busquedas_id = a.id order by a.id desc"
+//		
+		var Query<Busqueda> query =  session.createQuery(hql, Busqueda)
+		query.getResultList
+
 	}
+		
+	
 	
 	override busquedasGuardada(Busqueda busqueda, User usuario) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
+	
+	
 	
 }

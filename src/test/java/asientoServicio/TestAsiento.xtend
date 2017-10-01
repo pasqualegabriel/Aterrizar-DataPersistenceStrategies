@@ -10,6 +10,8 @@ import categorias.Business
 import categorias.Turista
 import aereolinea.Vuelo
 import aereolinea.Aereolinea
+import aereolinea.Destino
+import java.time.LocalDateTime
 
 class TestAsiento {
 	
@@ -21,7 +23,7 @@ class TestAsiento {
 	@Before
 	def void setUp(){
 		vuelo           = new Vuelo(new Aereolinea)
-		tramoDoc   		= new Tramo(10.00, vuelo)
+		tramoDoc   		= new Tramo(10.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00))
 		categoriaDoc	= new Primera
 		testAsiento		= new Asiento(tramoDoc,categoriaDoc)
 		

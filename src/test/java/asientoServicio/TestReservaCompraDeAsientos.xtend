@@ -17,6 +17,8 @@ import org.mockito.MockitoAnnotations
 import dao.UserDAO
 import aereolinea.Vuelo
 import aereolinea.Aereolinea
+import aereolinea.Destino
+import java.time.LocalDateTime
 
 class TestReservaCompraDeAsientos {
 	
@@ -33,11 +35,11 @@ class TestReservaCompraDeAsientos {
 		MockitoAnnotations.initMocks(this)
 		vuelo           = new Vuelo(new Aereolinea)
 		testReservaCompraDeAsientos	= new ReservaCompraDeAsientos(userDAO)
-		asientoDoc					= new Asiento(new Tramo(200.00, vuelo),new Turista)
+		asientoDoc					= new Asiento(new Tramo(200.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista)
 		usuarioDoc					= new User
 		reserva						= new Reserva
-		asientosDoc.add(new Asiento(new Tramo(100.00, vuelo),new Turista))
-		asientosDoc.add(new Asiento(new Tramo(100.00, vuelo),new Turista))
+		asientosDoc.add(new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista))
+		asientosDoc.add(new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista))
 		
 	}
 	
@@ -120,9 +122,9 @@ class TestReservaCompraDeAsientos {
 	@Test
 	def test007UnTestReservaDevuelvelLosAsientosDisponiblesDeUnTramo(){
 		var unUsuario = new User
-		var asiento1 = new Asiento(new Tramo(100.00, vuelo),new Turista)
-		var asiento2 = new Asiento(new Tramo(200.00, vuelo),new Business)
-		var asiento3 = new Asiento(new Tramo(300.00, vuelo),new Primera)
+		var asiento1 = new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista)
+		var asiento2 = new Asiento(new Tramo(200.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Business)
+		var asiento3 = new Asiento(new Tramo(300.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Primera)
 		
 		unUsuario.monedero = 2000.00
 		usuarioDoc.monedero = 2000.00

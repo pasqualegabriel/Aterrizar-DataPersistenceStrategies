@@ -6,45 +6,48 @@ import javax.persistence.Id
 import javax.persistence.OneToOne
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.CascadeType
+import javax.persistence.GeneratedValue
 
 @Accessors
 @Entity
 class Busqueda {
 	
 	@Id
+	@GeneratedValue
 	int      id
 	
 	@OneToOne
 	@JoinColumn(name="id")
-	Filtro   unFiltro
+	Filtro   filtro
 	
-	@ManyToOne
-	Criterio unCriterio
+	@ManyToOne(cascade=CascadeType.ALL)
+	Criterio criterio
 	
-	@ManyToOne
-	Orden    unOrden
+	@ManyToOne(cascade=CascadeType.ALL)
+	Orden    orden
 	
 	new(){
 		super()
 	}
 	
-	new(Filtro filtro, Criterio criterio, Orden orden){
+	new(Filtro unFiltro, Criterio unCriterio, Orden unOrden){
 		this()
-		unFiltro   = filtro
-		unCriterio = criterio
-	    unOrden    = orden
+		filtro   	= unFiltro
+		criterio 	= unCriterio
+	    orden    	= unOrden
 	}
 	
-	def getFiltro() {
-		unFiltro.filtro
+	def queryFiltro() {
+		filtro.filtro
 	}
 	
-	def getCriterio() {
-		unCriterio.criterio
+	def queryCriterio() {
+		criterio.criterio
 	}
 	
-	def orden() {
-		unOrden.orden
+	def queryOrden() {
+		orden.orden
 	}
 	
 }

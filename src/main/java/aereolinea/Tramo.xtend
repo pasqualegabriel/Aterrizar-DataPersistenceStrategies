@@ -1,14 +1,15 @@
 package aereolinea
 
 import org.eclipse.xtend.lib.annotations.Accessors
-import java.util.Date
 import java.util.List
 import javax.persistence.OneToMany
 import javax.persistence.ManyToOne
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.GeneratedValue
-import javax.persistence.Transient
+import javax.persistence.CascadeType
+import java.time.LocalDateTime
+
 
 @Accessors
 @Entity
@@ -19,29 +20,38 @@ class Tramo {
 	 
 	@OneToMany
 	List<Asiento> asientos = newArrayList
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	Destino destinoOrigen
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	Destino destinoLlegada
 	
-	Date fechaDeLlegada
-	Date fechaDeSalida
+	 
+	LocalDateTime fechaDeLlegada
+	LocalDateTime fechaDeSalida
 	Double precio
-	@Transient
+	@ManyToOne(cascade=CascadeType.ALL)
 	Vuelo vuelo
+	int duracion
 	
 	new(){
 		super()
 	}
 	
-	new(Double unPrecioBase, Vuelo unVuelo){
-		precio=unPrecioBase
-		vuelo = unVuelo
+	new(Double unPrecioBase, Vuelo unVuelo, Destino unDestinoOrigen, Destino unDestinoLlegada, LocalDateTime unaFechaDeSalida, LocalDateTime unaFechaDeLlegada){
+		this()
+		precio         = unPrecioBase
+		vuelo          = unVuelo
+		destinoOrigen  = unDestinoOrigen
+		destinoLlegada = unDestinoLlegada
+		fechaDeSalida  = unaFechaDeSalida
+		fechaDeLlegada = unaFechaDeLlegada
+		duracion 	   = Math.abs(fechaDeLlegada.toLocalTime.toSecondOfDay - fechaDeSalida.toLocalTime.toSecondOfDay) / 60
 	}
 	
 	def asientosDisponibles() {
 		
 		asientos.filter[it.estaDisponible].toList
 	}
+
 	
 }
