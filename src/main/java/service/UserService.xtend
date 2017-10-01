@@ -11,5 +11,4 @@ interface UserService {
 	def User signIn(String username, String password)
 
 	def void changePassword(String username, String oldPassword, String newPassword)
-	
 }

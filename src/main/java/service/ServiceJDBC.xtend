@@ -1,16 +1,19 @@
 package service
 
-import dao.UserDAO
-import mailSender.EmailService
-import Excepciones.ExceptionUsuarioExistente
-import java.util.Date
+import org.eclipse.xtend.lib.annotations.Accessors
+
+import Excepciones.InvalidValidationCode
 import Excepciones.IncorrectUsernameOrPassword
 import Excepciones.IdenticPasswords
-import Excepciones.InvalidValidationCode
+import java.util.Date
+import mailSender.EmailService
+import Excepciones.ExceptionUsuarioExistente
+import dao.UserDAO
 
-class Service implements UserService {
-	
-	protected UserDAO	      userDAO
+@Accessors
+class ServiceJDBC implements UserService {
+
+	UserDAO	      userDAO
 	EmailService  mailSender
 	MailGenerator generadorDeMail
 	CodeGenerator generadorDeCodigo
@@ -26,26 +29,21 @@ class Service implements UserService {
 	//en una abtrascta solo se redifine el save
 	override singUp(String name, String lastName, String userName, String mail, String password, Date birthDate) {
 		
-		if(existeUsuarioCon(userName, mail)) {
+		if(this.existeUsuarioCon(userName, mail)) {
 			throw new ExceptionUsuarioExistente("no se puede registrar el Usuario")
 		} 
-		
 		
 		var usuario          = new User(name, lastName, userName, mail, password, birthDate)
 		var codigo 		     = generadorDeCodigo.generarCodigo
 		var validationCode   = codigo + userName
-		usuario.validateCode =validationCode
+		usuario.validateCode = validationCode
 		var aMail            = generadorDeMail.generarMail(validationCode, mail)
 		mailSender.send(aMail)
-		
-		saveUser(usuario)//flag
-		
+		userDAO   .save(usuario)
 		usuario
-	
+		
+		
 	}
-	
-
-
 	
 
 	//abtracta y se redifine su load y update
@@ -53,16 +51,14 @@ class Service implements UserService {
 		
 			var userExample    	     = new User()
 			userExample.validateCode = code
-			var user             	 = loadUser(userExample)//flag
+			var user             	 = userDAO.load(userExample)
 			
 			isUserNull(user,new InvalidValidationCode("El codigo no es correcto"))
 			
 			user.validateAccount
-			updateUser(user)//
+			userDAO.update(user)
 			true		
 	}
-
-	
 	
 	//a la abtracta solo se redifine su userDao load
 	override signIn(String username, String password) {
@@ -71,7 +67,7 @@ class Service implements UserService {
 		userExample.userName 		= username
 		userExample.userPassword 	= password
 		  
-		var user = loadUser(userExample)//flag
+		var user = userDAO.load(userExample)
 		  
 		if(user== null || !user.validate){
 			throw new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos")
@@ -79,26 +75,24 @@ class Service implements UserService {
 		user 
 
 	}
-	
-	
+	//a la abtracta solo se redefine el load y update del dao
 	override changePassword(String userName, String oldPassword, String newPassword) {
 		if (oldPassword.equals(newPassword)) throw new IdenticPasswords("Las contraseñas no tienen que ser las mismas")
+					
+		val userExample		 = new User 
+		userExample.userName = userName
 	
-		//HABLAR
-		val userExample		 	= new User 
-		userExample.userName 	= userName
-		//userExample.userPassword= oldPassword
-	
-		var user = loadUser(userExample)//flag
+		var user = userDAO.load(userExample)
 		isUserNull(user,new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos"))
 	
 		user.userPassword = newPassword
 		
-		updateUser(user)//flag
+		userDAO.update(user)
 		
-	}
+		
 	
-
+	}
+	//a la abtrascta
 	def void isUserNull(User user, RuntimeException exception) {
 		if(user==null) throw exception
 	}
@@ -106,32 +100,17 @@ class Service implements UserService {
 
 	
 
+	//Redifine cada uno  
 	def existeUsuarioCon(String userName, String mail){
 		var userExampleWithUserName	 = new User
 		var userExampleWithMail		 = new User
 		userExampleWithMail.userName = userName
 		userExampleWithUserName.mail = mail	
-		var userNick = loadUser(userExampleWithMail)
-		var userMail = loadUser(userExampleWithUserName)
+		var userNick = userDAO.load(userExampleWithMail)
+		var userMail = userDAO.load(userExampleWithUserName)
 		userNick != null || userMail != null
-		
+
 	}
-	
-	def User loadUser(User aUser) {
-		userDAO.load(aUser)
-	}
+
  
-	def void saveUser(User aUser){
-		userDAO.save(aUser)
-	}
-		
-	def void updateUser(User aUser) {
-		userDAO.update(aUser)
-	}
-	
-	
 }
-
-
-
-

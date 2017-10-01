@@ -71,5 +71,6 @@ class User {
 	
 	def agregarBusqueda(Busqueda busqueda) {
 		busquedas.add(busqueda)
-	}	
+	}
+	
 }
