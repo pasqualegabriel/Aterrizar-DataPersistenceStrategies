@@ -15,7 +15,7 @@ class HibernateUserDAO implements UserDAO {
 	
 	override load(User aUser) {
 		var session = Runner.currentSession
-		session.get(User, aUser.name)
+		session.get(User, aUser.userName)
 	}
 	
 	override update(User oneUser) {

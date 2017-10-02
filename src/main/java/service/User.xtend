@@ -17,11 +17,11 @@ import javax.persistence.Column
 @Accessors
 @Entity
 class User {
-	
-	@Id
-	@Column(name="name")
+
 	String 	name
 	String 	lastName
+	@Id
+	@Column(name="userName")
 	String 	userName
 	String 	userPassword
 	String 	mail

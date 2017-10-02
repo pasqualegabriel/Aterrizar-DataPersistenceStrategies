@@ -17,33 +17,36 @@ import Excepciones.InvalidValidationCode
 import Excepciones.IncorrectUsernameOrPassword
 import Excepciones.IdenticPasswords
 import dao.UserDAO
+import daoImplementacion.HibernateUserDAO
 
 class TestUserService {
 	
-	Service serviceTest
-	UserDAO userDAO
-	User    userTest
-	@Mock CodeGenerator unGeneradorDeCodigo
-	@Mock EmailService unMailService
-	@Mock MailGenerator generatorMail
-	@Mock Mail unMail
+	protected Service 			  serviceTest
+	protected UserDAO 			  userDAO
+	protected User   			  userTest
+	@Mock protected CodeGenerator unGeneradorDeCodigo
+	@Mock protected EmailService  unMailService
+	@Mock protected MailGenerator generatorMail
+	@Mock protected Mail		  unMail
 	
 	@Before
 	def void setUp(){
 		MockitoAnnotations.initMocks(this)
 		when(unGeneradorDeCodigo.generarCodigo).thenReturn("1234567890")
 		when(generatorMail.generarMail("1234567890pepitaUser","pepitagolondrina@gmail.com")).thenReturn(unMail)
-		userDAO     = new JDBCUserDAO
+		userDAO       = new HibernateUserDAO
+//		userDAO       = new JDBCUserDAO
 	    unMailService = new Postman
 	    generatorMail = new SimpleMailer
-		serviceTest = new Service(userDAO, generatorMail, unGeneradorDeCodigo, unMailService)
-		userTest    = new User("Pepita","LaGolondrina","PepitaUser","pepitagolondrina@gmail.com","password",new Date())
+//		serviceTest   = new Service(userDAO, generatorMail, unGeneradorDeCodigo, unMailService)
+		serviceTest   = new ServiceHibernate(userDAO, generatorMail, unGeneradorDeCodigo, unMailService)
+		userTest      = new User("Pepita","LaGolondrina","PepitaUser","pepitagolondrina@gmail.com","password",new Date())
 	}
 
 	@Test
 	def test000UnServiceSabeQueExisteUnUsuarioConNombreyMail(){	
 
-		userDAO.save(userTest)
+		serviceTest.saveUser(userTest)
 		assertTrue(serviceTest.existeUsuarioCon("PepitaUser","pepitagolondrina@gmail.com"))
 	}	
 	
@@ -57,7 +60,7 @@ class TestUserService {
 	def test002SeRegistraUnUsuarioExitosamente(){
 
 		var user = serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepitagolondrina@gmail.com", "password",new Date())
-		  
+		
 	    assertEquals(user.name, "Pepita")
 		assertEquals(user.lastName, "LaGolondrina")
 		assertEquals(user.userName, "PepitaUser")
@@ -92,17 +95,17 @@ class TestUserService {
 		
 		assertFalse(newUser.validate)
 		
-        var isValid = serviceTest.validate("1234567890PepitaUser")
+        var isValid = serviceTest.validate(newUser.validateCode)
         
         var userExample      = new User
         userExample.userName = "PepitaUser"
-		var user             = userDAO.load(userExample)
+		var user             = serviceTest.loadUser(userExample)
 		
 		assertTrue(isValid)
-	    assertEquals(user.name, "Pepita")
+	    assertEquals(user.name,     "Pepita")
 		assertEquals(user.lastName, "LaGolondrina")
 		assertEquals(user.userName, "PepitaUser")
-		assertEquals(user.mail, "pepita@gmail.com")
+		assertEquals(user.mail,     "pepita@gmail.com")
 		assertTrue(user.validate)
 	}
 	
@@ -136,15 +139,17 @@ class TestUserService {
 		
 		serviceTest.singUp("Pepita","LaGolondrina","pepitaUser","pepita@gmail.com", "password",new Date())
 		
-		assertEquals(serviceTest.signIn("pepitaUser","password"), 
-		"El usuario o la contrasenia introducidos no son correctos")
+		serviceTest.signIn("pepitaUser","password")
+
+		fail()
 	}
 	
 	@Test(expected=typeof(RuntimeException))
 	def test009UnUsuarioNoSeLogueaExitosamentePorqueNoExiste(){
 		
-		assertEquals(serviceTest.signIn("usuarioNoExistente","passwordNoExistente"), 
-		"El usuario o la contrasenia introducidos no son correctos")
+		serviceTest.signIn("usuarioNoExistente","passwordNoExistente")
+		
+		fail()
 	}
 	
 	@Test 
@@ -156,7 +161,7 @@ class TestUserService {
 		
 		var userExample      = new User
         userExample.userName = "pepitaUser"
-		var user = userDAO.load(userExample)
+		var user = serviceTest.loadUser(userExample)
 		
 	    assertEquals(user.userPassword, "newPassword")
 	}
@@ -178,7 +183,6 @@ class TestUserService {
 		serviceTest.changePassword("userFaild","password","newPassword")
 		// Error = "El usuario o la contrasenia introducidos no son correctos"
 	}
-
 	
 	@After
 	def void tearDown(){

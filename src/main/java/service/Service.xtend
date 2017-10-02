@@ -10,10 +10,10 @@ import Excepciones.InvalidValidationCode
 
 class Service implements UserService {
 	
-	protected UserDAO	      userDAO
-	EmailService  mailSender
-	MailGenerator generadorDeMail
-	CodeGenerator generadorDeCodigo
+	protected UserDAO userDAO
+	EmailService  	  mailSender
+	MailGenerator	  generadorDeMail
+	CodeGenerator 	  generadorDeCodigo
 	
 	new(UserDAO userDao, MailGenerator unGeneradorDeMail, CodeGenerator unGeneradorDeCodigo, EmailService unMailService) {
 		userDAO           = userDao
@@ -29,40 +29,33 @@ class Service implements UserService {
 		if(existeUsuarioCon(userName, mail)) {
 			throw new ExceptionUsuarioExistente("no se puede registrar el Usuario")
 		} 
-		
-		
 		var usuario          = new User(name, lastName, userName, mail, password, birthDate)
 		var codigo 		     = generadorDeCodigo.generarCodigo
 		var validationCode   = codigo + userName
-		usuario.validateCode =validationCode
+		usuario.validateCode = validationCode
 		var aMail            = generadorDeMail.generarMail(validationCode, mail)
 		mailSender.send(aMail)
-		
 		saveUser(usuario)//flag
-		
 		usuario
-	
 	}
 	
-
-
-	
-
 	//abtracta y se redifine su load y update
 	override validate(String code) {
 		
-			var userExample    	     = new User()
-			userExample.validateCode = code
-			var user             	 = loadUser(userExample)//flag
+			var user = searchUserForCode(code) //redefinir
 			
 			isUserNull(user,new InvalidValidationCode("El codigo no es correcto"))
 			
 			user.validateAccount
-			updateUser(user)//
+			updateUser(user)
 			true		
 	}
-
 	
+	def searchUserForCode(String code) {
+		var userExample    	     = new User()
+		userExample.validateCode = code
+		loadUser(userExample)//flag
+	}
 	
 	//a la abtracta solo se redifine su userDao load
 	override signIn(String username, String password) {
@@ -77,34 +70,30 @@ class Service implements UserService {
 			throw new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos")
 		}
 		user 
-
 	}
-	
 	
 	override changePassword(String userName, String oldPassword, String newPassword) {
-		if (oldPassword.equals(newPassword)) throw new IdenticPasswords("Las contraseñas no tienen que ser las mismas")
-	
+		
+		if (oldPassword.equals(newPassword)) {
+	    	throw new IdenticPasswords("Las contraseñas no tienen que ser las mismas")
+	    }
 		//HABLAR
-		val userExample		 	= new User 
-		userExample.userName 	= userName
-		//userExample.userPassword= oldPassword
+		val userExample		 	 = new User 
+		userExample.userName 	 = userName
+		userExample.userPassword = oldPassword
 	
 		var user = loadUser(userExample)//flag
+		
 		isUserNull(user,new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos"))
-	
+
 		user.userPassword = newPassword
 		
-		updateUser(user)//flag
-		
+		updateUser(user)//flag	
 	}
 	
-
 	def void isUserNull(User user, RuntimeException exception) {
 		if(user==null) throw exception
 	}
-	
-
-	
 
 	def existeUsuarioCon(String userName, String mail){
 		var userExampleWithUserName	 = new User
