@@ -35,12 +35,15 @@ class TestUserService {
 		when(unGeneradorDeCodigo.generarCodigo).thenReturn("1234567890")
 		when(generatorMail.generarMail("1234567890pepitaUser","pepitagolondrina@gmail.com")).thenReturn(unMail)
 		userDAO       = new HibernateUserDAO
-//		userDAO       = new JDBCUserDAO
 	    unMailService = new Postman
 	    generatorMail = new SimpleMailer
-//		serviceTest   = new Service(userDAO, generatorMail, unGeneradorDeCodigo, unMailService)
 		serviceTest   = new ServiceHibernate(userDAO, generatorMail, unGeneradorDeCodigo, unMailService)
 		userTest      = new User("Pepita","LaGolondrina","PepitaUser","pepitagolondrina@gmail.com","password",new Date())
+	}
+	
+	def setHibernate(){
+		userDAO       = new JDBCUserDAO
+		serviceTest   = new Service(userDAO, generatorMail, unGeneradorDeCodigo, unMailService)
 	}
 
 	@Test
@@ -113,9 +116,9 @@ class TestUserService {
 	@Test(expected=InvalidValidationCode)
 	def test006UnUsuarioAlValidaSuCodigoNoExisteDichoCodigo(){
 
-		serviceTest.singUp("Pepita","LaGolondrina","pepita","pepita@gmail.com", "password",new Date())
+		val user = serviceTest.singUp("Pepita","LaGolondrina","pepita","pepita@gmail.com", "password",new Date())
 
-		serviceTest.validate("1234567890pepitaUser")
+		serviceTest.validate(user.validateCode)
 		
 		fail()
 	}
@@ -123,15 +126,15 @@ class TestUserService {
 	@Test 
 	def test007UnUsuarioSeLogueaExitosamente(){
 		
-		serviceTest.singUp("Pepita","LaGolondrina","pepitaUser","pepita@gmail.com", "password",new Date())
-		serviceTest.validate("1234567890pepitaUser")
+		val user = serviceTest.singUp("Pepita","LaGolondrina","pepitaUser","pepita@gmail.com", "password",new Date())
+		serviceTest.validate(user.validateCode)
 		
-		val user = serviceTest.signIn("pepitaUser","password")
+		val userSignIn = serviceTest.signIn("pepitaUser","password")
 		
-	    assertEquals(user.name, "Pepita")
-		assertEquals(user.lastName, "LaGolondrina")
-		assertEquals(user.userName, "pepitaUser")
-		assertEquals(user.mail, "pepita@gmail.com")
+	    assertEquals(userSignIn.name,     "Pepita")
+		assertEquals(userSignIn.lastName, "LaGolondrina")
+		assertEquals(userSignIn.userName, "pepitaUser")
+		assertEquals(userSignIn.mail,     "pepita@gmail.com")
 	}
 	
 	@Test(expected=typeof(RuntimeException))

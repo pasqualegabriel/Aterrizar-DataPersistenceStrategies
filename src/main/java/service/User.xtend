@@ -13,10 +13,12 @@ import javax.persistence.OneToOne
 import javax.persistence.JoinColumn
 import Busqueda.Busqueda
 import javax.persistence.Column
+import javax.persistence.FetchType
 
 @Accessors
 @Entity
 class User {
+
 
 	String 	name
 	String 	lastName
@@ -37,7 +39,7 @@ class User {
 	@JoinColumn(name="id")
 	Reserva reserva 
 
-	@OneToMany(cascade=CascadeType.ALL)
+	@OneToMany(cascade=CascadeType.ALL, fetch= FetchType.LAZY)
 	List<Busqueda> busquedas =newArrayList
 
 	new(){
@@ -57,6 +59,7 @@ class User {
 		this.birthDate    = birthDate
 		this.validate     = false
 		this.validateCode = ""
+		
 
 	}
 	

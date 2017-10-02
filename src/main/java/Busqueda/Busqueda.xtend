@@ -8,6 +8,8 @@ import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import javax.persistence.CascadeType
 import javax.persistence.GeneratedValue
+import service.User
+import javax.persistence.FetchType
 
 @Accessors
 @Entity
@@ -26,6 +28,9 @@ class Busqueda {
 	
 	@ManyToOne(cascade=CascadeType.ALL)
 	Orden    orden
+	
+	@ManyToOne(fetch= FetchType.LAZY, cascade=CascadeType.ALL)
+	User     user
 	
 	new(){
 		super()

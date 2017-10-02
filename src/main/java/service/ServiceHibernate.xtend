@@ -32,15 +32,33 @@ class ServiceHibernate extends Service {
 	}
 	
 	override existeUsuarioCon(String userName, String mail){
-		var userExampleWithUserName	 = new User
-		userExampleWithUserName.userName = userName
-		var user = loadUser(userExampleWithUserName)
-		
-		var User userMail = searchUserForMail(mail)
-		
-		userMail != null || user != null
+		var user = searchUserForUserNameAndMail(userName, mail)
+		user != null
+//		var userExampleWithUserName	 = new User
+//		userExampleWithUserName.userName = userName
+//		var user = loadUser(userExampleWithUserName)
+//		
+//		var User userMail = searchUserForMail(mail)
+//		
+//		userMail != null || user != null
 	}
 	
+	def searchUserForUserNameAndMail(String userName, String mail) {
+		Runner.runInSession[{
+			
+			val session = Runner.getCurrentSession
+		
+			var hql = "FROM User u WHERE u.mail = '" + mail + "'" + " and u.userMail = '" + userName + "'"
+		
+			var Query<User> query =  session.createQuery(hql, User)
+			
+			if(query.getResultList.size == 0){
+				return null
+			}
+			return query.resultList.get(0)
+		}]
+	}
+	// si, no 
 	def searchUserForMail(String mail) {
 		Runner.runInSession[{
 			

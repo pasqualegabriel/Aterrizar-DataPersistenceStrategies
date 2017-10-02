@@ -322,44 +322,44 @@ class TestHibernateBusqueda {
 //		
 //	}
 //
-//	@Test
-//	def void testUnUsurioRealizaDosBusquedas(){
-//		
-//		val filtroSimple1     = new FiltroSimple(new CampoAerolinea,"Aterrizar") 
-//		val filtroSimple2     = new FiltroSimple(new CampoOrigen,   "Mendoza")
-//		val filtroSimple3     = new FiltroSimple(new CampoAerolinea,"Aterrizar") 
-//		val filtroSimple4     = new FiltroSimple(new CampoOrigen,   "Mendoza")  
-//		
-//		val filtroCompuesto   = new FiltroOr(filtroSimple1, filtroSimple2)
-//		val filtroCompuesto2  = new FiltroAnd(filtroSimple3,filtroSimple4)
-//		
-//		val  escala      	  = new Duracion 
-//		val  ascendente       = new Ascendente
-//		val  escala2      	  = new Duracion 
-//		val  ascendente2       = new Ascendente  
-//		
-//		busqueda              = new Busqueda(filtroCompuesto, escala, ascendente)
-//		val	busqueda2		  = new Busqueda(filtroCompuesto2, escala2, ascendente2)
-//		Runner.runInSession[ {
-//			
-//			val sessionAsiento = Runner.currentSession
-//			sessionAsiento.save(asiento1)
-//			sessionAsiento.save(asiento2)
-//						
-//			userDAO.save(usuario)
-//			
-//			busquedaService.buscar(busqueda, usuario)
-//			//busquedaService.buscar(busqueda, usuario)
-//			busquedaService.buscar(busqueda2, usuario)
-//			//for(var i=0;i<10;i++){busquedaService.buscar(busqueda, usuario)}
-//			assertEquals(busquedaService.list(usuario).size, 2)
-////			assertTrue(busquedaService.list(usuario).stream.anyMatch[it.filtro.equals(filtroCompuesto)])
-////			assertTrue(busquedaService.list(usuario).stream.anyMatch[it.criterio.equals(escala)])
-////			assertTrue(busquedaService.list(usuario).stream.anyMatch[it.orden.equals(ascendente)])
-//			null
-//		}]
-//		
-//	}
+	@Test
+	def void testUnUsurioRealizaDosBusquedas(){
+		
+		val filtroSimple1     = new FiltroSimple(new CampoAerolinea,"Aterrizar") 
+		val filtroSimple2     = new FiltroSimple(new CampoOrigen,   "Mendoza")
+		val filtroSimple3     = new FiltroSimple(new CampoAerolinea,"Aterrizar") 
+		val filtroSimple4     = new FiltroSimple(new CampoOrigen,   "Mendoza")  
+		
+		val filtroCompuesto   = new FiltroOr(filtroSimple1, filtroSimple2)
+		val filtroCompuesto2  = new FiltroAnd(filtroSimple3,filtroSimple4)
+		
+		val  escala      	  = new Duracion 
+		val  ascendente       = new Ascendente
+		val  escala2      	  = new Duracion 
+		val  ascendente2       = new Ascendente  
+		
+		busqueda              = new Busqueda(filtroCompuesto, escala, ascendente)
+		val	busqueda2		  = new Busqueda(filtroCompuesto2, escala2, ascendente2)
+		Runner.runInSession[ {
+
+			val sessionAsiento = Runner.currentSession
+			sessionAsiento.save(asiento1)
+			sessionAsiento.save(asiento2)
+						
+			userDAO.save(usuario)
+	
+			busquedaService.buscar(busqueda, usuario)
+			//busquedaService.buscar(busqueda, usuario)
+			busquedaService.buscar(busqueda2, usuario)
+			//for(var i=0;i<10;i++){busquedaService.buscar(busqueda, usuario)}
+			assertEquals(busquedaService.list(usuario).size, 2)
+//			assertTrue(busquedaService.list(usuario).stream.anyMatch[it.filtro.equals(filtroCompuesto)])
+//			assertTrue(busquedaService.list(usuario).stream.anyMatch[it.criterio.equals(escala)])
+//			assertTrue(busquedaService.list(usuario).stream.anyMatch[it.orden.equals(ascendente)])
+			null
+		}]
+		
+	}
 	
 	@After
 	def void tearDown(){

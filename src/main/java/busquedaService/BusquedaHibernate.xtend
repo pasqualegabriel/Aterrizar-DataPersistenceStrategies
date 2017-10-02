@@ -40,22 +40,23 @@ class BusquedaHibernate implements BusquedaService{
 
 	override list(User usuario) {
 		
-
-		
 		val session = Runner.getCurrentSession
-		var s = " (select busquedas_id as id from User_Busqueda u where u.User_name = '" + usuario.name + "')"
-		
 		
 		var hql = "from Busqueda b " + 
-                 "where b.id in" + s
+                  "where b.user in"     + 
+                  " (from User u where u.userName = '" + 
+                  usuario.userName + "')"
+
+//		var hql = //"Select u.busquedas " +
+//				  "from User u " + 
+//                  "where u.userName = '"+ usuario.userName + "')"
 
 //		var hql = "select a.id, a.criterio_id, a.orden_id  FROM Busqueda a " + 
 //		" leaf join (from User_Busqueda u where User_name = '" + usuario.name + "') b" +
 //       				" ON b.busquedas_id = a.id order by a.id desc"
-//		
+
 		var Query<Busqueda> query =  session.createQuery(hql, Busqueda)
 		query.getResultList
-
 	}
 		
 	
