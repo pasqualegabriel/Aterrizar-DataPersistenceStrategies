@@ -32,55 +32,42 @@ class ServiceHibernate extends Service {
 	}
 	
 	override existeUsuarioCon(String userName, String mail){
+		
 		var user = searchUserForUserNameAndMail(userName, mail)
-		user != null
-//		var userExampleWithUserName	 = new User
-//		userExampleWithUserName.userName = userName
-//		var user = loadUser(userExampleWithUserName)
-//		
-//		var User userMail = searchUserForMail(mail)
-//		
-//		userMail != null || user != null
+		
+		user != null	 
 	}
 	
 	def searchUserForUserNameAndMail(String userName, String mail) {
-		Runner.runInSession[{
-			
-			val session = Runner.getCurrentSession
-		
-			var hql = "FROM User u WHERE u.mail = '" + mail + "'" + " and u.userMail = '" + userName + "'"
-		
-			var Query<User> query =  session.createQuery(hql, User)
-			
-			if(query.getResultList.size == 0){
-				return null
-			}
-			return query.resultList.get(0)
-		}]
+
+		searchUserHibernate("FROM User u WHERE u.mail = '" + mail + "'" + " or u.userName = '" + userName + "'")
+
 	}
-	// si, no 
+
+	override searchUserForUserNameAndPassword(String userName, String oldPassword){
+
+		searchUserHibernate( "FROM User u WHERE u.userPassword = '" + oldPassword + "'" + " and u.userName = '" + userName + "'") 
+
+	}
+
 	def searchUserForMail(String mail) {
-		Runner.runInSession[{
-			
-			val session = Runner.getCurrentSession
-		
-			var hql = "FROM User u WHERE u.mail = '" + mail + "'"
-		
-			var Query<User> query =  session.createQuery(hql, User)
-			
-			if(query.getResultList.size == 0){
-				return null
-			}
-			return query.resultList.get(0)
-		}]
+	
+		searchUserHibernate("FROM User u WHERE u.mail = '" + mail + "'")
+
 	}
 	
 	override searchUserForCode(String code) {
+
+		searchUserHibernate("FROM User u WHERE u.validateCode = '" + code + "'")
+	}
+	
+	
+	def searchUserHibernate(String queryHql) {
 		Runner.runInSession[{
 			
 			val session = Runner.getCurrentSession
 		
-			var hql = "FROM User u WHERE u.validateCode = '" + code + "'"
+			var hql = queryHql
 		
 			var Query<User> query =  session.createQuery(hql, User)
 			

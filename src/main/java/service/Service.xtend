@@ -23,7 +23,6 @@ class Service implements UserService {
 		
 	}
 	
-	//en una abtrascta solo se redifine el save
 	override singUp(String name, String lastName, String userName, String mail, String password, Date birthDate) {
 		
 		if(existeUsuarioCon(userName, mail)) {
@@ -35,36 +34,30 @@ class Service implements UserService {
 		usuario.validateCode = validationCode
 		var aMail            = generadorDeMail.generarMail(validationCode, mail)
 		mailSender.send(aMail)
-		saveUser(usuario)//flag
+		saveUser(usuario)
 		usuario
 	}
 	
-	//abtracta y se redifine su load y update
 	override validate(String code) {
 		
-			var user = searchUserForCode(code) //redefinir
+		var user = searchUserForCode(code)
 			
-			isUserNull(user,new InvalidValidationCode("El codigo no es correcto"))
+		isUserNull(user,new InvalidValidationCode("El codigo no es correcto"))
 			
-			user.validateAccount
-			updateUser(user)
-			true		
+		user.validateAccount
+		updateUser(user)
+		true		
 	}
 	
 	def searchUserForCode(String code) {
 		var userExample    	     = new User()
 		userExample.validateCode = code
-		loadUser(userExample)//flag
+		loadUser(userExample)
 	}
 	
-	//a la abtracta solo se redifine su userDao load
 	override signIn(String username, String password) {
-		
-		val userExample				= new User	
-		userExample.userName 		= username
-		userExample.userPassword 	= password
 		  
-		var user = loadUser(userExample)//flag
+		var user = searchUserForUserNameAndPassword(username, password)
 		  
 		if(user== null || !user.validate){
 			throw new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos")
@@ -77,18 +70,23 @@ class Service implements UserService {
 		if (oldPassword.equals(newPassword)) {
 	    	throw new IdenticPasswords("Las contraseñas no tienen que ser las mismas")
 	    }
-		//HABLAR
-		val userExample		 	 = new User 
-		userExample.userName 	 = userName
-		userExample.userPassword = oldPassword
 	
-		var user = loadUser(userExample)//flag
+		var user = searchUserForUserNameAndPassword(userName, oldPassword)
 		
 		isUserNull(user,new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos"))
 
 		user.userPassword = newPassword
 		
-		updateUser(user)//flag	
+		updateUser(user)
+	}
+	
+	def searchUserForUserNameAndPassword(String userName, String password){
+		
+		val userExample		 	 = new User 
+		userExample.userName 	 = userName
+		userExample.userPassword = password
+	
+		loadUser(userExample)
 	}
 	
 	def void isUserNull(User user, RuntimeException exception) {
