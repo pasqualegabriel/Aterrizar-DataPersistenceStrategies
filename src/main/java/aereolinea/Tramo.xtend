@@ -18,10 +18,12 @@ class Tramo {
 	@GeneratedValue
 	int id
 	 
-	@OneToMany
+	@OneToMany(mappedBy="tramo")
 	List<Asiento> asientos = newArrayList
+	
 	@ManyToOne(cascade=CascadeType.ALL)
 	Destino destinoOrigen
+	
 	@ManyToOne(cascade=CascadeType.ALL)
 	Destino destinoLlegada
 	
@@ -29,8 +31,10 @@ class Tramo {
 	LocalDateTime fechaDeLlegada
 	LocalDateTime fechaDeSalida
 	Double precio
+	
 	@ManyToOne(cascade=CascadeType.ALL)
 	Vuelo vuelo
+	
 	int duracion
 	
 	new(){

@@ -12,39 +12,52 @@ import aereolinea.Asiento
 import aereolinea.Tramo
 import categorias.Business
 import categorias.Primera
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
 import dao.UserDAO
 import aereolinea.Vuelo
 import aereolinea.Aereolinea
 import aereolinea.Destino
 import java.time.LocalDateTime
+import daoImplementacion.HibernateUserDAO
+import org.junit.After
+import java.util.Date
+import runner.Runner
 
 class TestReservaCompraDeAsientos {
 	
 	AsientoService 	testReservaCompraDeAsientos
 	Asiento			asientoDoc
 	User			usuarioDoc
-	List<Asiento>	asientosDoc=newArrayList
+	User            usuarioVegetaDoc
+	List<Asiento>	asientosDoc
 	Reserva 		reserva
-	@Mock UserDAO   userDAO
+	UserDAO         userDAO
 	Vuelo           vuelo
+	Aereolinea      aereolinea
 	
 	@Before
 	def void setUp(){
-		MockitoAnnotations.initMocks(this)
-		vuelo           = new Vuelo(new Aereolinea)
+		userDAO						= new HibernateUserDAO
+		asientosDoc					= newArrayList
+		aereolinea					= new Aereolinea("Aterrizar")
+		vuelo          				= new Vuelo(aereolinea)
+		aereolinea.vuelosOfertados.add(vuelo)
 		testReservaCompraDeAsientos	= new ReservaCompraDeAsientos(userDAO)
 		asientoDoc					= new Asiento(new Tramo(200.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista)
-		usuarioDoc					= new User
+		usuarioVegetaDoc            = new User("Vegeta","Saiyan","vegetaUser","vegeta@gmail.com","VegetaPassword",new Date())
+		usuarioDoc					= new User("Pepita","LaGolondrina","euforica","pepitagolondrina@gmail.com", "password", new Date)
 		reserva						= new Reserva
 		asientosDoc.add(new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista))
 		asientosDoc.add(new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista))
 		
+		Runner.runInSession[{
+			userDAO.save(usuarioDoc)
+			userDAO.save(usuarioVegetaDoc)
+			null
+		}]
 	}
 	
 	@Test
-	def testUnaReservaCompraDeAsientosPuedeReservarUnAsientoParaUnUsuarioExitosamente(){
+	def void testUnaReservaCompraDeAsientosPuedeReservarUnAsientoParaUnUsuarioExitosamente(){
 		
 		var reservaResultado = testReservaCompraDeAsientos.reservar(asientoDoc,usuarioDoc)
 			
@@ -80,7 +93,7 @@ class TestReservaCompraDeAsientos {
 	}
 	
 	@Test
-	def test004UnTestReservaCompraDeAsientosPuedeRealizarUnaCompraParaUnUsuarioExitosamente(){
+	def void test004UnTestReservaCompraDeAsientosPuedeRealizarUnaCompraParaUnUsuarioExitosamente(){
 		
 		assertTrue(usuarioDoc.compras.isEmpty)
 		var reservaResultado = testReservaCompraDeAsientos.reservarAsientos(asientosDoc, usuarioDoc)
@@ -92,6 +105,13 @@ class TestReservaCompraDeAsientos {
 		assertTrue(asientosDoc.stream.allMatch[it.duenio.equals(usuarioDoc)])
 		assertTrue(usuarioDoc.compras.contains(compraResultado))
 		assertEquals(usuarioDoc.monedero,80, 0.00000000001)
+		
+		Runner.runInSession[{
+			assertNull(userDAO.load(usuarioDoc).compras.get(0).asientos.get(0).reserva)
+			
+			null
+		}]
+		
 		
 	}
 	
@@ -121,14 +141,15 @@ class TestReservaCompraDeAsientos {
 	
 	@Test
 	def test007UnTestReservaDevuelvelLosAsientosDisponiblesDeUnTramo(){
-		var unUsuario = new User
+		
+		
 		var asiento1 = new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista)
 		var asiento2 = new Asiento(new Tramo(200.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Business)
 		var asiento3 = new Asiento(new Tramo(300.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Primera)
 		
-		unUsuario.monedero = 2000.00
+		usuarioVegetaDoc.monedero = 2000.00
 		usuarioDoc.monedero = 2000.00
-		testReservaCompraDeAsientos.reservar(asiento1,unUsuario)
+		testReservaCompraDeAsientos.reservar(asiento1,usuarioVegetaDoc)
 		
 		var reservaResultado = testReservaCompraDeAsientos.reservar(asiento2,usuarioDoc)
 		testReservaCompraDeAsientos.comprar(reservaResultado, usuarioDoc)
@@ -142,7 +163,11 @@ class TestReservaCompraDeAsientos {
 
 
 	}
-
+	
+	@After
+	def void tearDown(){
+		userDAO.clearAll
+	}
 	
 }
 

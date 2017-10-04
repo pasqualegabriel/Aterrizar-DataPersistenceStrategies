@@ -11,7 +11,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 abstract class Filtro {
 	
 	@Id
-	@Column(name="id")
+	@Column(name="filtro_id")
     @GeneratedValue
 	int id
 	

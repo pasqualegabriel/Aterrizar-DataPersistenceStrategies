@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.ManyToOne
 import javax.persistence.Entity
 import javax.persistence.OneToOne
-import javax.persistence.JoinTable
+
 import javax.persistence.CascadeType
 import javax.persistence.FetchType
 
@@ -30,7 +30,6 @@ class Asiento {
 	Categoria categoria
 	
 	@OneToOne
-	@JoinTable(name="name")
 	User      duenio
 	
 	 
@@ -69,6 +68,15 @@ class Asiento {
 	
 	def String nombreCategoria() {
 		categoria.nombreCategoria
+	}
+	
+	def agregarReserva(Reserva unaReserva) {
+		reserva=unaReserva
+	}
+	
+	
+	def void eliminarReserva() {
+		reserva =null
 	}
 	
 }

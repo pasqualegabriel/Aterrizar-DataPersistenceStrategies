@@ -35,6 +35,10 @@
 		<mapping class="Busqueda.Filtro"/> 
 		<mapping class="Busqueda.FiltroSimple"/> 
 		<mapping class="Busqueda.FiltroCompuesto"/> 
+		<mapping class="Busqueda.Comparator"/> 
+		<mapping class="Busqueda.ComparatorOr"/> 
+		<mapping class="Busqueda.ComparatorAnd"/> 
+		
 		<mapping class="Busqueda.Campo"/>
 		<mapping class="Busqueda.CampoAerolinea"/> 
 		<mapping class="Busqueda.CampoCategoria"/> 
@@ -42,8 +46,6 @@
 		<mapping class="Busqueda.CampoOrigen"/> 
 		<mapping class="Busqueda.FechaDeLlegada"/> 
 		<mapping class="Busqueda.FechaDeSalida"/>  
-		<mapping class="Busqueda.FiltroAnd"/> 
-		<mapping class="Busqueda.FiltroOr"/> 
 		<mapping class="Busqueda.Criterio"/> 
 		<mapping class="Busqueda.Costo"/> 
 		<mapping class="Busqueda.Escala"/> 

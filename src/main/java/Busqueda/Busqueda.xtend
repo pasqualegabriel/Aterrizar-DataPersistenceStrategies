@@ -4,7 +4,6 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.OneToOne
-import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import javax.persistence.CascadeType
 import javax.persistence.GeneratedValue
@@ -17,19 +16,18 @@ class Busqueda {
 	
 	@Id
 	@GeneratedValue
-	int      id
+	public int      id
 	
-	@OneToOne
-	@JoinColumn(name="id")
+	@OneToOne(fetch= FetchType.EAGER, cascade=CascadeType.ALL)
 	Filtro   filtro
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(fetch= FetchType.EAGER,cascade=CascadeType.ALL)
 	Criterio criterio
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(fetch= FetchType.EAGER,cascade=CascadeType.ALL)
 	Orden    orden
 	
-	@ManyToOne(fetch= FetchType.LAZY, cascade=CascadeType.ALL)
+	@ManyToOne(fetch= FetchType.EAGER, cascade=CascadeType.ALL)
 	User     user
 	
 	new(){
@@ -50,8 +48,13 @@ class Busqueda {
 	def queryCriterio() {
 		criterio.criterio
 	}
+	def void setUsuario(User unUser){
+		user=unUser
+	}
+	
 	
 	def queryOrden() {
+	
 		orden.orden
 	}
 	

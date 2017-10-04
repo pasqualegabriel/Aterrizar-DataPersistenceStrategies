@@ -11,44 +11,92 @@ import org.junit.After
 import runner.Runner
 import asientoServicio.Compra
 import aereolinea.Asiento
-import java.util.ArrayList
 import dao.UserDAO
 import daoImplementacion.HibernateUserDAO
+import aereolinea.Tramo
+import asientoServicio.Reserva
+import aereolinea.Vuelo
+import aereolinea.Aereolinea
+import aereolinea.Destino
+import java.time.LocalDateTime
+import categorias.Turista
 
 class TestHibernateUserDAO {
 		
-	UserDAO userDAO
-	User    userTest
-	
+	UserDAO 		userDAOSuj
+	User    		userDoc
+	Asiento 	    asientoDoc
+	Tramo		    tramoDoc
+	Reserva			reservaDoc
+	Vuelo           vueloDoc
+	Aereolinea		aereolineaDoc
+	Compra			compraDoc
 	@Before
 	def void setUp(){
-		userDAO  = new HibernateUserDAO
-		userTest = new User("Pepita","LaGolondrina","euforica","pepitagolondrina@gmail.com", "password", new Date())
-		
+		userDAOSuj  	= new HibernateUserDAO
+		userDoc 		= new User("Pepita","LaGolondrina","euforica","pepitagolondrina@gmail.com", "password", new Date())
+		aereolineaDoc 	= new Aereolinea("Aterrizar")
+		vueloDoc		= new Vuelo(aereolineaDoc)
+		tramoDoc		= new Tramo(10.00, vueloDoc, new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00))	
+		asientoDoc		= new Asiento(tramoDoc,new Turista)
+		reservaDoc		= new Reserva
+		var asientos	= newArrayList
+		asientos.add(asientoDoc)
+		compraDoc		= new Compra(asientos,userDoc)
+		userDoc.agregarCompra(compraDoc)
+		userDoc.reserva = reservaDoc
+	
 	}
 	
 	@Test
-	def void testAlGuardarYLuegoRecuperarSeObtieneObjetosSimilares() {
-		userTest.agregarCompra(new Compra(new ArrayList<Asiento>,userTest))
-	
+	def void testAlGuardarYLuegoRecuperarSeObtieneObjetosSimilares() {		
+
 		Runner.runInSession[ {
 	
-			userDAO.save(userTest)
+			userDAOSuj.save(userDoc)
 			
-			var otherUser = userDAO.load(userTest)
-		
-			assertEquals(userTest.name, otherUser.name)
-			assertEquals(userTest.lastName, otherUser.lastName)
-			assertEquals(userTest.userName, otherUser.userName)
-			assertEquals(userTest.mail, otherUser.mail)
-			assertEquals(userTest.birthDate, otherUser.birthDate)
-			assertEquals(userTest.validate, otherUser.validate)
+			var otherUser = userDAOSuj.load(userDoc)
+			
+			assertEquals(userDoc.reserva,otherUser.reserva)
+			assertEquals(userDoc.compras,otherUser.compras)
+			assertEquals(userDoc.name, otherUser.name)
+			assertEquals(userDoc.lastName, otherUser.lastName)
+			assertEquals(userDoc.userName, otherUser.userName)
+			assertEquals(userDoc.mail, otherUser.mail)
+			assertEquals(userDoc.birthDate, otherUser.birthDate)
+			assertEquals(userDoc.validate, otherUser.validate)
 
-			assertTrue(userTest == otherUser)
+			assertTrue(userDoc == otherUser)
 			
 			null
 		}]
 		
+	}
+		
+	@Test
+	def void testAlHacerUnSaveYCerrarLaSeccionCuandoAbrimosUnaNuevaYHacemosLoadLasIntanciasSonDiferentes() {
+	
+		Runner.runInSession[ {
+	
+			userDAOSuj.save(userDoc)
+			null
+		}]
+	
+		Runner.runInSession[ {
+			
+			var otherUser = userDAOSuj.load(userDoc)
+		
+			assertEquals(userDoc.name, otherUser.name)
+			assertEquals(userDoc.lastName, otherUser.lastName)
+			assertEquals(userDoc.userName, otherUser.userName)
+			assertEquals(userDoc.mail, otherUser.mail)
+			//assertEquals(userTest.birthDate, otherUser.birthDate)
+			assertEquals(userDoc.validate, otherUser.validate)
+
+			assertTrue(userDoc != otherUser)
+			
+			null
+		}]
 	}
 	
 	@Test
@@ -56,15 +104,15 @@ class TestHibernateUserDAO {
 	
 		Runner.runInSession[ {
 	
-			userDAO.save(userTest)
+			userDAOSuj.save(userDoc)
 			
-			assertEquals(userTest.lastName, "LaGolondrina")
+			assertEquals(userDoc.lastName, "LaGolondrina")
 			
-			userTest.lastName = "newUserName"
+			userDoc.lastName = "newUserName"
 			
-			userDAO.update(userTest)
+			userDAOSuj.update(userDoc)
 			
-			var otherUser = userDAO.load(userTest)
+			var otherUser = userDAOSuj.load(userDoc)
 
 			assertEquals(otherUser.lastName, "newUserName")
 
@@ -72,36 +120,11 @@ class TestHibernateUserDAO {
 		}]
 		
 	}
-	
-	@Test
-	def void testAlHacerUnSaveYCerrarLaSeccionCuandoAbrimosUnaNuevaYHacemosLoadLasIntanciasSonDiferentes() {
-	
-		Runner.runInSession[ {
-	
-			userDAO.save(userTest)
-			null
-		}]
-	
-		Runner.runInSession[ {
-			
-			var otherUser = userDAO.load(userTest)
-		
-			assertEquals(userTest.name, otherUser.name)
-			assertEquals(userTest.lastName, otherUser.lastName)
-			assertEquals(userTest.userName, otherUser.userName)
-			assertEquals(userTest.mail, otherUser.mail)
-			//assertEquals(userTest.birthDate, otherUser.birthDate)
-			assertEquals(userTest.validate, otherUser.validate)
 
-			assertTrue(userTest != otherUser)
-			
-			null
-		}]
-	}
 	
 	@After
 	def void tearDown(){
-		userDAO.clearAll
+		userDAOSuj.clearAll
 	}
 }
 

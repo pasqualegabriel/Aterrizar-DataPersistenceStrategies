@@ -14,7 +14,7 @@ class Aereolinea {
 	@Id
 	String nombre
 	
-	@OneToMany
+	@OneToMany(mappedBy="aerolinea")
 	List<Vuelo> vuelosOfertados = newArrayList
 	
 	new(){

@@ -10,41 +10,35 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne
-import javax.persistence.JoinColumn
-import Busqueda.Busqueda
-import javax.persistence.Column
-import javax.persistence.FetchType
+
 
 @Accessors
 @Entity
 class User {
 
-
+	@Id
+	String 	userName
 	String 	name
 	String 	lastName
-	@Id
-	@Column(name="userName")
-	String 	userName
 	String 	userPassword
 	String 	mail
 	Date 	birthDate
 	Boolean validate
 	String  validateCode
 	Double  monedero
+	Double gastoTotal
 	
 	@OneToMany(mappedBy="comprador", cascade=CascadeType.ALL)
 	List<Compra> compras   =newArrayList
 	
 	@OneToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="id")
+	//@JoinColumn(name="id")
 	Reserva reserva 
-
-	@OneToMany(cascade=CascadeType.ALL, fetch= FetchType.LAZY)
-	List<Busqueda> busquedas =newArrayList
 
 	new(){
 		super()
 		monedero		  = 0.00
+		gastoTotal		  = 0.00
 		reserva  		  = null
 		
 	}
@@ -72,8 +66,17 @@ class User {
 		reserva = null
 	}
 	
-	def agregarBusqueda(Busqueda busqueda) {
-		busquedas.add(busqueda)
+	def getPuedeEfectuarLaCompra(Reserva unReserva) {
+		monedero >= unReserva.calcularPrecio
 	}
+	
+	def efectuarCompra(Reserva unaReserva) {
+		var dineroGastado= unaReserva.calcularPrecio
+		monedero = monedero - dineroGastado
+		gastoTotal = gastoTotal + dineroGastado
+	}
+	
+
+	
 	
 }

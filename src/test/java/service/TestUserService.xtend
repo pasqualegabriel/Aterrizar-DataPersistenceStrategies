@@ -32,8 +32,8 @@ class TestUserService {
         unGeneradorDeCodigo = new RandomNumberGenerator
 	    unMailService = new Postman
 	    generatorMail = new SimpleMailer
-        setJDBC
-		//setHibernate
+        //setJDBC
+		setHibernate
 	}
 	
 	def setHibernate(){

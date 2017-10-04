@@ -3,19 +3,18 @@ import javax.persistence.Entity
 import org.eclipse.xtend.lib.annotations.Accessors
 import javax.persistence.ManyToOne
 import javax.persistence.CascadeType
-import javax.persistence.Id
-import javax.persistence.Column
-import javax.persistence.GeneratedValue
+import javax.persistence.FetchType
+
 
 @Accessors
 @Entity
 class FiltroSimple extends Filtro{
-	@Id
-	@Column(name="id")
-    @GeneratedValue
-	int id
-	String valor
-	@ManyToOne(cascade=CascadeType.ALL)
+
+	
+	public String valor
+	
+
+	@ManyToOne(fetch= FetchType.EAGER,cascade=CascadeType.ALL)
 	Campo campo
 	
 	
@@ -30,7 +29,7 @@ class FiltroSimple extends Filtro{
 	}
 	
 	override getFiltro() {
-		campo.campo + " = '" + valor + "'"
+		campo.campo + " = '" + valor + "'"	
 	}
 	
 	def getCampo(){

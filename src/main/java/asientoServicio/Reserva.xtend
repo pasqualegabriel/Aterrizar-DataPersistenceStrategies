@@ -21,7 +21,7 @@ class Reserva {
 	@GeneratedValue
 	@Column(name="id")
 	int id
-	@OneToMany(mappedBy="reserva", cascade=CascadeType.ALL)
+	@OneToMany(cascade=CascadeType.ALL)
 	List<Asiento> asientos	
 	
 	LocalDateTime horaRealizada	
@@ -29,7 +29,7 @@ class Reserva {
 	
 	
 	new(){
-		asientos = newArrayList	
+		asientos 		=   newArrayList	
 		estaValidado	=	true
 		horaRealizada	= 	LocalDateTime.now
 		
@@ -49,8 +49,19 @@ class Reserva {
 	def invalidar(){
 		estaValidado = false
 	}
+	
 	def void asignarleAsientos(List<Asiento> unosAsientos){
 		asientos.addAll(unosAsientos)
+		unosAsientos.stream.forEach(asiento|asiento.agregarReserva(this))
+	}
+	
+	def agregarAsiento(Asiento unAsiento) {
+		asientos.add(unAsiento)
+		unAsiento.agregarReserva(this)
+	}
+	
+	def eliminarAsientos() {
+		asientos=null
 	}
 	
 	

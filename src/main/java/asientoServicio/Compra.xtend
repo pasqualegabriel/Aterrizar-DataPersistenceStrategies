@@ -13,6 +13,7 @@ import javax.persistence.OneToMany
 import javax.persistence.FetchType
 
 import javax.persistence.CascadeType
+import aereolinea.Tramo
 
 @Accessors
 @Entity
@@ -27,6 +28,9 @@ class Compra {
 	@OneToMany(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	List<Asiento> asientos
 	
+	@ManyToOne(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
+	Tramo tramo
+	
 	new(){
 		super()
 
@@ -36,12 +40,15 @@ class Compra {
 		this()
 		comprador=unUsuario
 		asientos=unosAsientos
+		//modificar para que lo pase en el constructor
+		tramo= asientos.get(0).tramo
 		agregarDuenios(unUsuario)
 		
 	}
 	
 	def void agregarDuenios(User unUsuario) {
 		asientos.forEach[it.agregarDuenio(unUsuario)]
+		asientos.forEach[it.eliminarReserva]
 	}
 	
 }
