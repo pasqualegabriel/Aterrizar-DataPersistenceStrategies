@@ -10,32 +10,31 @@ import javax.persistence.GeneratedValue
 import javax.persistence.CascadeType
 import java.time.LocalDateTime
 
-
 @Accessors
 @Entity
 class Tramo {
 	@Id
 	@GeneratedValue
-	int id
+	public int		  id
 	 
 	@OneToMany(mappedBy="tramo")
 	List<Asiento> asientos = newArrayList
 	
 	@ManyToOne(cascade=CascadeType.ALL)
-	Destino destinoOrigen
+	Destino   destinoOrigen
 	
 	@ManyToOne(cascade=CascadeType.ALL)
-	Destino destinoLlegada
+	Destino   destinoLlegada
 	
 	 
-	LocalDateTime fechaDeLlegada
-	LocalDateTime fechaDeSalida
-	Double precio
+	LocalDateTime	  fechaDeLlegada
+	LocalDateTime 	  fechaDeSalida
+	Double 	  precio
 	
 	@ManyToOne(cascade=CascadeType.ALL)
-	Vuelo vuelo
+	Vuelo     vuelo
 	
-	int duracion
+	int       duracion
 	
 	new(){
 		super()
@@ -50,6 +49,7 @@ class Tramo {
 		fechaDeSalida  = unaFechaDeSalida
 		fechaDeLlegada = unaFechaDeLlegada
 		duracion 	   = Math.abs(fechaDeLlegada.toLocalTime.toSecondOfDay - fechaDeSalida.toLocalTime.toSecondOfDay) / 60
+	
 	}
 	
 	def asientosDisponibles() {

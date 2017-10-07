@@ -7,13 +7,13 @@ import aereolinea.Tramo
 
 interface AsientoService {
 	
-	def Reserva reservar(Asiento unAsiento, User unUser)
+	def Reserva reservar(Integer unAsiento, String unUser)
 	
-	def Reserva reservarAsientos(List<Asiento> unosAsientos, User unUsuario)
+	def Reserva reservarAsientos(List<Integer> unosAsientos, String unUsuario)
 	
-	def Compra comprar( Reserva unaReserva, User unUsuario)
+	def Compra comprar( Integer unaReserva, String unUsuario)
 
-	def List<Compra>  compras(User unUsuario)
+	def List<Compra>  compras(String unUsuario)
 
-	def List<Asiento> disponibles(Tramo unTramo)	
+	def List<Asiento> disponibles(Integer unTramo)	
 }

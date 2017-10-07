@@ -1,4 +1,4 @@
-package userDAO
+package daoImplementacion
 
 import service.User
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -208,3 +208,4 @@ class JDBCUserDAO implements UserDAO{
 		
 	}
 }
+		

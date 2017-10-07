@@ -22,13 +22,13 @@ class Compra {
 	@GeneratedValue
 	int id
 	
-	@ManyToOne(fetch= FetchType.LAZY, cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.ALL)
 	User comprador
 
 	@OneToMany(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	List<Asiento> asientos
 	
-	@ManyToOne(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.ALL)
 	Tramo tramo
 	
 	new(){
@@ -36,12 +36,11 @@ class Compra {
 
 	}
 	
-	new(List<Asiento> unosAsientos, User unUsuario) {
+	new(List<Asiento> unosAsientos, User unUsuario, Tramo unTramo) {
 		this()
 		comprador=unUsuario
 		asientos=unosAsientos
-		//modificar para que lo pase en el constructor
-		tramo= asientos.get(0).tramo
+		tramo= unTramo
 		agregarDuenios(unUsuario)
 		
 	}

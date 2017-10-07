@@ -30,17 +30,17 @@ class TestAsiento {
 	}
 	
 	@Test
-	def test000TestAsientoPuedeCalcularSuPrecioCuandoSuCategoriaEsDePrimera(){
-		assertEquals(14.00,testAsiento.calcularPrecio,00000001)
+	def testAsientoPuedeCalcularSuPrecioCuandoSuCategoriaEsDePrimera(){
+		assertEquals(14.00, testAsiento.calcularPrecio, 00000001)
 	}
 	
 	@Test
-	def test001TestAsientoPuedeCalcularSuPrecioCuandoSuCategoriaEsBusiness(){
+	def testAsientoPuedeCalcularSuPrecioCuandoSuCategoriaEsBusiness(){
 		testAsiento.categoria = new Business
-		assertEquals(12.50,testAsiento.calcularPrecio,00000001)
+		assertEquals(12.50, testAsiento.calcularPrecio, 00000001)
 	}
 	@Test
-	def test002TestAsientoPuedeCalcularSuPrecioCuandoSuCategoriaEsTurista(){
+	def testAsientoPuedeCalcularSuPrecioCuandoSuCategoriaEsTurista(){
 		testAsiento.categoria = new Turista
 		assertEquals(11.00,testAsiento.calcularPrecio,00000001)
 	}

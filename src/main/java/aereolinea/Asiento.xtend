@@ -19,14 +19,14 @@ class Asiento {
 	
 	@Id
 	@GeneratedValue
-	int id
-	@ManyToOne(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
+	public int id
+	@ManyToOne(cascade=CascadeType.ALL)
 	Reserva   reserva
 	
-	@ManyToOne(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.ALL)
 	Tramo	  tramo
 	
-	@ManyToOne (fetch= FetchType.LAZY,cascade=CascadeType.ALL)
+	@ManyToOne (cascade=CascadeType.ALL)
 	Categoria categoria
 	
 	@OneToOne

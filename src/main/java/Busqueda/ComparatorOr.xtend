@@ -5,8 +5,7 @@ import javax.persistence.Entity
 @Entity
 class ComparatorOr extends Comparator {
 	
-	new(){
-		
+	new(){	
 	}
 	
 	override getComparator() {

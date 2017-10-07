@@ -13,8 +13,9 @@ import java.util.List
 import asientoServicio.Reserva
 import dao.UserDAO
 import java.util.Date
+import aereolinea.Tramo
 
-class TestDAOCompra {
+class TestPersistenciaCompraEnUserDAO {
 	Compra 			compraDoc
 	List<Asiento>	asientos
 	Reserva 	reservaDoc	
@@ -27,7 +28,7 @@ class TestDAOCompra {
 		asientos.add(new Asiento)
 		userDAOSuj  		  	= new HibernateUserDAO
 		userDoc 		 	  	= new User("Pepita","LaGolondrina","euforica","pepitagolondrina@gmail.com", "password", new Date())
-		compraDoc				= new Compra(asientos,userDoc)
+		compraDoc				= new Compra(asientos,userDoc, new Tramo)
 		reservaDoc			  	= new Reserva
 
 		userDoc.reserva		  	= reservaDoc

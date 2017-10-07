@@ -12,6 +12,7 @@ class Destino {
 	@Id
 	@GeneratedValue
 	int id
+	
 	String nombre
 	
 	new(){

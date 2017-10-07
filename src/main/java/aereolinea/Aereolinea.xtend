@@ -9,16 +9,14 @@ import javax.persistence.Entity
 @Accessors
 @Entity
 class Aereolinea {
-	
-	
+		
 	@Id
 	String nombre
 	
 	@OneToMany(mappedBy="aerolinea")
 	List<Vuelo> vuelosOfertados = newArrayList
 	
-	new(){
-		
+	new(){	
 	}
 	
 	new(String unNombre){

@@ -27,4 +27,9 @@ class HibernateUserDAO implements UserDAO {
 		SessionFactoryProvider.destroy
 	}
 	
+	def loadbyname(String userName) {
+		var session = Runner.currentSession
+		session.get(User, userName)
+	}
+	
 }

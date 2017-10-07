@@ -3,7 +3,6 @@ package Busqueda
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.GeneratedValue
-import javax.persistence.Column
 import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
@@ -11,7 +10,6 @@ import org.eclipse.xtend.lib.annotations.Accessors
 abstract class Filtro {
 	
 	@Id
-	@Column(name="filtro_id")
     @GeneratedValue
 	int id
 	

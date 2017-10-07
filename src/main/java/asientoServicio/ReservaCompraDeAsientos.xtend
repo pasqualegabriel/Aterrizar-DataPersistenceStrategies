@@ -8,93 +8,105 @@ import aereolinea.Asiento
 import aereolinea.Tramo
 import dao.UserDAO
 import runner.Runner
+import dao.TramoDAO
+import dao.ReservaDAO
+import dao.AsientoDAO
+import daoImplementacion.HibernateUserDAO
 
 class ReservaCompraDeAsientos implements AsientoService {
 
-	UserDAO userDAO
+	HibernateUserDAO userDAO
+	AsientoDAO asientoDAO
+	ReservaDAO reservaDAO
+	TramoDAO tramoDAO
 
-	new(UserDAO unUserDAO) {
+	new(HibernateUserDAO unUserDAO, AsientoDAO unAsientoDAO, ReservaDAO unReservaDAO, TramoDAO unTramoDAO) {
 		userDAO = unUserDAO
+		asientoDAO = unAsientoDAO
+		reservaDAO = unReservaDAO
+		tramoDAO = unTramoDAO
 	}
 
-	def updateUser(User aUser) {
-		Runner.runInSession [{
-				userDAO.update(aUser)
-				null
-			}]
-	}
-	
 	/**Proposito:Agrega la reserva al usuario y devuelve la misma reserva que fue asignada al usuario  */
 	def Reserva agregarReservaAUsuario(User unUsuario, Reserva unaReserva) {
 		var reservaUsuario = unUsuario.reserva
 		if (reservaUsuario != null) {
-			reservaUsuario.invalidar
-		/** O persistir la columna o borrar de la tabal el objeto*/ 
+			reservaUsuario.invalidar// falta hacer el estado de la reserva
 		}
 		unUsuario.reserva = unaReserva
-		updateUser(unUsuario)
+		userDAO.update(unUsuario)
 		unaReserva
 	}
-	
+
 	/**Proposito: verifica que se puede realizar la compra */
 	def puedeComprar(Reserva unReserva, User unUsuario) {
 		!unReserva.expiroReserva && unUsuario.getPuedeEfectuarLaCompra(unReserva)
 	}
-	
 
+	override reservar(Integer asiento, String usuario) {
+		Runner.runInSession [
+		var unAsiento = asientoDAO.load(asiento)
+		var unUsuario = userDAO.loadbyname(usuario)
+		
+			if (!unAsiento.estaReservado) {
+				var unaReserva = new Reserva
+				unaReserva.agregarAsiento(unAsiento)
+				agregarReservaAUsuario(unUsuario, unaReserva)
+			} else {
+				throw new ExepcionReserva("No se puede realizar esta reserva por que el asiento ya esta reservado")
 
-	override reservar(Asiento unAsiento, User unUsuario) {
-
-		if (!unAsiento.estaReservado) {
-			var unaReserva = new Reserva
-			unaReserva.agregarAsiento(unAsiento)
-			agregarReservaAUsuario(unUsuario, unaReserva)
-		} else {
-			throw new ExepcionReserva("No se puede realizar esta reserva por que el asiento ya esta reservado")
-
-		}
+			}
+		]
 	}
 
-
-	override reservarAsientos(List<Asiento> unosAsientos, User unUsuario) {
-
-		if (unosAsientos.stream.allMatch(asiento|!asiento.estaReservado)) {
-			val unaReserva = new Reserva
-			unaReserva.asignarleAsientos(unosAsientos)
-			agregarReservaAUsuario(unUsuario, unaReserva)
-		} else {
-			throw new ExepcionReserva(
-				"No se puede realizar alguna de las reservas por que el asiento ya esta reservado")
-		}
+	override reservarAsientos(List<Integer> asientos, String usuario) {
+		
+		Runner.runInSession [
+			var unUsuario = userDAO.loadbyname(usuario)
+		
+			var unosAsientos =asientoDAO.loadAsientos(asientos)
+		
+			if (unosAsientos.stream.allMatch(asiento|!asiento.estaReservado)) {
+				val unaReserva = new Reserva
+				unaReserva.asignarleAsientos(unosAsientos)
+				agregarReservaAUsuario(unUsuario, unaReserva)
+			} else {
+				throw new ExepcionReserva("No se puede realizar alguna de las reservas por que el asiento ya esta reservado")
+			}
+		]	
 	}
-	
-	
 
-	override comprar(Reserva unReserva, User unUsuario) {
-		if (puedeComprar(unReserva, unUsuario)) {
-			unUsuario.efectuarCompra(unReserva)
-			var unaCompra = new Compra(unReserva.asientos, unUsuario)
-			unUsuario.agregarCompra(unaCompra)
-			Runner.runInSession [{
+	override comprar(Integer reserva, String usuario) {
+		Runner.runInSession [
+			var unUsuario = userDAO.loadbyname(usuario)
+			val unReserva = reservaDAO.load(reserva)
+			
+			if (puedeComprar(unReserva, unUsuario)){
+				unUsuario.efectuarCompra(unReserva)
+				var tramoDeLaReserva = unReserva.getTramo
+				var unaCompra = new Compra(unReserva.asientos, unUsuario, tramoDeLaReserva)
+				
 				unReserva.eliminarAsientos
-				Runner.currentSession.update(unReserva)
-				null
-			}]
-			updateUser(unUsuario)
-			unaCompra
-		}else {
-			throw new ExepcionCompra("No se pudo efectuar la compra")
-		}
+				reservaDAO.update(unReserva)
+		
+				unUsuario.agregarCompra(unaCompra)
+				userDAO.update(unUsuario)
+				unaCompra
+			} else {
+				throw new ExepcionCompra("No se pudo efectuar la compra")
+			}
+		]
 	}
+	
+	
 
-
-
-	override compras(User usuario) {
+	override compras(String usuario) {
 		usuario.compras
 	}
 
-	override disponibles(Tramo unTramo) {
+	override disponibles(Integer tramo) {
+		var unTramo = tramoDAO.load(tramo)
+		
 		unTramo.asientosDisponibles
 	}
-
 }

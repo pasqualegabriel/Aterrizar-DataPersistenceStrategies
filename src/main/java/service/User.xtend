@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne
-
+import javax.persistence.FetchType
 
 @Accessors
 @Entity
@@ -26,13 +26,12 @@ class User {
 	Boolean validate
 	String  validateCode
 	Double  monedero
-	Double gastoTotal
+	Double  gastoTotal
 	
-	@OneToMany(mappedBy="comprador", cascade=CascadeType.ALL)
+	@OneToMany(cascade=CascadeType.ALL)
 	List<Compra> compras   =newArrayList
 	
 	@OneToOne(cascade=CascadeType.ALL)
-	//@JoinColumn(name="id")
 	Reserva reserva 
 
 	new(){

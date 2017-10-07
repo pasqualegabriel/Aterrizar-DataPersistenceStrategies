@@ -213,7 +213,8 @@ class TestLeaderboardService {
 	
 	@Test
 	def void testunLeaderBoardServiceRetornaLos10DestinosMasVendidos(){
-		//Hacemos que los usuarios reserven asientos y los compren
+		//Hacemos que los usuarios reserven asientos y los compren. 
+		//Notese que el destino numero 11 no esta en ningun tramo, el destino 2 esta en multiples.
 		asientoService.comprar(asientoService.reservar(asiento1,user1),user1) ; asientoService.comprar(asientoService.reservar(asiento2,user2),user2)
 		asientoService.comprar(asientoService.reservar(asiento3,user3),user3) ; asientoService.comprar(asientoService.reservar(asiento4,user4),user4)
 		asientoService.comprar(asientoService.reservar(asiento5,user5),user5) ; asientoService.comprar(asientoService.reservar(asiento6,user6),user6)
@@ -229,7 +230,6 @@ class TestLeaderboardService {
 		assertEquals(resultado.size,10)
 		
 		// Como el destino numero 11 no esta en ningun tramo, no deberia aparecer en la lista
-	
 		assertFalse(resultado.stream.anyMatch[it.nombre.equals(destino11.nombre)])
 		
 		// El destino que esta al principio deberia ser el 2, ya que es el mas vendido
@@ -239,7 +239,8 @@ class TestLeaderboardService {
 	
 	@Test
 	def void testunLeaderBoardServiceRetornaLos10UsuariosQueMasVuelosCompraron(){
-		//Hacemos que los usuarios reserven asientos y los compren
+		//Hacemos que los usuarios reserven asientos y los compren.
+		//Notese que el usuario 1 compro 2 asientos y el 11 no compro ninguno.
 		asientoService.comprar(asientoService.reservar(asiento1,user1),user1) ; asientoService.comprar(asientoService.reservar(asiento2,user2),user2)
 		asientoService.comprar(asientoService.reservar(asiento3,user3),user3) ; asientoService.comprar(asientoService.reservar(asiento4,user4),user4)
 		asientoService.comprar(asientoService.reservar(asiento5,user5),user5) ; asientoService.comprar(asientoService.reservar(asiento6,user6),user6)
@@ -254,7 +255,7 @@ class TestLeaderboardService {
 		// Deberian ser 10 los resultados
 		assertEquals(resultado.size,10)
 
-		// Como el Usuario11 no compro ningun vuelo, nodeberia estar en la lista
+		// Como el Usuario 11 no compro ningun vuelo, no deberia estar en la lista
 		assertFalse(resultado.stream.anyMatch[it.name.equals(user11.name)])
 	
 		// El Usuario que esta al principio deberia ser el 1, ya que es el que mas vuelos compro
@@ -266,6 +267,8 @@ class TestLeaderboardService {
 	def void testunLeaderBoardServiceRetornaLos10UsuariosQueMasGastaronComprandoAsientos(){
 		
 		//Hacemos que los usuarios reserven asientos y los compren
+		//Notese que el usuario 1 es el que reservo el tramo que menos vale
+		// y que el usuario 11 es el que reservo el tramo que mas vale
 		asientoService.comprar(asientoService.reservar(asiento1,user1),user1) ; asientoService.comprar(asientoService.reservar(asiento2,user2),user2)
 		asientoService.comprar(asientoService.reservar(asiento3,user3),user3) ; asientoService.comprar(asientoService.reservar(asiento4,user4),user4)
 		asientoService.comprar(asientoService.reservar(asiento5,user5),user5) ; asientoService.comprar(asientoService.reservar(asiento6,user6),user6)

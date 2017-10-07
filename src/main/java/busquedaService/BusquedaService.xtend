@@ -7,10 +7,10 @@ import Busqueda.Busqueda
 
 interface BusquedaService {
 	
-	def List<Asiento> buscar(Busqueda busqueda, User usuario)
+	def List<Asiento> buscar(Busqueda busqueda, String usuario)
 	
-	def List<Busqueda> list(User usuario)
+	def List<Busqueda> list(String usuario)
 	
-	def List<Asiento> busquedasGuardada(Busqueda busqueda, User usuario)
+	def List<Asiento> busquedasGuardada(Integer busqueda, String usuario)
 	
 }

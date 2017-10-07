@@ -12,12 +12,11 @@ class ServicioDeRaking implements LeaderboardService {
 			val session = Runner.getCurrentSession
 	
 		
-			var hql = "FROM Destino d
-				   WHERE d IN (	SELECT c.tramo.destinoLlegada
+			var hql = "SELECT c.tramo.destinoLlegada
 								FROM Compra c
 								GROUP BY c.tramo.destinoLlegada
-								ORDER BY count(1) Desc)"
-								
+								ORDER BY count(1) Desc"
+
 			var Query<Destino> query
 			
 			query = session.createQuery(hql, Destino).setMaxResults(10)

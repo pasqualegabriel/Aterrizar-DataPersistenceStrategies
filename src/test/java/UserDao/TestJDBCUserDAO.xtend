@@ -100,7 +100,7 @@ class TestJDBCUserDAO {
 	}
 	
 	@Test
-	def test04AlBuscarUnUsuarioNoExistenteNoDevuelveNada() {
+	def test04AlBuscarUnUsuarioNoExistenteDevuelveNull() {
 		
 		var ejemplo  = new User()
 		ejemplo.mail = "juan@gmail.com"
@@ -110,13 +110,11 @@ class TestJDBCUserDAO {
 	
 	@Test
 	def test05SeIntentaUpdatearUnUserNoExistente() {
-		userDAO.update(userTest)
 		
+		userDAO.update(userTest)
 		
 		assertTrue(true)
 	}
-	
-
 	
 	@After
 	def void tearDown(){

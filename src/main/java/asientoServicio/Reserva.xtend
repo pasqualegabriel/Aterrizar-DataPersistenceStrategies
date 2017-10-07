@@ -11,7 +11,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Column
 import javax.persistence.OneToMany
 import javax.persistence.CascadeType
-
+import javax.persistence.FetchType
 
 @Accessors
 @Entity
@@ -20,8 +20,8 @@ class Reserva {
 	@Id
 	@GeneratedValue
 	@Column(name="id")
-	int id
-	@OneToMany(cascade=CascadeType.ALL)
+	public int id
+	@OneToMany(fetch= FetchType.EAGER, cascade=CascadeType.ALL)
 	List<Asiento> asientos	
 	
 	LocalDateTime horaRealizada	
@@ -64,5 +64,8 @@ class Reserva {
 		asientos=null
 	}
 	
+	def getTramo() {
+		asientos.get(0).tramo
+	}
 	
 }

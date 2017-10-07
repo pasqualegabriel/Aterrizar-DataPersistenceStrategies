@@ -34,11 +34,11 @@ class BusquedaHibernate implements BusquedaService{
 			
 	}
 
-	override list(User usuario) {
+	override list(String userName) {
 		Runner.runInSession[ {
 			val session = Runner.getCurrentSession
           
-        	var hql = "from Busqueda b where b.user.userName = '" + usuario.userName + "' order by b.id desc"
+        	var hql = "from Busqueda b where b.user.userName = '" + userName + "' order by b.id desc"
 
 			var Query<Busqueda> query =  session.createQuery(hql, Busqueda).setMaxResults(10)
 			query.getResultList
