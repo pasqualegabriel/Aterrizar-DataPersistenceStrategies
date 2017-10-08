@@ -9,9 +9,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.ManyToOne
 import javax.persistence.Entity
 import javax.persistence.OneToOne
-
 import javax.persistence.CascadeType
-import javax.persistence.FetchType
 
 @Accessors
 @Entity
@@ -20,6 +18,7 @@ class Asiento {
 	@Id
 	@GeneratedValue
 	public int id
+	
 	@ManyToOne(cascade=CascadeType.ALL)
 	Reserva   reserva
 	
@@ -31,7 +30,6 @@ class Asiento {
 	
 	@OneToOne
 	User      duenio
-	
 	 
 	new(){
 		super()

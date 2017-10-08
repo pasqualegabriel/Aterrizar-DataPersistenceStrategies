@@ -3,11 +3,11 @@ package UserDao
 import org.junit.Before
 import org.junit.Test
 import static org.junit.Assert.*
-import userDAO.JDBCUserDAO
 import service.User
 import java.util.Date
 import org.junit.After
 import dao.UserDAO
+import daoImplementacion.JDBCUserDAO
 
 class TestJDBCUserDAO {
 	

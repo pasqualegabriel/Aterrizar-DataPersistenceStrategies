@@ -7,7 +7,6 @@ import service.User
 import java.util.Date
 import org.junit.After
 import runner.Runner
-import dao.UserDAO
 import daoImplementacion.HibernateUserDAO
 import java.util.List
 

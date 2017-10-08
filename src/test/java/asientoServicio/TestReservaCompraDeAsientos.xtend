@@ -42,8 +42,6 @@ class TestReservaCompraDeAsientos {
 	Asiento 				asientoDoc2
 	Asiento					asientoDoc3
 	
-	//HibernateUserDAO unUserDAO, AsientoDAO unAsientoDAO, ReservaDAO unReservaDAO, TramoDAO unTramoDAO
-	
 	@Before
 	def void setUp(){
 		userDAO						= new HibernateUserDAO
@@ -60,15 +58,15 @@ class TestReservaCompraDeAsientos {
 		reserva						= new Reserva
 		asientoDoc2					= new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista)
 		asientoDoc3					= new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista)
-		asientosDoc					=#[asientoDoc2,asientoDoc3]		
-		
-		Runner.runInSession[{
+		asientosDoc					= #[asientoDoc2,asientoDoc3]
+
+		Runner.runInSession[
 			userDAO.save(usuarioDoc)
 			userDAO.save(usuarioVegetaDoc)
 			asientoDAO.save(asientoDoc)
 			asientosDoc.forEach[asientoDAO.save(it)]
 			null
-		}]
+		]
 		asientosDoc.forEach[idAsientosDoc.add(it.id)]
 		
 	}
@@ -229,19 +227,18 @@ class TestReservaCompraDeAsientos {
 	
 	@After
 	def void tearDown(){
-		Runner.runInSession [{
-			
-		
-		val session = Runner.getCurrentSession();
-		var List<String> nombreDeTablas = session.createNativeQuery("show tables").getResultList();
-		session.createNativeQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
-		nombreDeTablas.forEach [
-			session.createNativeQuery("truncate table " + it).executeUpdate();
-		];
-		session.createNativeQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
-		null
-			}
-		]
+		userDAO.clearAll
+//		Runner.runInSession [
+//			
+//			val session = Runner.getCurrentSession
+//			val nombreDeTablas = session.createNativeQuery("show tables").getResultList
+//			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate
+//			nombreDeTablas.forEach [
+//				session.createNativeQuery("truncate table " + it).executeUpdate
+//			]
+//			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate
+//			null	
+//		]
 	}
 	
 	

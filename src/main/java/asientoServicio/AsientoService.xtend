@@ -1,9 +1,7 @@
 package asientoServicio
 
-import service.User
 import java.util.List
 import aereolinea.Asiento
-import aereolinea.Tramo
 
 interface AsientoService {
 	

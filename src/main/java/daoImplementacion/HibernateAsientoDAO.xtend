@@ -24,7 +24,7 @@ class HibernateAsientoDAO implements AsientoDAO {
 	}
 	
 	override loadAsientos(List<Integer> asientos) {
-		val session = Runner.currentSession
+		//val session = Runner.currentSession
 		val result = newArrayList 
 		
 		asientos.forEach[result.add(load(it))]

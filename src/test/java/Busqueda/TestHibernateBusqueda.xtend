@@ -23,6 +23,8 @@ import aereolinea.Destino
 import java.time.LocalDateTime
 import dao.BusquedaDAO
 import daoImplementacion.HibernateBusquedaDAO
+import org.hibernate.Session
+import java.util.List
 
 class TestHibernateBusqueda {
 		
@@ -62,7 +64,6 @@ class TestHibernateBusqueda {
 		asiento2		= new Asiento(tramo2, categoria2)
 		asiento2.reserva = reserva2
 		
-		
 		Runner.runInSession[ {
 			val sessionAsiento = Runner.currentSession
 			sessionAsiento.save(asiento1)
@@ -70,6 +71,10 @@ class TestHibernateBusqueda {
 			userDAO.save(usuario)
 			null
 		}]
+	}
+	
+	def save(){
+		
 	}
 	
 	@Test
@@ -83,7 +88,7 @@ class TestHibernateBusqueda {
 		
 		busqueda      		  = new Busqueda(filtro, costo, ascendente)
 		
-		assertEquals(busquedaService.buscar(busqueda, usuario).size, 1)	
+		assertEquals(busquedaService.buscar(busqueda, usuario.userName).size, 1)	
 			
 		Runner.runInSession[ {
 			
@@ -116,7 +121,7 @@ class TestHibernateBusqueda {
 		
 		busqueda              = new Busqueda(filtroCompuesto, escala, descendente)
 		
-		assertEquals(busquedaService.buscar(busqueda, usuario).size, 2)	
+		assertEquals(busquedaService.buscar(busqueda, usuario.userName).size, 2)	
 		
 		Runner.runInSession[ {
 			
@@ -143,7 +148,7 @@ class TestHibernateBusqueda {
 		
 		busqueda              = new Busqueda(filtroCompuesto, escala, descendente)
 		
-		assertEquals(busquedaService.buscar(busqueda, usuario).size, 1)	
+		assertEquals(busquedaService.buscar(busqueda, usuario.userName).size, 1)	
 
 	}
 	
@@ -159,7 +164,7 @@ class TestHibernateBusqueda {
 		
 		busqueda              = new Busqueda(filtroCompuesto, escala, descendente)
 		
-		assertEquals(busquedaService.buscar(busqueda, usuario).size, 1)	
+		assertEquals(busquedaService.buscar(busqueda, usuario.userName).size, 1)	
 
 	}
 	
@@ -175,7 +180,7 @@ class TestHibernateBusqueda {
 		
 		busqueda              = new Busqueda(filtroCompuesto, escala, descendente)
 		
-		assertEquals(busquedaService.buscar(busqueda, usuario).size, 1)	
+		assertEquals(busquedaService.buscar(busqueda, usuario.userName).size, 1)	
 
 	}
 	
@@ -191,7 +196,7 @@ class TestHibernateBusqueda {
 		
 		busqueda              = new Busqueda(filtroCompuesto, escala, descendente)
 		
-		assertEquals(busquedaService.buscar(busqueda, usuario).size, 1)
+		assertEquals(busquedaService.buscar(busqueda, usuario.userName).size, 1)
 
 	}
 	
@@ -207,7 +212,7 @@ class TestHibernateBusqueda {
 		
 		busqueda              = new Busqueda(filtroCompuesto, escala, descendente)
 		
-		assertEquals(busquedaService.buscar(busqueda, usuario).size, 1)	
+		assertEquals(busquedaService.buscar(busqueda, usuario.userName).size, 1)	
 	}
 	
 	@Test
@@ -222,7 +227,7 @@ class TestHibernateBusqueda {
 		
 		busqueda              = new Busqueda(filtroCompuesto, escala, descendente)
 		
-		assertEquals(busquedaService.buscar(busqueda, usuario).size, 2)	
+		assertEquals(busquedaService.buscar(busqueda, usuario.userName).size, 2)	
 	}
 	
 	@Test
@@ -237,14 +242,14 @@ class TestHibernateBusqueda {
 		
 		busqueda              = new Busqueda(filtroCompuesto, escala, descendente)
 		
-		assertEquals(busquedaService.buscar(busqueda, usuario).size, 2)	
+		assertEquals(busquedaService.buscar(busqueda, usuario.userName).size, 2)	
 	}
 
 	@Test
 	def void testUnUsurioRealizaDosBusquedas(){
 		
 			initializeSearchs
-			val ultima10Busquedas = busquedaService.list(usuario)
+			val ultima10Busquedas = busquedaService.list(usuario.userName)
 			assertEquals(10,ultima10Busquedas.size)
 			assertTrue(ultima10Busquedas.get(0).orden.orden.equals("DESC"))
 			assertTrue(ultima10Busquedas.stream.allMatch[it.user.userName.equals(usuario.userName)])
@@ -329,25 +334,37 @@ class TestHibernateBusqueda {
 		val	busqueda12		  = new Busqueda(filtroSimple12_1, criterio12, ascendente12)
 		
 
-		busquedaService.buscar(busqueda0 , usuario)
-		busquedaService.buscar(busqueda1 , usuario)
-		busquedaService.buscar(busqueda2 , usuario)
-		busquedaService.buscar(busqueda3 , usuario)
-		busquedaService.buscar(busqueda4 , usuario)
-		busquedaService.buscar(busqueda5 , usuario)
-		busquedaService.buscar(busqueda6 , usuario)
-		busquedaService.buscar(busqueda7 , usuario)
-		busquedaService.buscar(busqueda8 , usuario)
-		busquedaService.buscar(busqueda9 , usuario)
-		busquedaService.buscar(busqueda10, usuario)
-		busquedaService.buscar(busqueda11, usuario)
-		busquedaService.buscar(busqueda12, usuario)
+		busquedaService.buscar(busqueda0 , usuario.userName)
+		busquedaService.buscar(busqueda1 , usuario.userName)
+		busquedaService.buscar(busqueda2 , usuario.userName)
+		busquedaService.buscar(busqueda3 , usuario.userName)
+		busquedaService.buscar(busqueda4 , usuario.userName)
+		busquedaService.buscar(busqueda5 , usuario.userName)
+		busquedaService.buscar(busqueda6 , usuario.userName)
+		busquedaService.buscar(busqueda7 , usuario.userName)
+		busquedaService.buscar(busqueda8 , usuario.userName)
+		busquedaService.buscar(busqueda9 , usuario.userName)
+		busquedaService.buscar(busqueda10, usuario.userName)
+		busquedaService.buscar(busqueda11, usuario.userName)
+		busquedaService.buscar(busqueda12, usuario.userName)
 	
 	}
 	
 	@After
 	def void tearDown(){
 		userDAO.clearAll
+//		Runner.runInSession [
+//			
+//			val session = Runner.getCurrentSession
+//			var nombreDeTablas = session.createNativeQuery("show tables").getResultList
+//			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate
+//			nombreDeTablas.forEach [
+//				session.createNativeQuery("truncate table " + it).executeUpdate
+//			]
+//			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate
+//			null	
+//		]
+
 	}
 
 	

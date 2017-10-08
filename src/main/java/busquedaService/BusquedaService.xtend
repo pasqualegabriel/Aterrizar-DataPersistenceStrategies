@@ -2,7 +2,6 @@ package busquedaService
 
 import aereolinea.Asiento
 import java.util.List
-import service.User
 import Busqueda.Busqueda
 
 interface BusquedaService {

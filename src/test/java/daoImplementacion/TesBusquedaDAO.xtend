@@ -43,7 +43,7 @@ class TesBusquedaDAO {
 	@Test
 	def void testLaBusquedaDAoSujSabeHacerUnSaveYRecuperarseObtieneObjetosSimilares(){
 		
-			Runner.runInSession[ {
+		Runner.runInSession[ {
 	
 			busquedaDAOSuj.save(busquedaDoc)
 			

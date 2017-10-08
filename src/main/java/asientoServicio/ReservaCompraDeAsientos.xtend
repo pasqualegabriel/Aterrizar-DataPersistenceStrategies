@@ -4,9 +4,6 @@ import service.User
 import java.util.List
 import Excepciones.ExepcionCompra
 import Excepciones.ExepcionReserva
-import aereolinea.Asiento
-import aereolinea.Tramo
-import dao.UserDAO
 import runner.Runner
 import dao.TramoDAO
 import dao.ReservaDAO

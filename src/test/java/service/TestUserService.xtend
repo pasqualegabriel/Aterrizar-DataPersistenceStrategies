@@ -3,7 +3,6 @@ package service
 import org.junit.Before
 import org.junit.Test
 import static org.junit.Assert.*
-import userDAO.JDBCUserDAO
 import java.util.Date
 import org.junit.After
 import mailSender.EmailService
@@ -17,6 +16,7 @@ import Excepciones.IdenticPasswords
 import dao.UserDAO
 import daoImplementacion.HibernateUserDAO
 import runner.Runner
+import daoImplementacion.JDBCUserDAO
 
 class TestUserService {
 	

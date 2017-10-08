@@ -8,7 +8,6 @@ import runner.Runner
 import org.junit.After
 import service.User
 import aereolinea.Asiento
-import dao.UserDAO
 import java.util.Date
 import runner.SessionFactoryProvider
 import aereolinea.Destino
@@ -27,7 +26,7 @@ class TestLeaderboardService {
 	LeaderboardService leaderboardServiceSUT
 	
 	AsientoService asientoService 
-	UserDAO userDAO
+	HibernateUserDAO userDAO
 	
 	Destino destino1
 	Destino destino2
@@ -215,7 +214,7 @@ class TestLeaderboardService {
 	def void testunLeaderBoardServiceRetornaLos10DestinosMasVendidos(){
 		//Hacemos que los usuarios reserven asientos y los compren. 
 		//Notese que el destino numero 11 no esta en ningun tramo, el destino 2 esta en multiples.
-		asientoService.comprar(asientoService.reservar(asiento1,user1),user1) ; asientoService.comprar(asientoService.reservar(asiento2,user2),user2)
+		asientoService.comprar(asientoService.reservar(asiento1,user1),user1) ;	asientoService.comprar(asientoService.reservar(asiento2,user2),user2)
 		asientoService.comprar(asientoService.reservar(asiento3,user3),user3) ; asientoService.comprar(asientoService.reservar(asiento4,user4),user4)
 		asientoService.comprar(asientoService.reservar(asiento5,user5),user5) ; asientoService.comprar(asientoService.reservar(asiento6,user6),user6)
 		asientoService.comprar(asientoService.reservar(asiento7,user7),user7) ; asientoService.comprar(asientoService.reservar(asiento8,user8),user8)
