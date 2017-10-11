@@ -19,6 +19,9 @@ import categorias.Primera
 import asientoServicio.AsientoService
 import asientoServicio.ReservaCompraDeAsientos
 import daoImplementacion.HibernateUserDAO
+import daoImplementacion.HibernateAsientoDAO
+import daoImplementacion.HibernateReservaDAO
+import daoImplementacion.HibernateTramoDAO
 
 class TestLeaderboardService {
 	
@@ -83,23 +86,26 @@ class TestLeaderboardService {
 	User user9
 	User user10
 	User user11
+	
+	HibernateAsientoDAO asientoDAO	
 		
 	@Before
 	def void setUp(){
 		// Se instancian los objetos a utilizar
 		leaderboardServiceSUT = new ServicioDeRaking
-		userDAO = new HibernateUserDAO
-		asientoService = new ReservaCompraDeAsientos(userDAO)
+		userDAO 			  = new HibernateUserDAO
+		asientoDAO			  = new HibernateAsientoDAO
+		asientoService        = new ReservaCompraDeAsientos(userDAO, asientoDAO, new HibernateReservaDAO, new HibernateTramoDAO)
 		
-		destino1 = new Destino=>[nombre="Pekin"]
-		destino2 = new Destino=>[nombre="Brazil"]
-		destino3 = new Destino=>[nombre="Shangai"]
-		destino4 = new Destino=>[nombre="Argentina"]
-		destino5 = new Destino=>[nombre="Chile"]
-		destino6 = new Destino=>[nombre="Madagascar"]
-		destino7 = new Destino=>[nombre="China"]
-		destino8 = new Destino=>[nombre="Japon"]
-		destino9 = new Destino=>[nombre="Noruega"]
+		destino1  = new Destino=>[nombre="Pekin"]
+		destino2  = new Destino=>[nombre="Brazil"]
+		destino3  = new Destino=>[nombre="Shangai"]
+		destino4  = new Destino=>[nombre="Argentina"]
+		destino5  = new Destino=>[nombre="Chile"]
+		destino6  = new Destino=>[nombre="Madagascar"]
+		destino7  = new Destino=>[nombre="China"]
+		destino8  = new Destino=>[nombre="Japon"]
+		destino9  = new Destino=>[nombre="Noruega"]
 		destino10 = new Destino=>[nombre="Islandia"]
 		destino11 = new Destino=>[nombre="Rusia"]
 		
@@ -163,13 +169,13 @@ class TestLeaderboardService {
 							 vuelo= vuelo2
 							 asientos.add(asiento9)
 		]
-		tramo10= new Tramo=>[ destinoOrigen= destino1
+		tramo10= new Tramo=>[destinoOrigen= destino1
 							 destinoLlegada= destino1
 							 precio= 10.00
 							 vuelo= vuelo2
 							 asientos.add(asiento10)
 		]
-		tramo11= new Tramo=>[ destinoOrigen= destino1
+		tramo11= new Tramo=>[destinoOrigen= destino1
 							 destinoLlegada= destino2
 							 precio= 11.00
 							 vuelo= vuelo2
@@ -178,50 +184,53 @@ class TestLeaderboardService {
 		
 		categoriaPrimera = new Primera
 		
-		asiento1 = new Asiento=>[categoria= categoriaPrimera; tramo = tramo1]
-		asiento2 = new Asiento=>[categoria= categoriaPrimera; tramo = tramo2]
-		asiento3 = new Asiento=>[categoria= categoriaPrimera; tramo = tramo3]
-		asiento4 = new Asiento=>[categoria= categoriaPrimera; tramo = tramo4]
-		asiento5 = new Asiento=>[categoria= categoriaPrimera; tramo = tramo5]
-		asiento6 = new Asiento=>[categoria= categoriaPrimera; tramo = tramo6]
-		asiento7 = new Asiento=>[categoria= categoriaPrimera; tramo = tramo7]
-		asiento8 = new Asiento=>[categoria= categoriaPrimera; tramo = tramo8]
-		asiento9 = new Asiento=>[categoria= categoriaPrimera; tramo = tramo9]
+		asiento1  = new Asiento=>[categoria= categoriaPrimera; tramo = tramo1]
+		asiento2  = new Asiento=>[categoria= categoriaPrimera; tramo = tramo2]
+		asiento3  = new Asiento=>[categoria= categoriaPrimera; tramo = tramo3]
+		asiento4  = new Asiento=>[categoria= categoriaPrimera; tramo = tramo4]
+		asiento5  = new Asiento=>[categoria= categoriaPrimera; tramo = tramo5]
+		asiento6  = new Asiento=>[categoria= categoriaPrimera; tramo = tramo6]
+		asiento7  = new Asiento=>[categoria= categoriaPrimera; tramo = tramo7]
+		asiento8  = new Asiento=>[categoria= categoriaPrimera; tramo = tramo8]
+		asiento9  = new Asiento=>[categoria= categoriaPrimera; tramo = tramo9]
 		asiento10 = new Asiento=>[categoria= categoriaPrimera; tramo = tramo10]
 		asiento11 = new Asiento=>[categoria= categoriaPrimera; tramo = tramo11]
 		
-		user1 = new User("Pepita","LaGolondrinaPepitaLaLoca","Eurofirca","pepitagolondrina@gmail.com", "password", new Date())=>[monedero=100000.00]
-		user2 = new User("Odin","Nordico","Valhalla","odin@gmail.com", "password", new Date())=>[monedero=100000.00]
-		user3 = new User("Gandalf","ElBlanco","ElMago","gandalf@gmail.com", "password", new Date())=>[monedero=100000.00]
-		user4 = new User("Gardel","ConSombrero","ConAltaPeluca","gardel@gmail.com", "password", new Date())=>[monedero=100000.00]
-		user5 = new User("Darin","Azul","Actor","darin@gmail.com", "password", new Date())=>[monedero=100000.00]
-		user6 = new User("Goku","Zero","Kamehameha","goku@gmail.com", "password", new Date())=>[monedero=100000.00]
-		user7 = new User("Cachito","Krillin","Pelao","cachito@gmail.com", "password", new Date())=>[monedero=100000.00]
-		user8 = new User("Michael","Jackson","Muerto","michael@gmail.com", "password", new Date())=>[monedero=100000.00]
-		user9 = new User("Dragon","Larina","Dragonforce","dragonzote@gmail.com", "password", new Date())=>[monedero=100000.00]
+		user1  = new User("Pepita","LaGolondrinaPepitaLaLoca","Eurofirca","pepitagolondrina@gmail.com", "password", new Date())=>[monedero=100000.00]
+		user2  = new User("Odin","Nordico","Valhalla","odin@gmail.com", "password", new Date())=>[monedero=100000.00]
+		user3  = new User("Gandalf","ElBlanco","ElMago","gandalf@gmail.com", "password", new Date())=>[monedero=100000.00]
+		user4  = new User("Gardel","ConSombrero","ConAltaPeluca","gardel@gmail.com", "password", new Date())=>[monedero=100000.00]
+		user5  = new User("Darin","Azul","Actor","darin@gmail.com", "password", new Date())=>[monedero=100000.00]
+		user6  = new User("Goku","Zero","Kamehameha","goku@gmail.com", "password", new Date())=>[monedero=100000.00]
+		user7  = new User("Cachito","Krillin","Pelao","cachito@gmail.com", "password", new Date())=>[monedero=100000.00]
+		user8  = new User("Michael","Jackson","Muerto","michael@gmail.com", "password", new Date())=>[monedero=100000.00]
+		user9  = new User("Dragon","Larina","Dragonforce","dragonzote@gmail.com", "password", new Date())=>[monedero=100000.00]
 		user10 = new User("Ciclope","drina","Ojo","londrina@gmail.com", "password", new Date())=>[monedero=100000.00]
 		user11 = new User("Titan","na","Jayan","rina@gmail.com", "password", new Date())=>[monedero=100000.00]
 		
-		val coleccionUsuario =#[user1,user2,user3,user4,user5,user6,user7,user8,user9,user10,user11] 
+		val coleccionUsuario    = #[user1,user2,user3,user4,user5,user6,user7,user8,user9,user10,user11] 
+		val coleccionDeAsientos = #[asiento1,asiento2,asiento3,asiento4,asiento5,asiento6,asiento7,
+			asiento8,asiento9,asiento10,asiento11
+		]
 		
-		Runner.runInSession[ {
+		Runner.runInSession[
 			coleccionUsuario.forEach[userDAO.save(it)]
+			coleccionDeAsientos.forEach[asientoDAO.save(it)]
 			null
-		}]
+		]
 	}
 	
 	@Test
 	def void testunLeaderBoardServiceRetornaLos10DestinosMasVendidos(){
 		//Hacemos que los usuarios reserven asientos y los compren. 
 		//Notese que el destino numero 11 no esta en ningun tramo, el destino 2 esta en multiples.
-		asientoService.comprar(asientoService.reservar(asiento1,user1),user1) ;	asientoService.comprar(asientoService.reservar(asiento2,user2),user2)
-		asientoService.comprar(asientoService.reservar(asiento3,user3),user3) ; asientoService.comprar(asientoService.reservar(asiento4,user4),user4)
-		asientoService.comprar(asientoService.reservar(asiento5,user5),user5) ; asientoService.comprar(asientoService.reservar(asiento6,user6),user6)
-		asientoService.comprar(asientoService.reservar(asiento7,user7),user7) ; asientoService.comprar(asientoService.reservar(asiento8,user8),user8)
-		asientoService.comprar(asientoService.reservar(asiento9,user9),user9) ; asientoService.comprar(asientoService.reservar(asiento10,user10),user10)
-		asientoService.comprar(asientoService.reservar(asiento11,user11),user11)
-		
-		
+		asientoService.comprar(asientoService.reservar(asiento1.id,user1.userName).id,user1.userName) ;	asientoService.comprar(asientoService.reservar(asiento2.id,user2.userName).id,user2.userName)
+		asientoService.comprar(asientoService.reservar(asiento3.id,user3.userName).id,user3.userName) ; asientoService.comprar(asientoService.reservar(asiento4.id,user4.userName).id,user4.userName)
+		asientoService.comprar(asientoService.reservar(asiento5.id,user5.userName).id,user5.userName) ; asientoService.comprar(asientoService.reservar(asiento6.id,user6.userName).id,user6.userName)
+		asientoService.comprar(asientoService.reservar(asiento7.id,user7.userName).id,user7.userName) ; asientoService.comprar(asientoService.reservar(asiento8.id,user8.userName).id,user8.userName)
+		asientoService.comprar(asientoService.reservar(asiento9.id,user9.userName).id,user9.userName) ; asientoService.comprar(asientoService.reservar(asiento10.id,user10.userName).id,user10.userName)
+		asientoService.comprar(asientoService.reservar(asiento11.id,user11.userName).id,user11.userName)
+
 		//Pedimos el ranking de destinos mas vendidos
 		var resultado = leaderboardServiceSUT.rankingDestinos
 		
@@ -240,12 +249,12 @@ class TestLeaderboardService {
 	def void testunLeaderBoardServiceRetornaLos10UsuariosQueMasVuelosCompraron(){
 		//Hacemos que los usuarios reserven asientos y los compren.
 		//Notese que el usuario 1 compro 2 asientos y el 11 no compro ninguno.
-		asientoService.comprar(asientoService.reservar(asiento1,user1),user1) ; asientoService.comprar(asientoService.reservar(asiento2,user2),user2)
-		asientoService.comprar(asientoService.reservar(asiento3,user3),user3) ; asientoService.comprar(asientoService.reservar(asiento4,user4),user4)
-		asientoService.comprar(asientoService.reservar(asiento5,user5),user5) ; asientoService.comprar(asientoService.reservar(asiento6,user6),user6)
-		asientoService.comprar(asientoService.reservar(asiento7,user7),user7) ; asientoService.comprar(asientoService.reservar(asiento8,user8),user8)
-		asientoService.comprar(asientoService.reservar(asiento9,user9),user9) ; asientoService.comprar(asientoService.reservar(asiento10,user10),user10)
-		asientoService.comprar(asientoService.reservar(asiento11,user1),user1)
+		asientoService.comprar(asientoService.reservar(asiento1.id,user1.userName).id,user1.userName) ; asientoService.comprar(asientoService.reservar(asiento2.id,user2.userName).id,user2.userName)
+		asientoService.comprar(asientoService.reservar(asiento3.id,user3.userName).id,user3.userName) ; asientoService.comprar(asientoService.reservar(asiento4.id,user4.userName).id,user4.userName)
+		asientoService.comprar(asientoService.reservar(asiento5.id,user5.userName).id,user5.userName) ; asientoService.comprar(asientoService.reservar(asiento6.id,user6.userName).id,user6.userName)
+		asientoService.comprar(asientoService.reservar(asiento7.id,user7.userName).id,user7.userName) ; asientoService.comprar(asientoService.reservar(asiento8.id,user8.userName).id,user8.userName)
+		asientoService.comprar(asientoService.reservar(asiento9.id,user9.userName).id,user9.userName) ; asientoService.comprar(asientoService.reservar(asiento10.id,user10.userName).id,user10.userName)
+		asientoService.comprar(asientoService.reservar(asiento11.id,user1.userName).id,user1.userName)
 		
 		
 		//Pedimos el ranking de destinos mas vendidos
@@ -268,12 +277,12 @@ class TestLeaderboardService {
 		//Hacemos que los usuarios reserven asientos y los compren
 		//Notese que el usuario 1 es el que reservo el tramo que menos vale
 		// y que el usuario 11 es el que reservo el tramo que mas vale
-		asientoService.comprar(asientoService.reservar(asiento1,user1),user1) ; asientoService.comprar(asientoService.reservar(asiento2,user2),user2)
-		asientoService.comprar(asientoService.reservar(asiento3,user3),user3) ; asientoService.comprar(asientoService.reservar(asiento4,user4),user4)
-		asientoService.comprar(asientoService.reservar(asiento5,user5),user5) ; asientoService.comprar(asientoService.reservar(asiento6,user6),user6)
-		asientoService.comprar(asientoService.reservar(asiento7,user7),user7) ; asientoService.comprar(asientoService.reservar(asiento8,user8),user8)
-		asientoService.comprar(asientoService.reservar(asiento9,user9),user9) ; asientoService.comprar(asientoService.reservar(asiento10,user10),user10)
-		asientoService.comprar(asientoService.reservar(asiento11,user11),user11)
+		asientoService.comprar(asientoService.reservar(asiento1.id,user1.userName).id,user1.userName) ; asientoService.comprar(asientoService.reservar(asiento2.id,user2.userName).id,user2.userName)
+		asientoService.comprar(asientoService.reservar(asiento3.id,user3.userName).id,user3.userName) ; asientoService.comprar(asientoService.reservar(asiento4.id,user4.userName).id,user4.userName)
+		asientoService.comprar(asientoService.reservar(asiento5.id,user5.userName).id,user5.userName) ; asientoService.comprar(asientoService.reservar(asiento6.id,user6.userName).id,user6.userName)
+		asientoService.comprar(asientoService.reservar(asiento7.id,user7.userName).id,user7.userName) ; asientoService.comprar(asientoService.reservar(asiento8.id,user8.userName).id,user8.userName)
+		asientoService.comprar(asientoService.reservar(asiento9.id,user9.userName).id,user9.userName) ; asientoService.comprar(asientoService.reservar(asiento10.id,user10.userName).id,user10.userName)
+		asientoService.comprar(asientoService.reservar(asiento11.id,user11.userName).id,user11.userName)
 		
 		
 		//Pedimos el ranking de destinos mas vendidos
