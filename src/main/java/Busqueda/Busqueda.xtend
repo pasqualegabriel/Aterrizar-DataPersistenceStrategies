@@ -16,19 +16,19 @@ class Busqueda {
 	
 	@Id
 	@GeneratedValue
-	public int      id
+	public int id
 	
 	@OneToOne(fetch= FetchType.EAGER, cascade=CascadeType.ALL)
-	Filtro   filtro
+	Filtro     filtro
 	
 	@ManyToOne(fetch= FetchType.EAGER,cascade=CascadeType.ALL)
-	Criterio criterio
+	Criterio   criterio
 	
 	@ManyToOne(fetch= FetchType.EAGER,cascade=CascadeType.ALL)
-	Orden    orden
+	Orden      orden
 	
 	@ManyToOne(fetch= FetchType.EAGER, cascade=CascadeType.ALL)
-	User     user
+	User       user
 	
 	new(){
 		super()

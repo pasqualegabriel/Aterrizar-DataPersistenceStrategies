@@ -25,7 +25,7 @@ class Asiento {
 	@ManyToOne(cascade=CascadeType.ALL)
 	Tramo	  tramo
 	
-	@ManyToOne (cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.ALL)
 	Categoria categoria
 	
 	@OneToOne

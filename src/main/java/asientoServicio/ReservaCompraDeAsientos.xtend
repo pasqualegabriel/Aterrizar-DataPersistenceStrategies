@@ -9,19 +9,20 @@ import dao.TramoDAO
 import dao.ReservaDAO
 import dao.AsientoDAO
 import daoImplementacion.HibernateUserDAO
+import org.hibernate.query.Query
 
 class ReservaCompraDeAsientos implements AsientoService {
 
 	HibernateUserDAO userDAO
-	AsientoDAO asientoDAO
-	ReservaDAO reservaDAO
-	TramoDAO tramoDAO
+	AsientoDAO 		 asientoDAO
+	ReservaDAO 		 reservaDAO
+	TramoDAO 		 tramoDAO
 
 	new(HibernateUserDAO unUserDAO, AsientoDAO unAsientoDAO, ReservaDAO unReservaDAO, TramoDAO unTramoDAO) {
-		userDAO = unUserDAO
+		userDAO    = unUserDAO
 		asientoDAO = unAsientoDAO
 		reservaDAO = unReservaDAO
-		tramoDAO = unTramoDAO
+		tramoDAO   = unTramoDAO
 	}
 
 	/**Proposito:Agrega la reserva al usuario y devuelve la misma reserva que fue asignada al usuario  */
@@ -94,16 +95,31 @@ class ReservaCompraDeAsientos implements AsientoService {
 			}
 		]
 	}
-	
-	
 
-	override compras(String usuario) {
-		usuario.compras
+	override compras(String userName) {
+
+		Runner.runInSession[
+			val session = Runner.getCurrentSession
+          
+        	var hql = "from Compra c where c.comprador.userName = '" + userName + "'"
+
+			var Query<Compra> query =  session.createQuery(hql, Compra)
+			query.getResultList
+		]
 	}
 
 	override disponibles(Integer tramo) {
+		
 		var unTramo = tramoDAO.load(tramo)
 		
 		unTramo.asientosDisponibles
 	}
+
+
 }
+
+
+
+
+
+

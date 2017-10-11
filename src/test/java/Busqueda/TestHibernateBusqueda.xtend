@@ -23,8 +23,7 @@ import aereolinea.Destino
 import java.time.LocalDateTime
 import dao.BusquedaDAO
 import daoImplementacion.HibernateBusquedaDAO
-import org.hibernate.Session
-import java.util.List
+import runner.SessionFactoryProvider
 
 class TestHibernateBusqueda {
 		
@@ -46,35 +45,31 @@ class TestHibernateBusqueda {
 	@Before
 	def void setUp(){
 		
-		busquedaDAO     = new HibernateBusquedaDAO
-		userDAO         = new HibernateUserDAO
-		busquedaService = new BusquedaHibernate
-		usuario         = new User("Pepita","LaGolondrina","euforica","pepitagolondrina@gmail.com", "password", new Date)
-		vuelo           = new Vuelo(new Aereolinea("Aterrizar"))
+		busquedaDAO      = new HibernateBusquedaDAO
+		userDAO          = new HibernateUserDAO
+		busquedaService  = new BusquedaHibernate
+		usuario          = new User("Pepita","LaGolondrina","euforica","pepitagolondrina@gmail.com", "password", new Date)
+		vuelo            = new Vuelo(new Aereolinea("Aterrizar"))
 		
-		tramo1     		= new Tramo(10.00, vuelo, new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00))
-		reserva1 		= new Reserva
-		categoria1    	= new Primera
-		asiento1		= new Asiento(tramo1, categoria1)
+		tramo1     		 = new Tramo(10.00, vuelo, new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00))
+		reserva1 		 = new Reserva
+		categoria1    	 = new Primera
+		asiento1		 = new Asiento(tramo1, categoria1)
 		asiento1.reserva = reserva1
 		
-		tramo2     		= new Tramo(20.00, vuelo, new Destino("Mar Del Plata"), new Destino("Bs As"), LocalDateTime.of(2017, 1, 10, 10 ,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00))
-		reserva2 		= new Reserva
-		categoria2    	= new Business
-		asiento2		= new Asiento(tramo2, categoria2)
+		tramo2     		 = new Tramo(20.00, vuelo, new Destino("Mar Del Plata"), new Destino("Bs As"), LocalDateTime.of(2017, 1, 10, 10 ,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00))
+		reserva2 		 = new Reserva
+		categoria2    	 = new Business
+		asiento2		 = new Asiento(tramo2, categoria2)
 		asiento2.reserva = reserva2
 		
-		Runner.runInSession[ {
+		Runner.runInSession[
 			val sessionAsiento = Runner.currentSession
 			sessionAsiento.save(asiento1)
 			sessionAsiento.save(asiento2)
 			userDAO.save(usuario)
 			null
-		}]
-	}
-	
-	def save(){
-		
+		]
 	}
 	
 	@Test
@@ -90,7 +85,7 @@ class TestHibernateBusqueda {
 		
 		assertEquals(busquedaService.buscar(busqueda, usuario.userName).size, 1)	
 			
-		Runner.runInSession[ {
+		Runner.runInSession[
 			
 			var otherUser   = userDAO.load(usuario)
 			var otherSearch = busquedaDAO.load(busqueda)
@@ -104,7 +99,7 @@ class TestHibernateBusqueda {
 			assertNotEquals(otherSearch.filtro, filtro)
 			assertNotEquals(otherSearch.orden, ascendente)
 			null
-		}]
+		]
 		
 
 	}
@@ -123,7 +118,7 @@ class TestHibernateBusqueda {
 		
 		assertEquals(busquedaService.buscar(busqueda, usuario.userName).size, 2)	
 		
-		Runner.runInSession[ {
+		Runner.runInSession[
 			
 			
 			var otherUser = userDAO.load(usuario)
@@ -133,7 +128,7 @@ class TestHibernateBusqueda {
 			assertEquals(otherSearch.user.userName, otherUser.userName)
 
 			null
-		}]
+		]
 	}
 	
 	@Test
@@ -244,9 +239,33 @@ class TestHibernateBusqueda {
 		
 		assertEquals(busquedaService.buscar(busqueda, usuario.userName).size, 2)	
 	}
+	
+	@Test
+	def void testUltimasDiezBusquedasRealizadasPorUnUsuarioQueNoRealizoBusquedas(){
+		
+		val ultima10Busquedas = busquedaService.list(usuario.userName)
+		
+		assertEquals(0, ultima10Busquedas.size)	
+	}
+	
+	@Test
+	def void testUltimasDiezBusquedasRealizadasPorUnUsuarioQueRealizoUnaBusqueda(){
+		
+		val escala      	  = new Costo 
+		val ascendente        = new Ascendente		
+		val filtroSimple      = new FiltroSimple(new CampoAerolinea,"Despegar") 
+		val busqueda0         = new Busqueda(filtroSimple, escala, ascendente)
+		
+		busquedaService.buscar(busqueda0 , usuario.userName)
+		val ultima10Busquedas = busquedaService.list(usuario.userName)
+		
+		assertEquals(1, ultima10Busquedas.size)
+		assertTrue(ultima10Busquedas.get(0).orden.orden.equals("ASC"))
+		assertTrue(ultima10Busquedas.stream.allMatch[it.user.userName.equals(usuario.userName)])			
+	}
 
 	@Test
-	def void testUnUsurioRealizaDosBusquedas(){
+	def void testUltimasDiezBusquedasRealizadasPorUnUsuario(){
 		
 			initializeSearchs
 			val ultima10Busquedas = busquedaService.list(usuario.userName)
@@ -350,9 +369,28 @@ class TestHibernateBusqueda {
 	
 	}
 	
+	@Test
+	def void testSeRealizaUnaBusquedaYeRealizada(){
+		
+		val filtroSimple1     = new FiltroSimple(new CampoCategoria,"Primera") 
+		val filtroSimple2     = new FiltroSimple(new CampoDestino,   "Bs As") 
+		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, new ComparatorOr)
+		
+		val  escala      	  = new Escala 
+		val  descendente      = new Descendente 
+		
+		busqueda              = new Busqueda(filtroCompuesto, escala, descendente)
+		
+		assertEquals(busquedaService.buscar(busqueda, usuario.userName).size, 2)	
+		
+		assertEquals(busquedaService.busquedasGuardada(busqueda.id, usuario.userName).size, 2)
+		
+	}
+	
+	
 	@After
 	def void tearDown(){
-		userDAO.clearAll
+		SessionFactoryProvider.destroy
 //		Runner.runInSession [
 //			
 //			val session = Runner.getCurrentSession

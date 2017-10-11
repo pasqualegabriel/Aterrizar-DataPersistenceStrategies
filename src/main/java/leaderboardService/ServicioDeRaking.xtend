@@ -8,7 +8,7 @@ import service.User
 class ServicioDeRaking implements LeaderboardService {
 	
 	override rankingDestinos() {
-		Runner.runInSession[ {
+		Runner.runInSession[ 
 			val session = Runner.getCurrentSession
 	
 		
@@ -21,11 +21,11 @@ class ServicioDeRaking implements LeaderboardService {
 			
 			query = session.createQuery(hql, Destino).setMaxResults(10)
 			query.getResultList
-		}]
+		]
 	}
 	
 	override rankingCompradores() {
-		Runner.runInSession[ {
+		Runner.runInSession[
 			val session = Runner.getCurrentSession
 	
 		
@@ -39,11 +39,11 @@ class ServicioDeRaking implements LeaderboardService {
 	
 		
 			query.getResultList
-		}]
+		]
 	}
 	
 	override rankingPagadores() {
-			Runner.runInSession[ {
+			Runner.runInSession[
 			val session = Runner.getCurrentSession
 	
 		
@@ -55,7 +55,7 @@ class ServicioDeRaking implements LeaderboardService {
 	
 		
 			query.getResultList
-		}]
+		]
 	}
 }
 	

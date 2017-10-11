@@ -23,6 +23,7 @@ import runner.Runner
 import daoImplementacion.HibernateAsientoDAO
 import daoImplementacion.HibernateReservaDAO
 import daoImplementacion.HibernateTramoDAO
+import runner.SessionFactoryProvider
 
 class TestReservaCompraDeAsientos {
 	
@@ -227,7 +228,7 @@ class TestReservaCompraDeAsientos {
 	
 	@After
 	def void tearDown(){
-		userDAO.clearAll
+		SessionFactoryProvider.destroy
 //		Runner.runInSession [
 //			
 //			val session = Runner.getCurrentSession

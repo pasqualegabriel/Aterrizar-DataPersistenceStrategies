@@ -14,6 +14,7 @@ import asientoServicio.Reserva
 import dao.UserDAO
 import java.util.Date
 import aereolinea.Tramo
+import runner.SessionFactoryProvider
 
 class TestPersistenciaCompraEnUserDAO {
 	Compra 			compraDoc
@@ -107,12 +108,17 @@ class TestPersistenciaCompraEnUserDAO {
 		
 	}
 	
-	
-	
-	
-	
 	@After
 	def void tearDown(){
-		userDAOSuj.clearAll
+		SessionFactoryProvider.destroy
 	}
+	
+	
+	
+	
 }
+
+
+
+
+

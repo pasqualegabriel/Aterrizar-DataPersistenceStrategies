@@ -12,6 +12,7 @@ import service.User
 import dao.UserDAO
 import java.util.Date
 import aereolinea.Asiento
+import runner.SessionFactoryProvider
 
 class TestDaoReserva {
 	
@@ -60,7 +61,6 @@ class TestDaoReserva {
 			var otherUser = userDAOSuj.load(userDoc)
 			assertNotEquals(userDoc.reserva.asientos,otherUser.reserva.asientos)
 			assertEquals(userDoc.reserva.asientos.size,otherUser.reserva.asientos.size)
-			//assertEquals(userDoc.reserva.horaRealizada,otherUser.reserva.horaRealizada)///ARREGLAR LO DE LOS DATE
 			assertEquals(userDoc.reserva.estaValidado,otherUser.reserva.estaValidado)
 			assertNotEquals(userDoc.reserva,otherUser.reserva)
 			null
@@ -98,6 +98,6 @@ class TestDaoReserva {
 	
 	@After
 	def void tearDown(){
-		userDAOSuj.clearAll
+		SessionFactoryProvider.destroy
 	}
 }

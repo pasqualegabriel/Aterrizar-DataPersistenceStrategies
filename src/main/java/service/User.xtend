@@ -10,26 +10,25 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne
-import javax.persistence.FetchType
 
 @Accessors
 @Entity
 class User {
 
 	@Id
-	String 	userName
-	String 	name
-	String 	lastName
-	String 	userPassword
-	String 	mail
-	Date 	birthDate
-	Boolean validate
-	String  validateCode
-	Double  monedero
-	Double  gastoTotal
+	public String userName
+	String 		  name
+	String 		  lastName
+	String 		  userPassword
+	String 	 	  mail
+	Date 		  birthDate
+	Boolean		  validate
+	String 		  validateCode
+	Double 	      monedero
+	Double 	      gastoTotal
 	
 	@OneToMany(cascade=CascadeType.ALL)
-	List<Compra> compras   =newArrayList
+	List<Compra> compras  = newArrayList
 	
 	@OneToOne(cascade=CascadeType.ALL)
 	Reserva reserva 

@@ -16,6 +16,8 @@ import runner.Runner
 import static org.junit.Assert.*
 import Busqueda.FiltroCompuesto
 import Busqueda.ComparatorOr
+import org.junit.After
+import runner.SessionFactoryProvider
 
 class TesBusquedaDAO {
 	BusquedaDAO busquedaDAOSuj
@@ -83,5 +85,9 @@ class TesBusquedaDAO {
 		}]
 	}
 	
+	@After
+	def void tearDown(){
+		SessionFactoryProvider.destroy
+	}
 	
 }

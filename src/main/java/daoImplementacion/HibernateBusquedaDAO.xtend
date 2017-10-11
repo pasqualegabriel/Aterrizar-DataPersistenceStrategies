@@ -15,13 +15,19 @@ class HibernateBusquedaDAO implements BusquedaDAO {
 	
 	override load(Busqueda aSearch) {		
 		var session = Runner.currentSession
-		session.get(Busqueda,aSearch.id)
-		
-
+		session.get(Busqueda, aSearch.id)
 	}
 	
+	override loadById(Integer busqueda) {
+		
+		var session = Runner.currentSession
+		session.get(Busqueda, busqueda)
+	}
+
 	override clearAll() {
 		SessionFactoryProvider.destroy
 	}
+	
+
 	
 }

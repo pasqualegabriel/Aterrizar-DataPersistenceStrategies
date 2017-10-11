@@ -8,12 +8,11 @@ import java.util.Date
 import org.junit.After
 import runner.Runner
 import daoImplementacion.HibernateUserDAO
-import java.util.List
 
 class TestHibernateUserDAO {
 
 	HibernateUserDAO userDAOSuj
-	User userDoc
+	User 			 userDoc
 
 //	Asiento 	    asientoDoc
 //	Tramo		    tramoDoc
@@ -120,18 +119,19 @@ class TestHibernateUserDAO {
 
 	@After
 	def void tearDown() {
-		Runner.runInSession [{
-			
-		
-		val session = Runner.getCurrentSession();
-		var List<String> nombreDeTablas = session.createNativeQuery("show tables").getResultList();
-		session.createNativeQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
-		nombreDeTablas.forEach [
-			session.createNativeQuery("truncate table " + it).executeUpdate();
-		];
-		session.createNativeQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
-		null
-			}
-		]
+
+		userDAOSuj.clearAll
+
+//		Runner.runInSession [
+//			
+//			val session = Runner.getCurrentSession
+//			var List<String> nombreDeTablas = session.createNativeQuery("show tables").getResultList
+//			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate
+//			nombreDeTablas.forEach [
+//				session.createNativeQuery("truncate table " + it).executeUpdate
+//			]
+//			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate
+//			null
+//		]
 	}
 }
