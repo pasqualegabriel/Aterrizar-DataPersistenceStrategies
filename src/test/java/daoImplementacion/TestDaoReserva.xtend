@@ -12,7 +12,7 @@ import service.User
 import dao.UserDAO
 import java.util.Date
 import aereolinea.Asiento
-import runner.SessionFactoryProvider
+import service.TruncateTables
 
 class TestDaoReserva {
 	
@@ -34,7 +34,7 @@ class TestDaoReserva {
 	def void testAlHacerUnSaveYLuegoRecuperarSeObtieneMismoObjetosEnLaMismaSession(){
 		
 	
-		Runner.runInSession[ {
+		Runner.runInSession[
 	
 			userDAOSuj.save(userDoc)
 			var otherUser = userDAOSuj.load(userDoc)
@@ -45,32 +45,32 @@ class TestDaoReserva {
 			assertEquals(userDoc.reserva,otherUser.reserva)
 
 			null
-		}]
+		]
 	}
 	@Test
 	def void testAlHacerUnSaveYCerrarLaSeccionCuandoAbrimosUnaNuevaYHacemosLoadLasIntanciasSonDiferentes(){
 			
-		Runner.runInSession[ {
+		Runner.runInSession[ 
 	
 			userDAOSuj.save(userDoc)
 			null
-		}]
+		]
 	
 	
-		Runner.runInSession[ {
+		Runner.runInSession[
 			var otherUser = userDAOSuj.load(userDoc)
 			assertNotEquals(userDoc.reserva.asientos,otherUser.reserva.asientos)
 			assertEquals(userDoc.reserva.asientos.size,otherUser.reserva.asientos.size)
 			assertEquals(userDoc.reserva.estaValidado,otherUser.reserva.estaValidado)
 			assertNotEquals(userDoc.reserva,otherUser.reserva)
 			null
-		}]
+		]
 	}
 	
 	@Test
 	def void testAlHacerUnSaverYUpdatearAUnUsuarioSeVerificaQueSePersistieronLosCambios() {
 	
-		Runner.runInSession[ {
+		Runner.runInSession[
 
 			/**asserts antes de guardar la reserva */
 			assertEquals(0,userDoc.reserva.asientos.size)
@@ -90,7 +90,7 @@ class TestDaoReserva {
 			assertFalse(otherUser.reserva.estaValidado)
 			
 			null
-		}]
+		]
 		
 	}
 	
@@ -98,6 +98,8 @@ class TestDaoReserva {
 	
 	@After
 	def void tearDown(){
-		SessionFactoryProvider.destroy
+
+		new TruncateTables => [ vaciarTablas ]
+
 	}
 }

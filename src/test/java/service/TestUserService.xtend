@@ -16,7 +16,6 @@ import Excepciones.IdenticPasswords
 import dao.UserDAO
 import daoImplementacion.HibernateUserDAO
 import runner.Runner
-import daoImplementacion.JDBCUserDAO
 
 class TestUserService {
 	
@@ -32,18 +31,11 @@ class TestUserService {
         unGeneradorDeCodigo = new RandomNumberGenerator
 	    unMailService = new Postman
 	    generatorMail = new SimpleMailer
-        //setJDBC
-		setHibernate
-	}
-	
-	def setHibernate(){
-		userDAO       = new HibernateUserDAO
+        userDAO       = new HibernateUserDAO
 		serviceTest   = new ServiceHibernate(userDAO, generatorMail, unGeneradorDeCodigo, unMailService)
-	}
-	
-	def setJDBC(){
-		userDAO       = new JDBCUserDAO
-		serviceTest   = new Service(userDAO, generatorMail, unGeneradorDeCodigo, unMailService)
+		// JDBC
+//		userDAO       = new JDBCUserDAO
+//		serviceTest   = new Service(userDAO, generatorMail, unGeneradorDeCodigo, unMailService
 	}
 
 	@Test
@@ -154,7 +146,7 @@ class TestUserService {
 
 		serviceTest.changePassword("dionisiaUser","dionisiaPassword","newPassword")
         
-        Runner.runInSession [{
+        Runner.runInSession [
 			var userExample      = new User
         	userExample.userName = "dionisiaUser"
 		
@@ -163,7 +155,7 @@ class TestUserService {
 	    	assertEquals(user.userPassword, "newPassword")
 	    	
 	    	null
-	    }]
+	    ]
 	    
 	}
 
@@ -187,9 +179,31 @@ class TestUserService {
 	
 	@After
 	def void tearDown(){
-		userDAO.clearAll
-		
+
+		new TruncateTables => [ vaciarTablas ]
+
 	}
+}
+
+class TruncateTables {
+	
+	def vaciarTablas(){
+
+		Runner.runInSession [
+			
+			val session = Runner.getCurrentSession
+			var nombreDeTablas = session.createNativeQuery("show tables").getResultList
+			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate
+			nombreDeTablas.forEach [
+				session.createNativeQuery("truncate table " + it).executeUpdate
+			]
+			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate
+            session.createNativeQuery("insert into hibernate_sequence(next_val) values(0);").executeUpdate
+			null	
+		]
+
+	}
+	
 }
 
 

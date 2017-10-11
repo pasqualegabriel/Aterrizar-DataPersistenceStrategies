@@ -23,7 +23,7 @@ import runner.Runner
 import daoImplementacion.HibernateAsientoDAO
 import daoImplementacion.HibernateReservaDAO
 import daoImplementacion.HibernateTramoDAO
-import runner.SessionFactoryProvider
+import service.TruncateTables
 
 class TestReservaCompraDeAsientos {
 	
@@ -89,7 +89,7 @@ class TestReservaCompraDeAsientos {
 	}
 
 	@Test(expected=ExepcionReserva)
-	def test001UnatestReservaCompraDeAsientosNoPuedeReservarUnAsientoParaUnUsuarioExitosamentePorqueYaEstabaReservado(){
+	def testUnatestReservaCompraDeAsientosNoPuedeReservarUnAsientoParaUnUsuarioExitosamentePorqueYaEstabaReservado(){
 		
 		testReservaCompraDeAsientos.reservar(asientoDoc.id,usuarioDoc.userName)
 		
@@ -99,7 +99,7 @@ class TestReservaCompraDeAsientos {
 	}
 	
 	@Test
-	def test002UnatestReservaCompraDeAsientosPuedeReservarVariosAsientosParaUnUsuarioExitosamente(){
+	def testUnatestReservaCompraDeAsientosPuedeReservarVariosAsientosParaUnUsuarioExitosamente(){
 		var reservaResultado = testReservaCompraDeAsientos.reservarAsientos(idAsientosDoc,usuarioDoc.userName)
 		assertEquals(reservaResultado.asientos.size,asientosDoc.size)
 	}
@@ -116,7 +116,7 @@ class TestReservaCompraDeAsientos {
 	}
 	
 	@Test
-	def void test004UnTestReservaCompraDeAsientosPuedeRealizarUnaCompraParaUnUsuarioExitosamente(){
+	def void testUnTestReservaCompraDeAsientosPuedeRealizarUnaCompraParaUnUsuarioExitosamente(){
 		
 		assertTrue(usuarioDoc.compras.isEmpty)
 		
@@ -131,9 +131,9 @@ class TestReservaCompraDeAsientos {
 		val compraResultado  = testReservaCompraDeAsientos.comprar(reservaResultado.id, usuarioDoc.userName)
 		
 		Runner.runInSession[
-			val user = userDAO.loadbyname(usuarioDoc.userName)
-			val asiento2= asientoDAO.load(asientoDoc2.id)
-			val asiento3= asientoDAO.load(asientoDoc3.id)
+			val user     = userDAO.loadbyname(usuarioDoc.userName)
+			val asiento2 = asientoDAO.load(asientoDoc2.id)
+			val asiento3 = asientoDAO.load(asientoDoc3.id)
 			val asientos = #[asiento3, asiento2]
 			
 			assertNull(user.compras.get(0).asientos.get(0).reserva)
@@ -149,7 +149,7 @@ class TestReservaCompraDeAsientos {
 	}
 	
 	@Test(expected=ExepcionCompra)
-	def void test006UnaTestReservaCompraDeAsientosNoPuedeRealizarUnaCompraParaUnUsuarioExitosamentePorQueNoLeAlcanzaElEfectivo(){
+	def void testUnaTestReservaCompraDeAsientosNoPuedeRealizarUnaCompraParaUnUsuarioExitosamentePorQueNoLeAlcanzaElEfectivo(){
 		Runner.runInSession[	
 			usuarioDoc.monedero = 2.00
 			userDAO.update(usuarioDoc)
@@ -165,7 +165,7 @@ class TestReservaCompraDeAsientos {
 	
 
 	@Test(expected=ExepcionCompra)
-	def test007UnaTestReservaCompraDeAsientosNoPuedeRealizarUnaCompraParaUnUsuarioExitosamentePorqueLaReservaEsInvalida(){
+	def testUnaTestReservaCompraDeAsientosNoPuedeRealizarUnaCompraParaUnUsuarioExitosamentePorqueLaReservaEsInvalida(){
 
 		Runner.runInSession[	
 			usuarioDoc.monedero = 300.00
@@ -182,64 +182,70 @@ class TestReservaCompraDeAsientos {
 	}
 	
 	@Test
-	def test007UnTestReservaDevuelvelLosAsientosDisponiblesDeUnTramo(){
+	def testUnTestReservaDevuelvelLasComprasDeUnUsuarioQueNoRealizoCompras(){
 		
+		assertEquals(0, testReservaCompraDeAsientos.compras(usuarioDoc.userName).size)
+
+	}
+	
+	@Test
+	def testUnTestReservaDevuelvelLasComprasDeUnUsuarioQueRealizoDosCompras(){
 		
-		val asiento1 = new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista)
-		val asiento2 = new Asiento(new Tramo(200.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Business)
-		val asiento3 = new Asiento(new Tramo(300.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Primera)
+		val asiento = new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista)
+		
+		Runner.runInSession[	
+			usuarioDoc.monedero = 20000.00
+			userDAO.update(usuarioDoc)
+			asientoDAO.save(asiento)
+			null
+		]
+		
+		val reservaResultado1 = testReservaCompraDeAsientos.reservar(asiento.id, usuarioDoc.userName)
+		testReservaCompraDeAsientos.comprar(reservaResultado1.id, usuarioDoc.userName)
+		
+		val reservaResultado2 = testReservaCompraDeAsientos.reservarAsientos(idAsientosDoc, usuarioDoc.userName)
+		testReservaCompraDeAsientos.comprar(reservaResultado2.id, usuarioDoc.userName)
+
+
+		assertEquals(2, testReservaCompraDeAsientos.compras(usuarioDoc.userName).size)
+
+	}
+	
+	@Test
+	def testUnTestReservaDevuelvelLosAsientosDisponiblesDeUnTramoConTresAsientosDondeUnoEstaDisponibleOtroEstaReservadoYElRestanteEstaComprado(){
+		
+		var unTramoTest = new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), 
+			                 LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00))
+		
+		val asiento1 = new Asiento(unTramoTest, new Turista)
+		val asiento2 = new Asiento(unTramoTest, new Business)
+		val asiento3 = new Asiento(unTramoTest, new Primera)
 		
 		Runner.runInSession[	
 			usuarioVegetaDoc.monedero = 2000.00
-			usuarioDoc.monedero = 2000.00
+			usuarioDoc.monedero       = 2000.00
 			userDAO.update(usuarioDoc)
 			userDAO.update(usuarioVegetaDoc)
 			asientoDAO.save(asiento1)
 			asientoDAO.save(asiento2)
 			asientoDAO.save(asiento3)
-			
 			null
 		]
 		
-		testReservaCompraDeAsientos.reservar(asiento1.id,usuarioVegetaDoc.userName)
+		testReservaCompraDeAsientos.reservar(asiento1.id, usuarioVegetaDoc.userName)
 		
-		var reservaResultado = testReservaCompraDeAsientos.reservar(asiento2.id,usuarioDoc.userName)
+		var reservaResultado = testReservaCompraDeAsientos.reservar(asiento2.id, usuarioDoc.userName)
 		testReservaCompraDeAsientos.comprar(reservaResultado.id, usuarioDoc.userName)
 		
-		//Hay que traer los asientos nuevamente, por que se updatean en la base de datos cuando se realiza la operacion del service .comprar
-		var unTramoTest = Runner.runInSession[	
-			val asientoTest1 = asientoDAO.load(asiento1.id)
-			val asientoTest2 = asientoDAO.load(asiento2.id)
-			val asientoTest3 = asientoDAO.load(asiento3.id)
-			
-			var unTramoTest = new Tramo
-			unTramoTest.asientos.add(asientoTest1)
-			unTramoTest.asientos.add(asientoTest2)
-			unTramoTest.asientos.add(asientoTest3)
-
-			
-			unTramoTest
-		]
-		
-		assertEquals(unTramoTest.asientosDisponibles.size, 1)
-
+		assertEquals(1, testReservaCompraDeAsientos.disponibles(unTramoTest.id).size)
 
 	}
 	
 	@After
 	def void tearDown(){
-		SessionFactoryProvider.destroy
-//		Runner.runInSession [
-//			
-//			val session = Runner.getCurrentSession
-//			val nombreDeTablas = session.createNativeQuery("show tables").getResultList
-//			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate
-//			nombreDeTablas.forEach [
-//				session.createNativeQuery("truncate table " + it).executeUpdate
-//			]
-//			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate
-//			null	
-//		]
+
+		new TruncateTables => [ vaciarTablas ]
+
 	}
 	
 	

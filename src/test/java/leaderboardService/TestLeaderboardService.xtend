@@ -9,7 +9,6 @@ import org.junit.After
 import service.User
 import aereolinea.Asiento
 import java.util.Date
-import runner.SessionFactoryProvider
 import aereolinea.Destino
 import aereolinea.Aereolinea
 import aereolinea.Tramo
@@ -22,6 +21,7 @@ import daoImplementacion.HibernateUserDAO
 import daoImplementacion.HibernateAsientoDAO
 import daoImplementacion.HibernateReservaDAO
 import daoImplementacion.HibernateTramoDAO
+import service.TruncateTables
 
 class TestLeaderboardService {
 	
@@ -302,7 +302,9 @@ class TestLeaderboardService {
 	
 	@After
 	def void tearDown(){
-		SessionFactoryProvider.destroy
+
+		new TruncateTables => [ vaciarTablas ]
+
 	}
 
 }

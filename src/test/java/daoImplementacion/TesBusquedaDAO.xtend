@@ -17,7 +17,7 @@ import static org.junit.Assert.*
 import Busqueda.FiltroCompuesto
 import Busqueda.ComparatorOr
 import org.junit.After
-import runner.SessionFactoryProvider
+import service.TruncateTables
 
 class TesBusquedaDAO {
 	BusquedaDAO busquedaDAOSuj
@@ -45,7 +45,7 @@ class TesBusquedaDAO {
 	@Test
 	def void testLaBusquedaDAoSujSabeHacerUnSaveYRecuperarseObtieneObjetosSimilares(){
 		
-		Runner.runInSession[ {
+		Runner.runInSession[
 	
 			busquedaDAOSuj.save(busquedaDoc)
 			
@@ -57,19 +57,19 @@ class TesBusquedaDAO {
 			assertEquals(busquedaDoc,otherSearch)
 			
 			null
-		}]
+		]
 	}
 	
 	@Test
 	def void testAlHacerUnSaveYCerrarLaSeccionCuandoAbrimosUnaNuevaYHacemosLoadLasIntanciasDelObjetoSonDiferentes(){
 			
-		Runner.runInSession[ {
+		Runner.runInSession[
 			busquedaDAOSuj.save(busquedaDoc)
 			null
-		}]
+		]
 	
 	
-		Runner.runInSession[ {
+		Runner.runInSession[
 			var otherSearch = busquedaDAOSuj.load(busquedaDoc)
 			
 			assertEquals(busquedaDoc.filtro.getFiltro,otherSearch.filtro.getFiltro)
@@ -82,12 +82,14 @@ class TesBusquedaDAO {
 			assertNotEquals(busquedaDoc,otherSearch)
 			
 			null
-		}]
+		]
 	}
 	
 	@After
 	def void tearDown(){
-		SessionFactoryProvider.destroy
+
+		new TruncateTables => [ vaciarTablas ]
+
 	}
 	
 }

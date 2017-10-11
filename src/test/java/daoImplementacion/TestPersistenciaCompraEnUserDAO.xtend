@@ -14,18 +14,18 @@ import asientoServicio.Reserva
 import dao.UserDAO
 import java.util.Date
 import aereolinea.Tramo
-import runner.SessionFactoryProvider
+import service.TruncateTables
 
 class TestPersistenciaCompraEnUserDAO {
 	Compra 			compraDoc
 	List<Asiento>	asientos
-	Reserva 	reservaDoc	
-	UserDAO 	userDAOSuj
-	User    	userDoc
+	Reserva 	    reservaDoc	
+	UserDAO 	    userDAOSuj
+	User    	    userDoc
 	
 	@Before
 	def void setUp(){
-		asientos 				=newArrayList
+		asientos 				= newArrayList
 		asientos.add(new Asiento)
 		userDAOSuj  		  	= new HibernateUserDAO
 		userDoc 		 	  	= new User("Pepita","LaGolondrina","euforica","pepitagolondrina@gmail.com", "password", new Date())
@@ -40,7 +40,7 @@ class TestPersistenciaCompraEnUserDAO {
 	def void testHacerUnSaveYLuegoUnLoadSeObtieneMismoObjetosEnLaMismaSession(){
 		
 	
-		Runner.runInSession[ {
+		Runner.runInSession[
 			assertEquals(0,userDoc.compras.size)
 			userDoc.agregarCompra(compraDoc)
 			userDAOSuj.save(userDoc)
@@ -57,21 +57,21 @@ class TestPersistenciaCompraEnUserDAO {
 			assertEquals(userDoc.compras.stream.anyMatch[it.comprador.equals(userDoc.name)],otherUser.compras.stream.anyMatch[it.comprador.equals(userDoc.name)])
 			assertEquals(userDoc.compras,otherUser.compras)
 			null
-		}]
+		]
 	}
 	
 	@Test
 	def void testAlHacerUnSaveYCerrarLaSeccionCuandoAbrimosUnaNuevaYHacemosLoadLasIntanciasDelObjetoSonDiferentes(){
 			
-		Runner.runInSession[ {
+		Runner.runInSession[
 			assertEquals(0,userDoc.compras.size)
 			userDoc.agregarCompra(compraDoc)
 			userDAOSuj.save(userDoc)
 			null
-		}]
+		]
 	
 	
-		Runner.runInSession[ {
+		Runner.runInSession[
 			var otherUser = userDAOSuj.load(userDoc)
 			
 			assertEquals(1,otherUser.compras.size)
@@ -82,13 +82,13 @@ class TestPersistenciaCompraEnUserDAO {
 			assertNotEquals(userDoc.compras,otherUser.compras)
 			
 			null
-		}]
+		]
 	}
 	
 	@Test
 	def void testAlHacerUnSaverYUpdatearAUnUsuarioSeVerificaQueSePersistieronLosCambios() {
 	
-		Runner.runInSession[ {
+		Runner.runInSession[
 
 			/**asserts antes de guardar la reserva */
 			userDoc.agregarCompra(compraDoc)
@@ -104,13 +104,15 @@ class TestPersistenciaCompraEnUserDAO {
 			assertTrue(otherUser.compras.stream.anyMatch[it.asientos.size.equals(2)])
 
 			null
-		}]
+		]
 		
 	}
 	
 	@After
 	def void tearDown(){
-		SessionFactoryProvider.destroy
+
+		new TruncateTables => [ vaciarTablas ]
+
 	}
 	
 	

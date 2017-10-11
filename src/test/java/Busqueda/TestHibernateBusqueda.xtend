@@ -23,7 +23,7 @@ import aereolinea.Destino
 import java.time.LocalDateTime
 import dao.BusquedaDAO
 import daoImplementacion.HibernateBusquedaDAO
-import runner.SessionFactoryProvider
+import service.TruncateTables
 
 class TestHibernateBusqueda {
 		
@@ -352,20 +352,10 @@ class TestHibernateBusqueda {
 		val filtroSimple12_1  = new FiltroSimple(new CampoAerolinea,"Aterrizar")
 		val	busqueda12		  = new Busqueda(filtroSimple12_1, criterio12, ascendente12)
 		
-
-		busquedaService.buscar(busqueda0 , usuario.userName)
-		busquedaService.buscar(busqueda1 , usuario.userName)
-		busquedaService.buscar(busqueda2 , usuario.userName)
-		busquedaService.buscar(busqueda3 , usuario.userName)
-		busquedaService.buscar(busqueda4 , usuario.userName)
-		busquedaService.buscar(busqueda5 , usuario.userName)
-		busquedaService.buscar(busqueda6 , usuario.userName)
-		busquedaService.buscar(busqueda7 , usuario.userName)
-		busquedaService.buscar(busqueda8 , usuario.userName)
-		busquedaService.buscar(busqueda9 , usuario.userName)
-		busquedaService.buscar(busqueda10, usuario.userName)
-		busquedaService.buscar(busqueda11, usuario.userName)
-		busquedaService.buscar(busqueda12, usuario.userName)
+		val busquedas = #[busqueda0, busqueda1, busqueda2, busqueda3, busqueda4, busqueda5,
+			              busqueda6, busqueda7, busqueda8, busqueda9, busqueda10, busqueda11, busqueda12]
+			              
+		busquedas.forEach[busquedaService.buscar(it, usuario.userName)]			
 	
 	}
 	
@@ -390,18 +380,8 @@ class TestHibernateBusqueda {
 	
 	@After
 	def void tearDown(){
-		SessionFactoryProvider.destroy
-//		Runner.runInSession [
-//			
-//			val session = Runner.getCurrentSession
-//			var nombreDeTablas = session.createNativeQuery("show tables").getResultList
-//			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate
-//			nombreDeTablas.forEach [
-//				session.createNativeQuery("truncate table " + it).executeUpdate
-//			]
-//			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate
-//			null	
-//		]
+
+		new TruncateTables => [ vaciarTablas ]
 
 	}
 

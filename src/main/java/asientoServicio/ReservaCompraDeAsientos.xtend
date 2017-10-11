@@ -43,8 +43,8 @@ class ReservaCompraDeAsientos implements AsientoService {
 
 	override reservar(Integer asiento, String usuario) {
 		Runner.runInSession [
-		var unAsiento = asientoDAO.load(asiento)
-		var unUsuario = userDAO.loadbyname(usuario)
+			var unAsiento = asientoDAO.load(asiento)
+			var unUsuario = userDAO.loadbyname(usuario)
 		
 			if (!unAsiento.estaReservado) {
 				var unaReserva = new Reserva
@@ -64,7 +64,7 @@ class ReservaCompraDeAsientos implements AsientoService {
 		
 			var unosAsientos =asientoDAO.loadAsientos(asientos)
 		
-			if (unosAsientos.stream.allMatch(asiento|!asiento.estaReservado)) {
+			if (unosAsientos.stream.allMatch( asiento | !asiento.estaReservado)) {
 				val unaReserva = new Reserva
 				unaReserva.asignarleAsientos(unosAsientos)
 				agregarReservaAUsuario(unUsuario, unaReserva)
@@ -110,9 +110,10 @@ class ReservaCompraDeAsientos implements AsientoService {
 
 	override disponibles(Integer tramo) {
 		
-		var unTramo = tramoDAO.load(tramo)
-		
-		unTramo.asientosDisponibles
+		Runner.runInSession[
+			
+			tramoDAO.load(tramo).asientosDisponibles	
+		]
 	}
 
 

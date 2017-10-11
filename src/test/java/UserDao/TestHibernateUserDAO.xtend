@@ -8,6 +8,7 @@ import java.util.Date
 import org.junit.After
 import runner.Runner
 import daoImplementacion.HibernateUserDAO
+import service.TruncateTables
 
 class TestHibernateUserDAO {
 
@@ -20,6 +21,7 @@ class TestHibernateUserDAO {
 //	Vuelo           vueloDoc
 //	Aereolinea		aereolineaDoc
 //	Compra			compraDoc
+
 	@Before
 	def void setUp() {
 		userDAOSuj = new HibernateUserDAO
@@ -40,25 +42,22 @@ class TestHibernateUserDAO {
 	def void testAlGuardarYLuegoRecuperarSeObtieneObjetosSimilares() {
 
 		Runner.runInSession [
-			{
+			
+			userDAOSuj.save(userDoc)
 
-				userDAOSuj.save(userDoc)
+			var otherUser = userDAOSuj.loadbyname(userDoc.userName)
 
-				var otherUser = userDAOSuj.loadbyname(userDoc.userName)
+			assertEquals(userDoc.reserva, otherUser.reserva)
+			assertEquals(userDoc.compras, otherUser.compras)
+			assertEquals(userDoc.name, otherUser.name)
+			assertEquals(userDoc.lastName, otherUser.lastName)
+			assertEquals(userDoc.userName, otherUser.userName)
+			assertEquals(userDoc.mail, otherUser.mail)
+			assertEquals(userDoc.birthDate, otherUser.birthDate)
+			assertEquals(userDoc.validate, otherUser.validate)
 
-				assertEquals(userDoc.reserva, otherUser.reserva)
-				assertEquals(userDoc.compras, otherUser.compras)
-				assertEquals(userDoc.name, otherUser.name)
-				assertEquals(userDoc.lastName, otherUser.lastName)
-				assertEquals(userDoc.userName, otherUser.userName)
-				assertEquals(userDoc.mail, otherUser.mail)
-				assertEquals(userDoc.birthDate, otherUser.birthDate)
-				assertEquals(userDoc.validate, otherUser.validate)
-
-				assertTrue(userDoc == otherUser)
-
-				null
-			}
+			assertTrue(userDoc == otherUser)
+			null
 		]
 
 	}
@@ -67,29 +66,25 @@ class TestHibernateUserDAO {
 	def void testAlHacerUnSaveYCerrarLaSeccionCuandoAbrimosUnaNuevaYHacemosLoadLasIntanciasSonDiferentes() {
 
 		Runner.runInSession [
-			{
-
-				userDAOSuj.save(userDoc)
-				null
-			}
+	
+			userDAOSuj.save(userDoc)
+			null
 		]
 
 		Runner.runInSession [
-			{
 
-				var otherUser = userDAOSuj.load(userDoc)
+			var otherUser = userDAOSuj.load(userDoc)
 
-				assertEquals(userDoc.name, otherUser.name)
-				assertEquals(userDoc.lastName, otherUser.lastName)
-				assertEquals(userDoc.userName, otherUser.userName)
-				assertEquals(userDoc.mail, otherUser.mail)
-				// assertEquals(userTest.birthDate, otherUser.birthDate)
-				assertEquals(userDoc.validate, otherUser.validate)
+			assertEquals(userDoc.name, otherUser.name)
+			assertEquals(userDoc.lastName, otherUser.lastName)
+			assertEquals(userDoc.userName, otherUser.userName)
+			assertEquals(userDoc.mail, otherUser.mail)
+			assertEquals(userDoc.validate, otherUser.validate)
 
-				assertTrue(userDoc != otherUser)
+			assertTrue(userDoc != otherUser)
 
-				null
-			}
+			null
+
 		]
 	}
 
@@ -97,41 +92,30 @@ class TestHibernateUserDAO {
 	def void testAlGuardarYUpdatearAUnUsuarioSeVerificaQueSePersistieronLosCambios() {
 
 		Runner.runInSession [
-			{
 
-				userDAOSuj.save(userDoc)
+			userDAOSuj.save(userDoc)
 
-				assertEquals(userDoc.lastName, "LaGolondrina")
+			assertEquals(userDoc.lastName, "LaGolondrina")
 
-				userDoc.lastName = "newUserName"
+			userDoc.lastName = "newUserName"
 
-				userDAOSuj.update(userDoc)
+			userDAOSuj.update(userDoc)
+			var otherUser = userDAOSuj.load(userDoc)
 
-				var otherUser = userDAOSuj.load(userDoc)
-
-				assertEquals(otherUser.lastName, "newUserName")
+			assertEquals(otherUser.lastName, "newUserName")
 				
-				null
-				}
-			]
+			null
+		]
 
 	}
 
 	@After
-	def void tearDown() {
+	def void tearDown(){
 
-		userDAOSuj.clearAll
+		new TruncateTables => [ vaciarTablas ]
 
-//		Runner.runInSession [
-//			
-//			val session = Runner.getCurrentSession
-//			var List<String> nombreDeTablas = session.createNativeQuery("show tables").getResultList
-//			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate
-//			nombreDeTablas.forEach [
-//				session.createNativeQuery("truncate table " + it).executeUpdate
-//			]
-//			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate
-//			null
-//		]
 	}
+	
+	
+	
 }
