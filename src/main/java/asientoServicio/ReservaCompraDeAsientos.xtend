@@ -10,6 +10,8 @@ import dao.ReservaDAO
 import dao.AsientoDAO
 import daoImplementacion.HibernateUserDAO
 import org.hibernate.query.Query
+import aereolinea.Asiento
+import Excepciones.ExepcionDatosInexistentes
 
 class ReservaCompraDeAsientos implements AsientoService {
 
@@ -35,6 +37,12 @@ class ReservaCompraDeAsientos implements AsientoService {
 		userDAO.update(unUsuario)
 		unaReserva
 	}
+	def void isNullAsientoOUsuario(Asiento unAsiento, User unUsuario){
+		
+			if(unAsiento== null || unUsuario== null){
+				throw new ExepcionDatosInexistentes("No se puede llevar acabo la reserva el usuario o asiento no existen")
+			}//Testear
+	}
 
 	/**Proposito: verifica que se puede realizar la compra */
 	def puedeComprar(Reserva unReserva, User unUsuario) {
@@ -45,7 +53,11 @@ class ReservaCompraDeAsientos implements AsientoService {
 		Runner.runInSession [
 			var unAsiento = asientoDAO.load(asiento)
 			var unUsuario = userDAO.loadbyname(usuario)
-		
+			if(unAsiento== null||isUserNull(unUsuario)){
+				throw new ExepcionDatosInexistentes("No se puede llevar acabo la reserva el usuario o asiento no existen")
+			}//testeart
+			
+					
 			if (!unAsiento.estaReservado) {
 				var unaReserva = new Reserva
 				unaReserva.agregarAsiento(unAsiento)
@@ -63,7 +75,10 @@ class ReservaCompraDeAsientos implements AsientoService {
 			var unUsuario = userDAO.loadbyname(usuario)
 		
 			var unosAsientos =asientoDAO.loadAsientos(asientos)
-		
+			if(unosAsientos.stream.anyMatch[it==null ] ||  isUserNull(unUsuario)){
+				throw new ExepcionDatosInexistentes("No se puede llevar acabo la reserva el usuario o asiento no existen")
+			}//testear con uno null y todos los asiento null  
+			
 			if (unosAsientos.stream.allMatch( asiento | !asiento.estaReservado)) {
 				val unaReserva = new Reserva
 				unaReserva.asignarleAsientos(unosAsientos)
@@ -78,6 +93,11 @@ class ReservaCompraDeAsientos implements AsientoService {
 		Runner.runInSession [
 			var unUsuario = userDAO.loadbyname(usuario)
 			val unReserva = reservaDAO.load(reserva)
+			if(unReserva==null || isUserNull(unUsuario)){
+				throw new ExepcionDatosInexistentes("No se puede llevar acabo la compra, el usuario o la reserva no existen")	
+				
+			}//testar
+			
 			
 			if (puedeComprar(unReserva, unUsuario)){
 				unUsuario.efectuarCompra(unReserva)
@@ -95,6 +115,10 @@ class ReservaCompraDeAsientos implements AsientoService {
 			}
 		]
 	}
+	
+	def isUserNull(User user) {
+		user == null
+	}
 
 	override compras(String userName) {
 
@@ -111,8 +135,11 @@ class ReservaCompraDeAsientos implements AsientoService {
 	override disponibles(Integer tramo) {
 		
 		Runner.runInSession[
-			
-			tramoDAO.load(tramo).asientosDisponibles	
+			val unTramo = tramoDAO.load(tramo)
+			if(unTramo==null){
+				throw new ExepcionDatosInexistentes("No existe el tramo")
+			}//testear
+			unTramo.asientosDisponibles	
 		]
 	}
 
