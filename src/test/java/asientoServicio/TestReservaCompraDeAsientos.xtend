@@ -24,6 +24,7 @@ import daoImplementacion.HibernateAsientoDAO
 import daoImplementacion.HibernateReservaDAO
 import daoImplementacion.HibernateTramoDAO
 import service.TruncateTables
+import Excepciones.ExepcionDatosInexistentes
 
 class TestReservaCompraDeAsientos {
 	
@@ -53,12 +54,12 @@ class TestReservaCompraDeAsientos {
 		vuelo          				= new Vuelo(aereolinea)
 		aereolinea.vuelosOfertados.add(vuelo)
 		testReservaCompraDeAsientos	= new ReservaCompraDeAsientos(userDAO,asientoDAO, reservaDAO, tramoDAO)
-		asientoDoc					= new Asiento(new Tramo(200.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista)
+		asientoDoc					= new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista) => [id = 1]
 		usuarioVegetaDoc            = new User("Vegeta","Saiyan","vegetaUser","vegeta@gmail.com","VegetaPassword",new Date())
 		usuarioDoc					= new User("Pepita","LaGolondrina","euforica","pepitagolondrina@gmail.com", "password", new Date)
 		reserva						= new Reserva
-		asientoDoc2					= new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista)
-		asientoDoc3					= new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista)
+		asientoDoc2					= new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista) => [id = 2]
+		asientoDoc3					= new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista) => [id = 3]
 		asientosDoc					= #[asientoDoc2,asientoDoc3]
 
 		Runner.runInSession[
@@ -83,13 +84,10 @@ class TestReservaCompraDeAsientos {
 			assertEquals(asiento.reserva.id,reservaResultado.id)
 			null
 		]
-		
-		
-		
 	}
 
 	@Test(expected=ExepcionReserva)
-	def testUnatestReservaCompraDeAsientosNoPuedeReservarUnAsientoParaUnUsuarioExitosamentePorqueYaEstabaReservado(){
+	def testUntestReservaCompraDeAsientosNoPuedeReservarUnAsientoParaUnUsuarioExitosamentePorqueYaEstabaReservado(){
 		
 		testReservaCompraDeAsientos.reservar(asientoDoc.id,usuarioDoc.userName)
 		
@@ -98,25 +96,99 @@ class TestReservaCompraDeAsientos {
         fail()
 	}
 	
+	@Test(expected=ExepcionDatosInexistentes)
+	def testUnaReservaCompraDeAsientosNoPuedeReservarUnAsientoPorqueElAsientoNoExiste(){
+		
+		val idAsientoInexistente = 11223
+		testReservaCompraDeAsientos.reservar(idAsientoInexistente, usuarioDoc.userName)
+		
+        fail()
+	}
+	
+	@Test(expected=ExepcionDatosInexistentes)
+	def testUnaReservaCompraDeAsientosNoPuedeReservarUnAsientoPorqueElUsuarioNoExiste(){
+		
+		val usuarioInexistente = "usuarioInexistente"
+		testReservaCompraDeAsientos.reservar(asientoDoc.id, usuarioInexistente)
+		
+        fail()
+	}
+	
 	@Test
 	def testUnatestReservaCompraDeAsientosPuedeReservarVariosAsientosParaUnUsuarioExitosamente(){
-		var reservaResultado = testReservaCompraDeAsientos.reservarAsientos(idAsientosDoc,usuarioDoc.userName)
-		assertEquals(reservaResultado.asientos.size,asientosDoc.size)
+		var reservaResultado = testReservaCompraDeAsientos.reservarAsientos(idAsientosDoc, usuarioDoc.userName)
+		assertEquals(reservaResultado.asientos.size, asientosDoc.size)
 	}
 	
 	@Test(expected=ExepcionReserva)
 	def test003UnaTestReservaCompraDeAsientosNoPuedeReservarVariosAsientosParaUnUsuarioExitosamentePorqueAlMenosUnoEstabaReservado(){
 		
 		
-		testReservaCompraDeAsientos.reservarAsientos(idAsientosDoc,usuarioDoc.userName)
+		testReservaCompraDeAsientos.reservarAsientos(idAsientosDoc, usuarioDoc.userName)
 
-		testReservaCompraDeAsientos.reservarAsientos(idAsientosDoc,usuarioDoc.userName)
+		testReservaCompraDeAsientos.reservarAsientos(idAsientosDoc, usuarioDoc.userName)
 		
 		fail()
 	}
 	
+	@Test(expected=ExepcionDatosInexistentes)
+	def test003UnaReservaCompraDeAsientosNoPuedeReservarVariosAsientosPorqueUnAsientoNoExiste(){
+		
+		val idAsientoInexistente = 11223
+		idAsientosDoc.add(idAsientoInexistente)
+		testReservaCompraDeAsientos.reservarAsientos(idAsientosDoc, usuarioDoc.userName)
+
+		fail()
+	}
+	
+	@Test(expected=ExepcionDatosInexistentes)
+	def test003UnaReservaCompraDeAsientosNoPuedeReservarVariosAsientosPorqueNingunAsientoExiste(){
+		
+		val idsDeAsientosInexistentes = #[123233, 2343242]
+		testReservaCompraDeAsientos.reservarAsientos(idsDeAsientosInexistentes, usuarioDoc.userName)
+
+		fail()
+	}
+	
+	@Test(expected=ExepcionDatosInexistentes)
+	def test003UnaReservaCompraDeAsientosNoPuedeReservarVariosAsientosPorqueElUsuarioNoExiste(){
+		
+		val usuarioInexistente = "usuarioInexistente"
+		testReservaCompraDeAsientos.reservarAsientos(idAsientosDoc, usuarioInexistente)
+
+		fail()
+	}
+	
 	@Test
-	def void testUnTestReservaCompraDeAsientosPuedeRealizarUnaCompraParaUnUsuarioExitosamente(){
+	def void testUnaReservaCompraDeAsientosPuedeRealizarUnaCompraParaUnUsuarioExitosamente(){
+		
+		assertTrue(usuarioDoc.compras.isEmpty)
+		
+		Runner.runInSession[
+			usuarioDoc.monedero = 300.00
+			userDAO.update(usuarioDoc)
+
+			null
+		]
+		
+		val reservaResultado = testReservaCompraDeAsientos.reservar(asientoDoc.id, usuarioDoc.userName)
+		val compraResultado  = testReservaCompraDeAsientos.comprar(reservaResultado.id, usuarioDoc.userName)
+		
+		Runner.runInSession[
+			val user    = userDAO.loadbyname(usuarioDoc.userName)
+			val asiento = asientoDAO.load(asientoDoc.id)
+			
+			assertNull(user.compras.get(0).asientos.get(0).reserva)
+			assertNull(user.reserva)
+			assertEquals(asiento.duenio, user)
+			assertTrue(user.compras.stream.anyMatch[it.id == compraResultado.id])
+			assertEquals(user.monedero, 190, 0.00000000001)
+			null
+		]
+	}
+	
+	@Test
+	def void testUnaReservaCompraDeAsientosPuedeRealizarUnaCompraDeUnaReservaConVariosAsientosParaUnUsuarioExitosamente(){
 		
 		assertTrue(usuarioDoc.compras.isEmpty)
 		
@@ -140,27 +212,23 @@ class TestReservaCompraDeAsientos {
 			assertNull(user.reserva)
 			assertTrue(asientos.stream.allMatch[it.duenio.equals(user)])
 			assertTrue(user.compras.stream.anyMatch[it.id == compraResultado.id])
-			assertEquals(user.monedero,80, 0.00000000001)
-
+			assertEquals(user.monedero, 80, 0.00000000001)
 			null
 		]
-		
-		
 	}
 	
 	@Test(expected=ExepcionCompra)
 	def void testUnaTestReservaCompraDeAsientosNoPuedeRealizarUnaCompraParaUnUsuarioExitosamentePorQueNoLeAlcanzaElEfectivo(){
+		
 		Runner.runInSession[	
 			usuarioDoc.monedero = 2.00
 			userDAO.update(usuarioDoc)
-			
 			null
 		]
 		
 		val reservaResultado = testReservaCompraDeAsientos.reservar(asientoDoc.id,usuarioDoc.userName)
 		testReservaCompraDeAsientos.comprar(reservaResultado.id, usuarioDoc.userName)
 		fail()
-
 	}
 	
 
@@ -170,22 +238,47 @@ class TestReservaCompraDeAsientos {
 		Runner.runInSession[	
 			usuarioDoc.monedero = 300.00
 			userDAO.update(usuarioDoc)
-			
 			null
 		]
-		var reservaResultado = testReservaCompraDeAsientos.reservar(asientoDoc.id,usuarioDoc.userName)
+		var reservaResultado = testReservaCompraDeAsientos.reservar(asientoDoc.id, usuarioDoc.userName)
 
-		testReservaCompraDeAsientos.reservarAsientos(idAsientosDoc,usuarioDoc.userName)
+		testReservaCompraDeAsientos.reservarAsientos(idAsientosDoc, usuarioDoc.userName)
 		testReservaCompraDeAsientos.comprar(reservaResultado.id, usuarioDoc.userName)
 		fail()
+	}
+	
+	@Test(expected=ExepcionDatosInexistentes)
+	def testUnTestReservaCompraDeAsientosNoPuedeRealizarUnaCompraParaUnUsuarioPorqueLaReservaNoExiste(){
 
+		Runner.runInSession[	
+			usuarioDoc.monedero = 300.00
+			userDAO.update(usuarioDoc)
+			null
+		]
+		testReservaCompraDeAsientos.reservar(asientoDoc.id, usuarioDoc.userName)
+		val idReservaInexistente = 12323423
+		testReservaCompraDeAsientos.comprar(idReservaInexistente, usuarioDoc.userName)
+		fail()
+	}
+	
+	@Test(expected=ExepcionDatosInexistentes)
+	def testUnTestReservaCompraDeAsientosNoPuedeRealizarUnaCompraParaUnUsuarioPorqueElUsuarioNoExiste(){
+
+		Runner.runInSession[	
+			usuarioDoc.monedero = 300.00
+			userDAO.update(usuarioDoc)
+			null
+		]
+		var reservaResultado = testReservaCompraDeAsientos.reservar(asientoDoc.id, usuarioDoc.userName)
+		val usuarioInexistente = "usuarioInexistente"
+		testReservaCompraDeAsientos.comprar(reservaResultado.id, usuarioInexistente)
+		fail()
 	}
 	
 	@Test
 	def testUnTestReservaDevuelvelLasComprasDeUnUsuarioQueNoRealizoCompras(){
 		
 		assertEquals(0, testReservaCompraDeAsientos.compras(usuarioDoc.userName).size)
-
 	}
 	
 	@Test

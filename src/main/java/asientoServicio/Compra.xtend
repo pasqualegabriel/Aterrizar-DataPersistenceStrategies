@@ -18,6 +18,7 @@ import aereolinea.Tramo
 @Accessors
 @Entity
 class Compra {
+	
 	@Id
 	@GeneratedValue
 	int id

@@ -69,8 +69,8 @@ class User {
 	}
 	
 	def efectuarCompra(Reserva unaReserva) {
-		var dineroGastado= unaReserva.calcularPrecio
-		monedero = monedero - dineroGastado
+		var dineroGastado = unaReserva.calcularPrecio
+		monedero   = monedero - dineroGastado
 		gastoTotal = gastoTotal + dineroGastado
 	}
 	

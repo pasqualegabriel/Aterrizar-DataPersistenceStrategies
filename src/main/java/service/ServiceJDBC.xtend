@@ -1,22 +1,19 @@
 package service
 
-import org.eclipse.xtend.lib.annotations.Accessors
-
-import Excepciones.InvalidValidationCode
-import Excepciones.IncorrectUsernameOrPassword
-import Excepciones.IdenticPasswords
-import java.util.Date
+import dao.UserDAO
 import mailSender.EmailService
 import Excepciones.ExceptionUsuarioExistente
-import dao.UserDAO
+import java.util.Date
+import Excepciones.IncorrectUsernameOrPassword
+import Excepciones.IdenticPasswords
+import Excepciones.InvalidValidationCode
 
-@Accessors
 class ServiceJDBC implements UserService {
-
-	UserDAO	      userDAO
-	EmailService  mailSender
-	MailGenerator generadorDeMail
-	CodeGenerator generadorDeCodigo
+	
+	protected UserDAO userDAO
+	EmailService  	  mailSender
+	MailGenerator	  generadorDeMail
+	CodeGenerator 	  generadorDeCodigo
 	
 	new(UserDAO userDao, MailGenerator unGeneradorDeMail, CodeGenerator unGeneradorDeCodigo, EmailService unMailService) {
 		userDAO           = userDao
@@ -26,91 +23,102 @@ class ServiceJDBC implements UserService {
 		
 	}
 	
-	//en una abtrascta solo se redifine el save
 	override singUp(String name, String lastName, String userName, String mail, String password, Date birthDate) {
 		
-		if(this.existeUsuarioCon(userName, mail)) {
+		if(existeUsuarioCon(userName, mail)) {
 			throw new ExceptionUsuarioExistente("no se puede registrar el Usuario")
 		} 
-		
 		var usuario          = new User(name, lastName, userName, mail, password, birthDate)
 		var codigo 		     = generadorDeCodigo.generarCodigo
 		var validationCode   = codigo + userName
 		usuario.validateCode = validationCode
 		var aMail            = generadorDeMail.generarMail(validationCode, mail)
 		mailSender.send(aMail)
-		userDAO   .save(usuario)
+		saveUser(usuario)
 		usuario
-		
-		
 	}
 	
-
-	//abtracta y se redifine su load y update
 	override validate(String code) {
 		
-			var userExample    	     = new User()
-			userExample.validateCode = code
-			var user             	 = userDAO.load(userExample)
+		var user = searchUserForCode(code)
 			
-			isUserNull(user,new InvalidValidationCode("El codigo no es correcto"))
+		isUserNull(user,new InvalidValidationCode("El codigo no es correcto"))
 			
-			user.validateAccount
-			userDAO.update(user)
-			true		
+		user.validateAccount
+		updateUser(user)
+		true		
 	}
 	
-	//a la abtracta solo se redifine su userDao load
+	def searchUserForCode(String code) {
+		var userExample    	     = new User()
+		userExample.validateCode = code
+		loadUser(userExample)
+	}
+	
 	override signIn(String username, String password) {
-		
-		val userExample				= new User	
-		userExample.userName 		= username
-		userExample.userPassword 	= password
 		  
-		var user = userDAO.load(userExample)
+		var user = searchUserForUserNameAndPassword(username, password)
 		  
 		if(user== null || !user.validate){
 			throw new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos")
 		}
 		user 
-
 	}
-	//a la abtracta solo se redefine el load y update del dao
+	
 	override changePassword(String userName, String oldPassword, String newPassword) {
-		if (oldPassword.equals(newPassword)) throw new IdenticPasswords("Las contraseñas no tienen que ser las mismas")
-					
-		val userExample		 = new User 
-		userExample.userName = userName
+		
+		if (oldPassword.equals(newPassword)) {
+	    	throw new IdenticPasswords("Las contraseñas no tienen que ser las mismas")
+	    }
 	
-		var user = userDAO.load(userExample)
+		var user = searchUserForUserNameAndPassword(userName, oldPassword)
+		
 		isUserNull(user,new IncorrectUsernameOrPassword("El usuario o la contrasenia introducidos no son correctos"))
-	
+
 		user.userPassword = newPassword
 		
-		userDAO.update(user)
-		
-		
-	
+		updateUser(user)
 	}
-	//a la abtrascta
+	
+	def searchUserForUserNameAndPassword(String userName, String password){
+		
+		val userExample		 	 = new User 
+		userExample.userName 	 = userName
+		userExample.userPassword = password
+	
+		loadUser(userExample)
+	}
+	
 	def void isUserNull(User user, RuntimeException exception) {
 		if(user==null) throw exception
 	}
-	
 
-	
-
-	//Redifine cada uno  
 	def existeUsuarioCon(String userName, String mail){
 		var userExampleWithUserName	 = new User
 		var userExampleWithMail		 = new User
 		userExampleWithMail.userName = userName
 		userExampleWithUserName.mail = mail	
-		var userNick = userDAO.load(userExampleWithMail)
-		var userMail = userDAO.load(userExampleWithUserName)
+		var userNick = loadUser(userExampleWithMail)
+		var userMail = loadUser(userExampleWithUserName)
 		userNick != null || userMail != null
-
+		
 	}
-
+	
+	def User loadUser(User aUser) {
+		userDAO.load(aUser)
+	}
  
+	def void saveUser(User aUser){
+		userDAO.save(aUser)
+	}
+		
+	def void updateUser(User aUser) {
+		userDAO.update(aUser)
+	}
+	
+	
 }
+
+
+
+

@@ -35,7 +35,7 @@ class TestUserService {
 		serviceTest   = new ServiceHibernate(userDAO, generatorMail, unGeneradorDeCodigo, unMailService)
 		// JDBC
 //		userDAO       = new JDBCUserDAO
-//		serviceTest   = new Service(userDAO, generatorMail, unGeneradorDeCodigo, unMailService
+//		serviceTest   = new ServiceJDBC(userDAO, generatorMail, unGeneradorDeCodigo, unMailService
 	}
 
 	@Test

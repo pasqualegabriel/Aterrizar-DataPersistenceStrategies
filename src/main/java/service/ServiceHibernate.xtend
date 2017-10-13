@@ -6,7 +6,7 @@ import runner.Runner
 import org.hibernate.query.Query
 import java.util.Date
 
-class ServiceHibernate extends Service {
+class ServiceHibernate extends ServiceJDBC {
 
 	new(UserDAO userDao, MailGenerator unGeneradorDeMail, CodeGenerator unGeneradorDeCodigo, EmailService unMailService) {
 		super(userDao, unGeneradorDeMail, unGeneradorDeCodigo, unMailService)

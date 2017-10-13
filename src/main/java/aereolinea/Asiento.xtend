@@ -36,8 +36,8 @@ class Asiento {
 	}
 	
 	new(Tramo unTramo,Categoria unaCategoria){
-		tramo= unTramo
-		categoria=unaCategoria
+		tramo     = unTramo
+		categoria = unaCategoria
 	}
 	
 	def getPrecio(){
@@ -51,7 +51,7 @@ class Asiento {
 	
 	/** Calcula el precio del asiento */
 	def calcularPrecio() {
-		var precioDelPorcentaje= tramo.precio / 100 * categoria.porcentaje
+		var precioDelPorcentaje = tramo.precio / 100 * categoria.porcentaje
 		tramo.precio + precioDelPorcentaje
 	}
 	

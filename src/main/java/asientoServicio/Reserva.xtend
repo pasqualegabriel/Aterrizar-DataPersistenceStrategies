@@ -25,13 +25,14 @@ class Reserva {
 	List<Asiento> asientos	
 	
 	LocalDateTime horaRealizada	
-	boolean	      estaValidado
-	
+	boolean	      estaValidado //modificar
+	//EstadoDeReserva estado
 	
 	new(){
 		asientos 		=   newArrayList	
 		estaValidado	=	true
 		horaRealizada	= 	LocalDateTime.now
+		//estado = EstadoDeReserva.Valida
 		
 	}
 

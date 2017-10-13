@@ -29,19 +29,15 @@ class ReservaCompraDeAsientos implements AsientoService {
 
 	/**Proposito:Agrega la reserva al usuario y devuelve la misma reserva que fue asignada al usuario  */
 	def Reserva agregarReservaAUsuario(User unUsuario, Reserva unaReserva) {
+		
 		var reservaUsuario = unUsuario.reserva
 		if (reservaUsuario != null) {
 			reservaUsuario.invalidar// falta hacer el estado de la reserva
+			//unaReserva.estadoReservada estado = EstadoDeReserva.Reservada
 		}
 		unUsuario.reserva = unaReserva
 		userDAO.update(unUsuario)
 		unaReserva
-	}
-	def void isNullAsientoOUsuario(Asiento unAsiento, User unUsuario){
-		
-			if(unAsiento== null || unUsuario== null){
-				throw new ExepcionDatosInexistentes("No se puede llevar acabo la reserva el usuario o asiento no existen")
-			}//Testear
 	}
 
 	/**Proposito: verifica que se puede realizar la compra */
@@ -53,11 +49,10 @@ class ReservaCompraDeAsientos implements AsientoService {
 		Runner.runInSession [
 			var unAsiento = asientoDAO.load(asiento)
 			var unUsuario = userDAO.loadbyname(usuario)
-			if(unAsiento== null||isUserNull(unUsuario)){
+			if(unAsiento == null || isUserNull(unUsuario)){
 				throw new ExepcionDatosInexistentes("No se puede llevar acabo la reserva el usuario o asiento no existen")
-			}//testeart
+			}
 			
-					
 			if (!unAsiento.estaReservado) {
 				var unaReserva = new Reserva
 				unaReserva.agregarAsiento(unAsiento)
@@ -72,12 +67,11 @@ class ReservaCompraDeAsientos implements AsientoService {
 	override reservarAsientos(List<Integer> asientos, String usuario) {
 		
 		Runner.runInSession [
-			var unUsuario = userDAO.loadbyname(usuario)
-		
-			var unosAsientos =asientoDAO.loadAsientos(asientos)
-			if(unosAsientos.stream.anyMatch[it==null ] ||  isUserNull(unUsuario)){
+			var unUsuario    = userDAO.loadbyname(usuario)
+			var unosAsientos = asientoDAO.loadAsientos(asientos)
+			if(algunAsientoEsNull(unosAsientos) ||  isUserNull(unUsuario)){
 				throw new ExepcionDatosInexistentes("No se puede llevar acabo la reserva el usuario o asiento no existen")
-			}//testear con uno null y todos los asiento null  
+			} 
 			
 			if (unosAsientos.stream.allMatch( asiento | !asiento.estaReservado)) {
 				val unaReserva = new Reserva
@@ -88,23 +82,26 @@ class ReservaCompraDeAsientos implements AsientoService {
 			}
 		]	
 	}
+	
+	def algunAsientoEsNull(List<Asiento> asientos) {
+		asientos.stream.anyMatch[ it == null ]
+	}
 
 	override comprar(Integer reserva, String usuario) {
+		
 		Runner.runInSession [
 			var unUsuario = userDAO.loadbyname(usuario)
 			val unReserva = reservaDAO.load(reserva)
 			if(unReserva==null || isUserNull(unUsuario)){
 				throw new ExepcionDatosInexistentes("No se puede llevar acabo la compra, el usuario o la reserva no existen")	
-				
-			}//testar
-			
-			
+			}
 			if (puedeComprar(unReserva, unUsuario)){
 				unUsuario.efectuarCompra(unReserva)
 				var tramoDeLaReserva = unReserva.getTramo
 				var unaCompra = new Compra(unReserva.asientos, unUsuario, tramoDeLaReserva)
 				
 				unReserva.eliminarAsientos
+				//unaReserva.estadoComprada estado = EstadoDeReserva.Comprada
 				reservaDAO.update(unReserva)
 		
 				unUsuario.agregarCompra(unaCompra)
