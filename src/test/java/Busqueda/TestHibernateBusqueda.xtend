@@ -16,7 +16,6 @@ import categorias.Categoria
 import aereolinea.Vuelo
 import aereolinea.Aereolinea
 import categorias.Primera
-import asientoServicio.Reserva
 import org.junit.After
 import categorias.Business
 import aereolinea.Destino
@@ -38,8 +37,6 @@ class TestHibernateBusqueda {
 	Tramo		    tramo2
 	Categoria 	    categoria1
 	Categoria 	    categoria2
-	Reserva			reserva1
-	Reserva			reserva2
 	Vuelo           vuelo
 		
 	@Before
@@ -52,17 +49,13 @@ class TestHibernateBusqueda {
 		vuelo            = new Vuelo(new Aereolinea("Aterrizar"))
 		
 		tramo1     		 = new Tramo(10.00, vuelo, new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00))
-		reserva1 		 = new Reserva
 		categoria1    	 = new Primera
 		asiento1		 = new Asiento(tramo1, categoria1)
-		asiento1.reserva = reserva1
 		
 		tramo2     		 = new Tramo(20.00, vuelo, new Destino("Mar Del Plata"), new Destino("Bs As"), LocalDateTime.of(2017, 1, 10, 10 ,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00))
-		reserva2 		 = new Reserva
 		categoria2    	 = new Business
 		asiento2		 = new Asiento(tramo2, categoria2)
-		asiento2.reserva = reserva2
-		
+	
 		Runner.runInSession[
 			val sessionAsiento = Runner.currentSession
 			sessionAsiento.save(asiento1)

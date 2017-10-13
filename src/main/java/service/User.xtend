@@ -72,6 +72,7 @@ class User {
 		var dineroGastado = unaReserva.calcularPrecio
 		monedero   = monedero - dineroGastado
 		gastoTotal = gastoTotal + dineroGastado
+		unaReserva.comprar
 	}
 	
 

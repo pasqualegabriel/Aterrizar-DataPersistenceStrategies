@@ -24,6 +24,11 @@
 		<mapping class="service.User"/>
  		<mapping class="asientoServicio.Compra"/>
 		<mapping class="asientoServicio.Reserva"/>
+		<mapping class="asientoServicio.EstadoDeReserva"/>
+		<mapping class="asientoServicio.Comprado"/>
+		<mapping class="asientoServicio.Expiro"/>
+		<mapping class="asientoServicio.Validado"/>
+	
 		<mapping class="aereolinea.Asiento"/>
 		<mapping class="aereolinea.Tramo"/>
 	 	<mapping class="categorias.Categoria"/>

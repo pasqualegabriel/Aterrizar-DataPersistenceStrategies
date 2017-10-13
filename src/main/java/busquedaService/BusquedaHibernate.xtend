@@ -32,7 +32,7 @@ class BusquedaHibernate implements BusquedaService{
 	
 			busquedaDAO.save(busqueda)
 		
-			query.getResultList
+			query.getResultList.filter[it.estaDisponible].toList
 		]
 			
 	}
@@ -66,11 +66,6 @@ class BusquedaHibernate implements BusquedaService{
 			
 			val session = Runner.getCurrentSession
 			var busquedaUser = busquedaDAO.loadById(busqueda)
-			
-//			if(busquedaUser.user.userName != usuario){
-//				throw new ExceptionBusquedaUser("La busqueda no fue realizada por el usuario")
-//			}
-		
 			var Query<Asiento> query = queryHqlBusqueda(session, busquedaUser)
 		
 			query.getResultList

@@ -8,10 +8,10 @@ import aereolinea.Asiento
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.GeneratedValue
-import javax.persistence.Column
 import javax.persistence.OneToMany
 import javax.persistence.CascadeType
 import javax.persistence.FetchType
+import javax.persistence.ManyToOne
 
 @Accessors
 @Entity
@@ -19,27 +19,29 @@ class Reserva {
 	//Estructura
 	@Id
 	@GeneratedValue
-	@Column(name="id")
 	public int id
 	@OneToMany(fetch= FetchType.EAGER, cascade=CascadeType.ALL)
 	List<Asiento> asientos	
 	
 	LocalDateTime horaRealizada	
-	boolean	      estaValidado //modificar
-	//EstadoDeReserva estado
+	@ManyToOne(cascade=CascadeType.ALL)
+	EstadoDeReserva estado
 	
 	new(){
+		estado = new Validado
 		asientos 		=   newArrayList	
-		estaValidado	=	true
 		horaRealizada	= 	LocalDateTime.now
-		//estado = EstadoDeReserva.Valida
 		
 	}
 
+	//Proposito: Expresar si la condicion de validacion del asiento expiro. Si lo hizo y el estado era validado
+	// Este se cambia para reflejar su nueva condicion
 	def expiroReserva() {
 		var minutosDespuesDeReservar = Math.abs(LocalTime.now.toSecondOfDay - horaRealizada.toLocalTime.toSecondOfDay) / 60
-	    minutosDespuesDeReservar >= 5/*minutos de reserva */ || !estaValidado
+	    var expiro = minutosDespuesDeReservar >= 5/*minutos de reserva */ 
+	    if (expiro)	invalidar
 	    
+	    !estaValidado
 		
 	}
 	
@@ -48,7 +50,7 @@ class Reserva {
 	}
 	
 	def invalidar(){
-		estaValidado = false
+		estado = new Expiro
 	}
 	
 	def void asignarleAsientos(List<Asiento> unosAsientos){
@@ -68,5 +70,14 @@ class Reserva {
 	def getTramo() {
 		asientos.get(0).tramo
 	}
+	
+	def estaValidado(){
+		estado.estaValidado
+	}
+	
+	def comprar() {
+		estado = new Comprado
+	}
+	
 	
 }

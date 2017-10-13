@@ -70,18 +70,13 @@ class ServiceHibernate extends ServiceJDBC {
 	
 	def searchUserHibernate(String queryHql) {
 
-			
-			val session = Runner.getCurrentSession
+		val Query<User> query = Runner.getCurrentSession.createQuery(queryHql, User)
+		val result = query.getResultList
 		
-			var hql = queryHql
-		
-			var Query<User> query =  session.createQuery(hql, User)
-			
-			if(query.getResultList.size == 0){
-				return null
-			}
-			return query.resultList.get(0)
-
+		if(result.size == 0){
+			return null
+		}
+		result.get(0)
 	}
 
 
