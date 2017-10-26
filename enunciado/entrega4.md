@@ -1,6 +1,8 @@
 ## Entrega 4 - Grafos
 
-Aterrizar desea integrar una red social a su sitio web. La idea de la red social es que se creen relaciones de amistad entre los usuarios.
+Aterrizar desea integrar una red social a su sitio web. 
+La idea de la red social es que se creen relaciones de amistad entre los usuarios y que ellos se puedan mandar mensajes.
+
 Para ello van a utilizar la base de datos Neo4J.
 
 ## Funcionalidad
