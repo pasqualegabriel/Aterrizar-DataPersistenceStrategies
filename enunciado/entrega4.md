@@ -3,7 +3,7 @@
 Aterrizar desea integrar una red social a su sitio web. 
 La idea de la red social es que se creen relaciones de amistad entre los usuarios y que ellos se puedan mandar mensajes.
 
-Para ello van a utilizar la base de datos Neo4J.
+Las relaciones y los mensajes se tienen que persistir con Neo4J.
 
 ## Funcionalidad
 
@@ -15,7 +15,7 @@ A partir de ese momento, los usuarios son amigos.
 ### Mensajes
 Los amigos se pueden mandar mensajes 'privados' que solo ellos pueden leer.
 Los mensajes entre los usuarios son como un chat, cada usuario puede agregar mensajes al chat.
-De cada mensaje se debe guardar quien lo envió y la hora de envío del mensaje.
+De cada mensaje se debe guardar el texto, quien lo envió y la hora de envío del mensaje.
 
   
 ## Servicios
