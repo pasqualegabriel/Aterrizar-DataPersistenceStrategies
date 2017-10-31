@@ -33,7 +33,7 @@ class TesBusquedaDAO {
 		filtroSimple1     		    = new FiltroSimple(new CampoAerolinea,"Aterrizar") 
 		var filtroSimple2    		= new FiltroSimple(new CampoOrigen,   "Mendoza") 
 		
-		filtroDoc   				= new FiltroCompuesto(filtroSimple1, filtroSimple2, Comparator.Or)
+		filtroDoc   				= new FiltroCompuesto(filtroSimple1, filtroSimple2, Comparator.OR)
 		criterioDoc      	 		= new Duracion 
 		ordenDoc      				= new Ascendente 
 		

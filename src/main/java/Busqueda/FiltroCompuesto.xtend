@@ -4,7 +4,6 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import javax.persistence.OneToOne
 import javax.persistence.CascadeType
 import javax.persistence.FetchType
-//import javax.persistence.ManyToOne
 
 @Accessors
 @Entity
@@ -23,20 +22,13 @@ class FiltroCompuesto extends Filtro {
 	}
 	
 	new(Filtro aFilterOne, Filtro aFilterTwo,Comparator aComparator){
-		filterOne = aFilterOne
-	    filterTwo = aFilterTwo
+		filterOne  = aFilterOne
+	    filterTwo  = aFilterTwo
 	    comparator = aComparator
 	}
 	
 	override getFiltro(){
-		"(" + filterOne.getFiltro + ") " + comparador + " (" + filterTwo.getFiltro + ")"
-	}
-	
-	def comparador() {
-		if(comparator == Comparator.And){
-			return "and"
-		}
-		"or"
+		"(" + filterOne.getFiltro + ") " + comparator.name + " (" + filterTwo.getFiltro + ")"
 	}
 	
 }

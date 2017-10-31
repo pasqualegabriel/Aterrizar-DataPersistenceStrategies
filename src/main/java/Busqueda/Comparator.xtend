@@ -5,8 +5,6 @@ import javax.persistence.Entity
 @Entity
 enum Comparator {
 	
-	And,
-	Or
-
-	
+	AND,
+	OR
 }
