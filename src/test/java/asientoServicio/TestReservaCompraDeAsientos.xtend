@@ -25,6 +25,7 @@ import daoImplementacion.HibernateReservaDAO
 import daoImplementacion.HibernateTramoDAO
 import service.TruncateTables
 import Excepciones.ExepcionDatosInexistentes
+import daoImplementacion.HibernateCompraDAO
 
 class TestReservaCompraDeAsientos {
 	
@@ -38,6 +39,7 @@ class TestReservaCompraDeAsientos {
 	HibernateUserDAO        userDAO
 	HibernateAsientoDAO     asientoDAO
 	HibernateReservaDAO     reservaDAO
+	HibernateCompraDAO      compraDAO
 	HibernateTramoDAO		tramoDAO
 	Vuelo          			vuelo
 	Aereolinea      		aereolinea
@@ -49,11 +51,12 @@ class TestReservaCompraDeAsientos {
 		userDAO						= new HibernateUserDAO
 		asientoDAO					= new HibernateAsientoDAO
 		reservaDAO					= new HibernateReservaDAO
+		compraDAO                   = new HibernateCompraDAO
 		tramoDAO				    = new HibernateTramoDAO	
 		aereolinea					= new Aereolinea("Aterrizar")
 		vuelo          				= new Vuelo(aereolinea)
 		aereolinea.vuelosOfertados.add(vuelo)
-		testReservaCompraDeAsientos	= new ReservaCompraDeAsientos(userDAO,asientoDAO, reservaDAO, tramoDAO)
+		testReservaCompraDeAsientos	= new ReservaCompraDeAsientos(userDAO,asientoDAO, reservaDAO, tramoDAO, compraDAO)
 		asientoDoc					= new Asiento(new Tramo(100.00, vuelo,new Destino("Mar Del Plata"), new Destino("Rosario"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista) => [id = 1]
 		usuarioVegetaDoc            = new User("Vegeta","Saiyan","vegetaUser","vegeta@gmail.com","VegetaPassword",new Date())
 		usuarioDoc					= new User("Pepita","LaGolondrina","euforica","pepitagolondrina@gmail.com", "password", new Date)
@@ -90,6 +93,24 @@ class TestReservaCompraDeAsientos {
 	def testUntestReservaCompraDeAsientosNoPuedeReservarUnAsientoParaUnUsuarioExitosamentePorqueYaEstabaReservado(){
 		
 		testReservaCompraDeAsientos.reservar(asientoDoc.id,usuarioDoc.userName)
+		
+		testReservaCompraDeAsientos.reservar(asientoDoc.id,usuarioDoc.userName)
+		
+        fail()
+	}
+	
+	@Test(expected=ExepcionReserva)
+	def testUntestReservaCompraDeAsientosNoPuedeReservarUnAsientoParaUnUsuarioExitosamentePorqueYaEstabaComprado(){
+		
+		Runner.runInSession[
+			usuarioDoc.monedero = 300.00
+			userDAO.update(usuarioDoc)
+
+			null
+		]
+		
+		var reservaResultado = testReservaCompraDeAsientos.reservar(asientoDoc.id, usuarioDoc.userName)
+		testReservaCompraDeAsientos.comprar(reservaResultado.id, usuarioDoc.userName)
 		
 		testReservaCompraDeAsientos.reservar(asientoDoc.id,usuarioDoc.userName)
 		
@@ -298,7 +319,6 @@ class TestReservaCompraDeAsientos {
 		
 		val reservaResultado2 = testReservaCompraDeAsientos.reservarAsientos(idAsientosDoc, usuarioDoc.userName)
 		testReservaCompraDeAsientos.comprar(reservaResultado2.id, usuarioDoc.userName)
-
 
 		assertEquals(2, testReservaCompraDeAsientos.compras(usuarioDoc.userName).size)
 

@@ -9,10 +9,9 @@ import dao.TramoDAO
 import dao.ReservaDAO
 import dao.AsientoDAO
 import daoImplementacion.HibernateUserDAO
-import org.hibernate.query.Query
 import aereolinea.Asiento
 import Excepciones.ExepcionDatosInexistentes
-
+import dao.CompraDAO
 
 class ReservaCompraDeAsientos implements AsientoService {
 
@@ -20,12 +19,15 @@ class ReservaCompraDeAsientos implements AsientoService {
 	AsientoDAO 		 asientoDAO
 	ReservaDAO 		 reservaDAO
 	TramoDAO 		 tramoDAO
+	CompraDAO        compraDAO
 
-	new(HibernateUserDAO unUserDAO, AsientoDAO unAsientoDAO, ReservaDAO unReservaDAO, TramoDAO unTramoDAO) {
+	new(HibernateUserDAO unUserDAO, AsientoDAO unAsientoDAO, ReservaDAO unReservaDAO, TramoDAO unTramoDAO, CompraDAO unaCompraDAO) {
+		
 		userDAO    = unUserDAO
 		asientoDAO = unAsientoDAO
 		reservaDAO = unReservaDAO
 		tramoDAO   = unTramoDAO
+		compraDAO  = unaCompraDAO
 	}
 
 	/**Proposito:Agrega la reserva al usuario y devuelve la misma reserva que fue asignada al usuario  */
@@ -43,46 +45,17 @@ class ReservaCompraDeAsientos implements AsientoService {
 
 	/**Proposito: verifica que se puede realizar la compra */
 	def puedeComprar(Reserva unReserva, User unUsuario) {
-		var resultado = !unReserva.expiroReserva && unUsuario.getPuedeEfectuarLaCompra(unReserva) && (unUsuario.reserva == unReserva)
+		var resultado = !unReserva.expiroReserva && unUsuario.puedeEfectuarLaCompra(unReserva) && (unUsuario.reserva == unReserva)
 		//Si la reserva estaba en estado validado, y expiro, va a cambiar su estado, hay que persistir ese cambio
 		reservaDAO.update(unReserva)
 		resultado
 	}
 
 	override reservar(Integer asiento, String usuario) {
-		Runner.runInSession [
-			//Se va a buscar al usuario y al asiento
-			var unAsiento = asientoDAO.load(asiento)
-			var unUsuario = userDAO.loadbyname(usuario)
-			
-			//Si no encuentra alguno, se levanta una excepcion
-			if(unAsiento == null || isUserNull(unUsuario)){
-				throw new ExepcionDatosInexistentes("No se puede llevar acabo la reserva el usuario o asiento no existen")
-			}
-			
-			//Si se encontraron ambos, preguntamos si el asiento no esta reservado
-			if (noEstaReservado(unAsiento) ) {
-				//Si no esta reservado, creamos la reserva y se la agregamos al usuario y al asiento.
-				var unaReserva = new Reserva
-				unaReserva.agregarAsiento(unAsiento)
-				agregarReservaAUsuario(unUsuario, unaReserva)
-			} else {
-				//Si esta reservado, no se puede reserva
-				throw new ExepcionReserva("No se puede realizar esta reserva por que el asiento ya esta reservado")
-
-			}
-		]
+		
+		reservarAsientos(#[asiento], usuario)
 	}
 	
-	def noEstaReservado(Asiento unAsiento) {
-		//Preguntamos si el asiento no esta reservado. Si la reserva estaba validada, y expiro va a cambiar de estado
-		//Por lo que hay que updatear ese cambio
-		//Puede que el asiento no este reservado por que directamente no tiene reserva, por eso se pregunta por null
-		var resultado = !unAsiento.estaReservado
-		if (unAsiento.reserva != null)  reservaDAO.update(unAsiento.reserva)
-		resultado
-	}
-
 	override reservarAsientos(List<Integer> asientos, String usuario) {
 		
 		Runner.runInSession [
@@ -98,19 +71,32 @@ class ReservaCompraDeAsientos implements AsientoService {
 			} 
 			
 			//Si ninguno de los asientos esta reservado, efectuo las reservas.
-			if (unosAsientos.stream.allMatch[ noEstaReservado(it)] ){
+			if (unosAsientos.stream.allMatch[ estaDisponible(it)] ){
 				val unaReserva = new Reserva
 				unaReserva.asignarleAsientos(unosAsientos)
 				agregarReservaAUsuario(unUsuario, unaReserva)
 			} else {
 				//Alguno de los asientos esta reservado, por lo que no se puede efectuar la reserva
-				throw new ExepcionReserva("No se puede realizar alguna de las reservas por que el asiento ya esta reservado")
+				throw new ExepcionReserva("No se puede realizar alguna de las reservas por que el asiento esta comprado o reservado")
 			}
 		]	
 	}
 	
 	def algunAsientoEsNull(List<Asiento> asientos) {
 		asientos.stream.anyMatch[ it == null ]
+	}
+	
+	def estaDisponible(Asiento unAsiento) {
+		// Preguntamos si el asiento no esta comprado ni reservado. 
+		// Si la reserva estaba validada, y expiro va a cambiar de estado
+		// Por lo que hay que updatear ese cambio
+		// Puede que el asiento no este reservado por que directamente no tiene reserva, 
+		// por eso se pregunta por null
+		var resultado = unAsiento.estaDisponible
+		if(unAsiento.reserva != null){ 
+			reservaDAO.update(unAsiento.reserva)
+		}
+		resultado
 	}
 
 	override comprar(Integer reserva, String usuario) {
@@ -127,7 +113,7 @@ class ReservaCompraDeAsientos implements AsientoService {
 			
 			
 
-			if (puedeComprar(unReserva, unUsuario)){
+			if(puedeComprar(unReserva, unUsuario)){
 				unUsuario.efectuarCompra(unReserva)
 				var tramoDeLaReserva = unReserva.getTramo
 				var unaCompra = new Compra(unReserva.asientos, unUsuario, tramoDeLaReserva)
@@ -151,12 +137,8 @@ class ReservaCompraDeAsientos implements AsientoService {
 	override compras(String userName) {
 
 		Runner.runInSession[
-			val session = Runner.getCurrentSession
-          
-        	var hql = "from Compra c where c.comprador.userName = '" + userName + "'"
-
-			var Query<Compra> query =  session.createQuery(hql, Compra)
-			query.getResultList
+			
+			compraDAO.compras(userName)
 		]
 	}
 

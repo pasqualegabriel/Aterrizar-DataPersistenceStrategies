@@ -64,7 +64,7 @@ class User {
 		reserva = null
 	}
 	
-	def getPuedeEfectuarLaCompra(Reserva unReserva) {
+	def puedeEfectuarLaCompra(Reserva unReserva) {
 		monedero >= unReserva.calcularPrecio
 	}
 	

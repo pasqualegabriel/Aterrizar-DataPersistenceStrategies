@@ -22,6 +22,7 @@ import daoImplementacion.HibernateAsientoDAO
 import daoImplementacion.HibernateReservaDAO
 import daoImplementacion.HibernateTramoDAO
 import service.TruncateTables
+import daoImplementacion.HibernateCompraDAO
 
 class TestLeaderboardService {
 	
@@ -95,7 +96,7 @@ class TestLeaderboardService {
 		leaderboardServiceSUT = new ServicioDeRaking
 		userDAO 			  = new HibernateUserDAO
 		asientoDAO			  = new HibernateAsientoDAO
-		asientoService        = new ReservaCompraDeAsientos(userDAO, asientoDAO, new HibernateReservaDAO, new HibernateTramoDAO)
+		asientoService        = new ReservaCompraDeAsientos(userDAO, asientoDAO, new HibernateReservaDAO, new HibernateTramoDAO, new HibernateCompraDAO)
 		
 		destino1  = new Destino=>[nombre="Pekin"]
 		destino2  = new Destino=>[nombre="Brazil"]

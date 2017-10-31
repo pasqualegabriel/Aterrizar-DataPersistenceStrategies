@@ -16,19 +16,23 @@ import javax.persistence.ManyToOne
 @Accessors
 @Entity
 class Reserva {
+	
 	//Estructura
+	
 	@Id
 	@GeneratedValue
 	public int id
+	
 	@OneToMany(fetch= FetchType.EAGER, cascade=CascadeType.ALL)
 	List<Asiento> asientos	
 	
 	LocalDateTime horaRealizada	
+	
 	@ManyToOne(cascade=CascadeType.ALL)
 	EstadoDeReserva estado
 	
 	new(){
-		estado = new Validado
+		estado 			= new Validado
 		asientos 		=   newArrayList	
 		horaRealizada	= 	LocalDateTime.now
 		
@@ -58,10 +62,10 @@ class Reserva {
 		unosAsientos.stream.forEach(asiento|asiento.agregarReserva(this))
 	}
 	
-	def agregarAsiento(Asiento unAsiento) {
-		asientos.add(unAsiento)
-		unAsiento.agregarReserva(this)
-	}
+//	def agregarAsiento(Asiento unAsiento) {
+//		asientos.add(unAsiento)
+//		unAsiento.agregarReserva(this)
+//	}
 	
 	def eliminarAsientos() {
 		asientos=null

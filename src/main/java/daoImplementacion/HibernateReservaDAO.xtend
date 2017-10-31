@@ -3,12 +3,11 @@ package daoImplementacion
 import dao.ReservaDAO
 import asientoServicio.Reserva
 import runner.Runner
-import org.hibernate.Session
 
 class HibernateReservaDAO implements ReservaDAO {
 
 	override save(Reserva unaReserva) {
-		val Session session = Runner.currentSession
+		val session = Runner.currentSession
 		session.save(unaReserva)
 	}
 

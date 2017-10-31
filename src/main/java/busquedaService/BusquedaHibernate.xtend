@@ -1,13 +1,10 @@
 package busquedaService
 
 import runner.Runner
-import org.hibernate.query.Query
-import aereolinea.Asiento
 import Busqueda.Busqueda
 import dao.BusquedaDAO
 import daoImplementacion.HibernateBusquedaDAO
 import daoImplementacion.HibernateUserDAO
-import org.hibernate.Session
 
 class BusquedaHibernate implements BusquedaService{
 	
@@ -25,37 +22,40 @@ class BusquedaHibernate implements BusquedaService{
 		Runner.runInSession[
 			
 			var user = userDAO.loadbyname(usuario)
-			val session = Runner.getCurrentSession
 			busqueda.setUsuario(user)
-		
-			var Query<Asiento> query = queryHqlBusqueda(session, busqueda)
-	
 			busquedaDAO.save(busqueda)
+			
+			busquedaDAO.buscarAsientosDisponibles(busqueda).filter[it.estaDisponible].toList
 		
-			query.getResultList.filter[it.estaDisponible].toList
+//			val session = Runner.getCurrentSession
+//			var Query<Asiento> query = queryHqlBusqueda(session, busqueda)
+//		
+//			query.getResultList.filter[it.estaDisponible].toList
 		]
 			
 	}
 	
-	def queryHqlBusqueda(Session session, Busqueda busqueda) {
-
-		var hql = "FROM Asiento a" +
-			" WHERE " + busqueda.queryFiltro +
-			" ORDER BY " + busqueda.queryCriterio + " " + busqueda.queryOrden 
-		
-		session.createQuery(hql,  Asiento)
-	}
+//	def queryHqlBusqueda(Session session, Busqueda busqueda) {
+//
+//		var hql = "FROM Asiento a" +
+//			" WHERE " + busqueda.queryFiltro +
+//			" ORDER BY " + busqueda.queryCriterio + " " + busqueda.queryOrden 
+//		
+//		session.createQuery(hql,  Asiento)
+//	}
 
 	override list(String userName) {
 		
 		Runner.runInSession[
+			
+			busquedaDAO.ultimasDiezBusquedasRealizadas(userName)
 		
-			val session = Runner.getCurrentSession
-          
-        	var hql = "from Busqueda b where b.user.userName = '" + userName + "' order by b.id desc"
-
-			var Query<Busqueda> query =  session.createQuery(hql, Busqueda).setMaxResults(10)
-			query.getResultList
+//			val session = Runner.getCurrentSession
+//          
+//        	var hql = "from Busqueda b where b.user.userName = '" + userName + "' order by b.id desc"
+//
+//			var Query<Busqueda> query = session.createQuery(hql, Busqueda).setMaxResults(10)
+//			query.getResultList
 		]
 		
 	}
@@ -64,11 +64,14 @@ class BusquedaHibernate implements BusquedaService{
 		
 		Runner.runInSession[
 			
-			val session = Runner.getCurrentSession
 			var busquedaUser = busquedaDAO.loadById(busqueda)
-			var Query<Asiento> query = queryHqlBusqueda(session, busquedaUser)
-		
-			query.getResultList
+			
+			busquedaDAO.buscarAsientosDisponibles(busquedaUser)
+			
+//			val session = Runner.getCurrentSession
+//			var Query<Asiento> query = queryHqlBusqueda(session, busquedaUser)
+//		
+//			query.getResultList
 		]
 		
 	}

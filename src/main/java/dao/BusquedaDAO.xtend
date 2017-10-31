@@ -1,6 +1,8 @@
 package dao
 
 import Busqueda.Busqueda
+import java.util.List
+import aereolinea.Asiento
 
 interface BusquedaDAO {
 	
@@ -11,5 +13,9 @@ interface BusquedaDAO {
 	def Busqueda loadById(Integer busqueda)
 	
 	def void clearAll()
+	
+	def List<Asiento> buscarAsientosDisponibles(Busqueda busqueda)
+	
+	def List<Busqueda> ultimasDiezBusquedasRealizadas(String string)
 		
 }
