@@ -4,19 +4,18 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import javax.persistence.OneToOne
 import javax.persistence.CascadeType
 import javax.persistence.FetchType
-import javax.persistence.ManyToOne
+//import javax.persistence.ManyToOne
 
 @Accessors
 @Entity
-class FiltroCompuesto extends Filtro{
+class FiltroCompuesto extends Filtro {
 	
 	@OneToOne(fetch= FetchType.EAGER,cascade=CascadeType.ALL)
 	Filtro filterOne
 	
 	@OneToOne(fetch= FetchType.EAGER,cascade=CascadeType.ALL)
 	Filtro filterTwo
-	
-	@ManyToOne(fetch= FetchType.EAGER,cascade=CascadeType.ALL)
+
 	Comparator comparator
 	
 	new(){
@@ -30,7 +29,14 @@ class FiltroCompuesto extends Filtro{
 	}
 	
 	override getFiltro(){
-		"(" + filterOne.getFiltro + ") " + comparator.getComparator + " (" + filterTwo.getFiltro + ")"
+		"(" + filterOne.getFiltro + ") " + comparador + " (" + filterTwo.getFiltro + ")"
+	}
+	
+	def comparador() {
+		if(comparator == Comparator.And){
+			return "and"
+		}
+		"or"
 	}
 	
 }

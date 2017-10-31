@@ -40,9 +40,6 @@
 		<mapping class="Busqueda.Filtro"/> 
 		<mapping class="Busqueda.FiltroSimple"/> 
 		<mapping class="Busqueda.FiltroCompuesto"/> 
-		<mapping class="Busqueda.Comparator"/> 
-		<mapping class="Busqueda.ComparatorOr"/> 
-		<mapping class="Busqueda.ComparatorAnd"/> 
 		
 		<mapping class="Busqueda.Campo"/>
 		<mapping class="Busqueda.CampoAerolinea"/> 

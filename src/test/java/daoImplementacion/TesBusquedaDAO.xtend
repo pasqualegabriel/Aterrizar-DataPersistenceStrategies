@@ -15,9 +15,9 @@ import Busqueda.Orden
 import runner.Runner
 import static org.junit.Assert.*
 import Busqueda.FiltroCompuesto
-import Busqueda.ComparatorOr
 import org.junit.After
 import service.TruncateTables
+import Busqueda.Comparator
 
 class TesBusquedaDAO {
 	BusquedaDAO busquedaDAOSuj
@@ -33,7 +33,7 @@ class TesBusquedaDAO {
 		filtroSimple1     		    = new FiltroSimple(new CampoAerolinea,"Aterrizar") 
 		var filtroSimple2    		= new FiltroSimple(new CampoOrigen,   "Mendoza") 
 		
-		filtroDoc   				= new FiltroCompuesto(filtroSimple1, filtroSimple2, new ComparatorOr)
+		filtroDoc   				= new FiltroCompuesto(filtroSimple1, filtroSimple2, Comparator.Or)
 		criterioDoc      	 		= new Duracion 
 		ordenDoc      				= new Ascendente 
 		

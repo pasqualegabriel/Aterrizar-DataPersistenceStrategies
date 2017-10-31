@@ -102,7 +102,7 @@ class TestHibernateBusqueda {
 		
 		val filtroSimple1     = new FiltroSimple(new CampoCategoria,"Primera") 
 		val filtroSimple2     = new FiltroSimple(new CampoDestino,   "Bs As") 
-		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, new ComparatorOr)
+		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, Comparator.Or)
 		
 		val  escala      	  = new Escala 
 		val  descendente      = new Descendente 
@@ -129,7 +129,7 @@ class TestHibernateBusqueda {
 		
 		val filtroSimple1     = new FiltroSimple(new CampoCategoria,"Primera") 
 		val filtroSimple2     = new FiltroSimple(new CampoDestino,  "Rosario") 
-		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, new ComparatorAnd)
+		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, Comparator.And)
 		
 		val  escala      	  = new Duracion 
 		val  descendente      = new Descendente 
@@ -145,7 +145,7 @@ class TestHibernateBusqueda {
 		
 		val filtroSimple1     = new FiltroSimple(new FechaDeSalida,"2017-01-10 15:10:30") 
 		val filtroSimple2     = new FiltroSimple(new CampoDestino, "Bs As") 
-		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, new ComparatorAnd)
+		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, Comparator.And)
 		
 		val  escala      	  = new Duracion 
 		val  descendente      = new Ascendente 
@@ -161,7 +161,7 @@ class TestHibernateBusqueda {
 		
 		val filtroSimple1     = new FiltroSimple(new FechaDeLlegada,"2017-01-10 15:19:30") 
 		val filtroSimple2     = new FiltroSimple(new CampoDestino, "Bs As") 
-		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, new ComparatorAnd)
+		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, Comparator.And)
 		
 		val  escala      	  = new Duracion 
 		val  descendente      = new Ascendente 
@@ -177,7 +177,7 @@ class TestHibernateBusqueda {
 		
 		val filtroSimple1     = new FiltroSimple(new CampoOrigen,"Mar Del Plata") 
 		val filtroSimple2     = new FiltroSimple(new CampoDestino, "Bs As") 
-		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, new ComparatorAnd)
+		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, Comparator.And)
 		
 		val  escala      	  = new Duracion 
 		val  descendente      = new Ascendente 
@@ -193,7 +193,7 @@ class TestHibernateBusqueda {
 		
 		val filtroSimple1     = new FiltroSimple(new CampoDestino,"Rosario") 
 		val filtroSimple2     = new FiltroSimple(new CampoOrigen, "Mar Del Plata") 
-		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, new ComparatorAnd)
+		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, Comparator.And)
 		
 		val  escala      	  = new Duracion 
 		val  descendente      = new Ascendente 
@@ -208,7 +208,7 @@ class TestHibernateBusqueda {
 		
 		val filtroSimple1     = new FiltroSimple(new CampoAerolinea,"Aterrizar") 
 		val filtroSimple2     = new FiltroSimple(new CampoOrigen, "Mar Del Plata") 
-		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, new ComparatorAnd)
+		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, Comparator.And)
 		
 		val  escala      	  = new Duracion 
 		val  descendente      = new Ascendente 
@@ -223,7 +223,7 @@ class TestHibernateBusqueda {
 		
 		val filtroSimple1     = new FiltroSimple(new CampoAerolinea,"Aterrizar") 
 		val filtroSimple2     = new FiltroSimple(new CampoOrigen,   "Mendoza") 
-		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, new ComparatorOr)
+		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, Comparator.Or)
 		
 		val  escala      	  = new Duracion 
 		val  descendente      = new Ascendente 
@@ -357,7 +357,7 @@ class TestHibernateBusqueda {
 		
 		val filtroSimple1     = new FiltroSimple(new CampoCategoria,"Primera") 
 		val filtroSimple2     = new FiltroSimple(new CampoDestino,   "Bs As") 
-		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, new ComparatorOr)
+		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, Comparator.Or)
 		
 		val  escala      	  = new Escala 
 		val  descendente      = new Descendente 

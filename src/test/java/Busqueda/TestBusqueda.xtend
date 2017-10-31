@@ -76,7 +76,7 @@ class TestBusqueda {
 	def testFiltroCompuestoAndConPrimerFiltroSimpleConCampoAerolinaYValorPepitaYSegundoFiltroSimpleConCampoOrigenYValorBsAs(){
 		
 		
-		var filtroCompuestoAnd = new FiltroCompuesto(unFiltroSimple, otroFiltroSimple, new ComparatorAnd)
+		var filtroCompuestoAnd = new FiltroCompuesto(unFiltroSimple, otroFiltroSimple, Comparator.And)
 
 		assertEquals(filtroCompuestoAnd.getFiltro, 
 		"(a.tramo.vuelo.aerolinea.nombre = 'Pepita') and (a.tramo.destinoOrigen.nombre = 'Bs As')")
@@ -86,7 +86,7 @@ class TestBusqueda {
 	def testFiltroCompuestoOrConPrimerFiltroSimpleConCampoAerolinaYValorPepitaYSegundoFiltroSimpleConCampoOrigenYValorBsAs(){
 		
 		
-		var filtroCompuestoOr = new FiltroCompuesto(unFiltroSimple, otroFiltroSimple, new ComparatorOr)
+		var filtroCompuestoOr = new FiltroCompuesto(unFiltroSimple, otroFiltroSimple, Comparator.Or)
 
 		assertEquals(filtroCompuestoOr.getFiltro, 
 		"(a.tramo.vuelo.aerolinea.nombre = 'Pepita') or (a.tramo.destinoOrigen.nombre = 'Bs As')")
