@@ -22,3 +22,4 @@ interface AmigoService {
 
 	def List<User> conectados(String usuario);
 }
+

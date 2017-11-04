@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne
+import javax.persistence.Transient
 
 @Accessors
 @Entity
@@ -27,18 +28,24 @@ class User {
 	Double 	      monedero
 	Double 	      gastoTotal
 	
-	@OneToMany(cascade=CascadeType.ALL)
+	//@OneToMany(cascade=CascadeType.ALL)
+	@Transient
 	List<Compra> compras  = newArrayList
 	
-	@OneToOne(cascade=CascadeType.ALL)
+	//@OneToOne(cascade=CascadeType.ALL)
+	@Transient
 	Reserva reserva 
 
+	
 	new(){
 		super()
 		monedero		  = 0.00
 		gastoTotal		  = 0.00
 		reserva  		  = null
 		
+	}
+	new(String userName){
+		this.userName     = userName
 	}
 	
 	new(String name, String lastName, String userName, String mail, String userPassword, Date birthDate) {

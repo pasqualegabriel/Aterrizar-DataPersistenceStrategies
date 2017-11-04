@@ -19,6 +19,12 @@
 			<version>5.2.2.Final</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.neo4j.driver</groupId>
+			<artifactId>neo4j-java-driver</artifactId>
+			<version>1.4.4</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
 			<groupId>mysql</groupId>
@@ -42,18 +48,6 @@
 		</dependency>
 
 	</dependencies>
-
-	<developers>
-		<developer>
-			<name>Charly Backend</name>
-			<email>charly.backend@aterrizar.com</email>
-		</developer>
-
-		<developer>
-			<name>Steve Frontend</name>
-			<email>steve.frontend@aterrizar.com</email>
-		</developer>
-	</developers>
 
 	<build>
 		<plugins>
