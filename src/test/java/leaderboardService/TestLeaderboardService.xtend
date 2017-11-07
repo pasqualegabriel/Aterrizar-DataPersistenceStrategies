@@ -93,8 +93,10 @@ class TestLeaderboardService {
 	@Before
 	def void setUp(){
 		// Se instancian los objetos a utilizar
-		leaderboardServiceSUT = new ServicioDeRaking
 		userDAO 			  = new HibernateUserDAO
+		leaderboardServiceSUT = new ServicioDeRaking(userDAO)
+
+		
 		asientoDAO			  = new HibernateAsientoDAO
 		asientoService        = new ReservaCompraDeAsientos(userDAO, asientoDAO, new HibernateReservaDAO, new HibernateTramoDAO, new HibernateCompraDAO)
 		

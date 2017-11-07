@@ -16,9 +16,9 @@ interface AmigoService {
 
 	def List<User> amigosDespuesDe(String usuario, LocalDateTime fecha);
 
-	def void enviar(String usuario, String mensaje, String amigo);
+	def void enviar(String usuario, Mensaje mensaje, String amigo);
 
-	def List<String> mensajes(String usuario, String amigo);
+	def List<Mensaje> mensajes(String usuario, String amigo);
 
 	def List<User> conectados(String usuario);
 }

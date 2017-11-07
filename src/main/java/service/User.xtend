@@ -28,12 +28,10 @@ class User {
 	Double 	      monedero
 	Double 	      gastoTotal
 	
-	//@OneToMany(cascade=CascadeType.ALL)
-	@Transient
+	@OneToMany(cascade=CascadeType.ALL)
 	List<Compra> compras  = newArrayList
 	
-	//@OneToOne(cascade=CascadeType.ALL)
-	@Transient
+	@OneToOne(cascade=CascadeType.ALL)
 	Reserva reserva 
 
 	
