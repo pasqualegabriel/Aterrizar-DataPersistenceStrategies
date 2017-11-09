@@ -4,7 +4,6 @@ import java.time.LocalDateTime
 import daoImplementacion.Neo4jDAO
 import runner.Runner
 import daoImplementacion.HibernateUserDAO
-import java.time.format.DateTimeFormatter
 import java.time.ZoneId
 
 class RelacionesDeAmistades implements AmigoService {
@@ -62,7 +61,12 @@ class RelacionesDeAmistades implements AmigoService {
 	}
 	
 	override conectados(String usuario) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		Runner.runInSession[
+			val idsDeAmigos = userDAONeo4j.amigosEnCadena(usuario)
+			val users       = newArrayList
+			idsDeAmigos.forEach[ users.add(userDAOHibernate.loadbyname(it)) ]
+			users
+		]
 	}
 	
 }

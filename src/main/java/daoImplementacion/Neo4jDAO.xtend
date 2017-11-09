@@ -6,7 +6,6 @@ import org.neo4j.driver.v1.Driver
 import org.neo4j.driver.v1.GraphDatabase
 import org.neo4j.driver.v1.AuthTokens
 import org.neo4j.driver.v1.Values
-import java.time.LocalDateTime
 import unq.amistad.Solicitud
 import unq.amistad.EstadoDeSolicitud
 import java.time.ZoneId
@@ -208,7 +207,7 @@ class Neo4jDAO {
 	}
 	
 	def mensajesEntreAmigos(String user, String friend) {
-			var session = this.driver.session
+		var session = this.driver.session
 	
 		try {
 			var query = 
@@ -231,6 +230,29 @@ class Neo4jDAO {
       		    var fecha = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
 			
 				return new Mensaje(cuerpo,fecha)
+			]
+			
+		} finally {
+			session.close
+		}
+	}
+	
+	def amigosEnCadena(String user) {
+		
+		var session = this.driver.session
+	
+		try {
+			var query = 
+					"MATCH (amigo:User {userName: {userNameid}}) " +
+					"MATCH (amigo)-[s:ESAMIGO*]->(otroAmigo)  	 " +
+					"RETURN DISTINCT otroAmigo                            "
+					
+			var result = session.run(query, Values.parameters("userNameid", user))
+			
+		    return result.list[record |
+		    	var usuario  = record.get(0)
+				var userName = usuario.get("userName").asString() 	
+				return userName
 			]
 			
 		} finally {
