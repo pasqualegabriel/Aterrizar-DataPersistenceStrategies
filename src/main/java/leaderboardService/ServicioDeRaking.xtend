@@ -14,10 +14,7 @@ class ServicioDeRaking implements LeaderboardService {
 	override rankingDestinos() {
 		
 		Runner.runInSession[ 
-			
 			userDAO.getRankedDestinos
-			
-			
 		]
 	}
 	

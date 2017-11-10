@@ -10,26 +10,27 @@ class RelacionesDeAmistades implements AmigoService {
 	
 	Neo4jDAO 		  userDAONeo4j
 	HibernateUserDAO  userDAOHibernate
-	ZoneId 			  zoneId = ZoneId.systemDefault();
+	ZoneId 			  zoneId = ZoneId.systemDefault
+
 	new(){
 		userDAONeo4j     = new Neo4jDAO
 		userDAOHibernate = new HibernateUserDAO
 	}
 	
 	def fechaActual(){
-		LocalDateTime.now.atZone(zoneId).toEpochSecond();
+		LocalDateTime.now.atZone(zoneId).toEpochSecond
 	}
 	
 	override mandarSolicitud(String emisor, String receptor) {
-		userDAONeo4j.mandarSolicitudDeAmistad(emisor,receptor, fechaActual)
+		userDAONeo4j.mandarSolicitudDeAmistad(emisor, receptor, fechaActual)
 	}
 	
 	override aceptarSolicitud(String receptor, String emisor) {
-		userDAONeo4j.aceptarSolicitudDeAmistad(receptor,emisor, fechaActual)
+		userDAONeo4j.aceptarSolicitudDeAmistad(receptor, emisor, fechaActual)
 	}
 	
 	override verSolicitudes(String usuario) {
-		userDAONeo4j.getSolicitudes(usuario);
+		userDAONeo4j.getSolicitudes(usuario)
 	}
 	
 	override amigos(String usuario) {
@@ -44,20 +45,19 @@ class RelacionesDeAmistades implements AmigoService {
 	
 	override amigosDespuesDe(String usuario, LocalDateTime fecha) {
 		Runner.runInSession[
-			val idsDeAmigos = userDAONeo4j.getAmistadesDespuesDe(usuario,fecha.atZone(zoneId).toEpochSecond())
+			val idsDeAmigos = userDAONeo4j.getAmistadesDespuesDe(usuario,fecha.atZone(zoneId).toEpochSecond)
 			val users       = newArrayList
 			idsDeAmigos.forEach[ users.add(userDAOHibernate.loadbyname(it)) ]
 			users
 		]
-
 	}
 	
 	override enviar(String usuario, Mensaje mensaje, String amigo) {
-		userDAONeo4j.enviarMensaje(usuario,mensaje.cuerpo,mensaje.fecha.atZone(zoneId).toEpochSecond() ,amigo)
+		userDAONeo4j.enviarMensaje(usuario, mensaje.cuerpo, mensaje.fecha.atZone(zoneId).toEpochSecond, amigo)
 	}
 	
 	override mensajes(String usuario, String amigo) {
-		userDAONeo4j.mensajesEntreAmigos(usuario,amigo)
+		userDAONeo4j.mensajesEntreAmigos(usuario, amigo)
 	}
 	
 	override conectados(String usuario) {

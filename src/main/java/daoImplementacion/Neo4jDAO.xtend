@@ -17,7 +17,7 @@ class Neo4jDAO {
 	Driver driver
 
 	new() {
-		driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "password"));
+		driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "password"))
 	}
 
 	def save(User oneUser) {
@@ -32,7 +32,25 @@ class Neo4jDAO {
 			session.close
 		}
 	}
-
+	
+	def load(User aUser) {
+		
+		var session = this.driver.session
+	
+		try {
+			var query = 
+					"MATCH (usuario:User {userName: {userNameid}}) " +
+					"RETURN usuario                                "
+					
+			var result = session.run(query, Values.parameters("userNameid", aUser.userName
+															 )		
+			            			)
+			result.single.get(0).get("userName").asString
+			
+		} finally {
+			session.close
+		}
+	}
 
 	def clearAll() {
 		
@@ -47,63 +65,62 @@ class Neo4jDAO {
 	}
 	
 	def mandarSolicitudDeAmistad(String emisor, String receptor, Long fecha) {
-		var session = this.driver.session();
+		
+		var session = this.driver.session
 
 		try {
 			var query = "MATCH (emisor:User {userName: {emisorUserName}}) " +
 					"MATCH (receptor:User {userName: {receptorUserName}}) " +
-					"MERGE (emisor)-[s:SOLICITUDDEAMISTAD]->(receptor)"+
-					"SET s.fecha 	= {fechaDeLaSolicitud} "+
-					"SET s.estado	= {estadoDeSolicitud} ";
+					"MERGE (emisor)-[s:SOLICITUDDEAMISTAD]->(receptor)    " +
+					"SET s.fecha 	= {fechaDeLaSolicitud}                " +
+					"SET s.estado	= {estadoDeSolicitud}                 "
 					
 			session.run(query, Values.parameters("emisorUserName"		, emisor,
 												 "receptorUserName"		, receptor,
 												 "fechaDeLaSolicitud"	, fecha,
 												 "estadoDeSolicitud" 	, EstadoDeSolicitud.Pendiente.name
 												 )
-						);
-
+						)
 		} finally {
-			session.close();
+			session.close
 		}
 	}
 	
 	def getSolicitudes(String aUserName) {
-		var session = this.driver.session();
+		
+		var session = this.driver.session
 	
 		try {
 			var query = 
-					"MATCH (receptorUser:User {userName: {userNameid}}) " +
+					"MATCH (receptorUser:User {userName: {userNameid}})        " +
 					"MATCH (emisorUser)-[s:SOLICITUDDEAMISTAD]->(receptorUser) " +
-					"WHERE s.estado = {estadoDeSolicitud} " +
-					"RETURN s, emisorUser";
+					"WHERE s.estado = {estadoDeSolicitud}                      " +
+					"RETURN s, emisorUser                                      "
 					
-			var result = session.run(query, Values.parameters("userNameid", aUserName,
-															  "estadoDeSolicitud",EstadoDeSolicitud.Pendiente.name
-															 )
-											
-									);
-			
+			var result = session.run(query, Values.parameters("userNameid"       , aUserName,
+															  "estadoDeSolicitud", EstadoDeSolicitud.Pendiente.name
+															 )		
+									)
 			return result.list[record |
 				var solicitud = record.get(0)
-				var usuario = record.get(1)
-				var date = solicitud.get("fecha").asInt
-				var instant = Instant.ofEpochMilli(date);
-      		    var fecha = instant.atZone(ZoneId.systemDefault).toLocalDateTime.toString;
+				var usuario   = record.get(1)
+				var date      = solicitud.get("fecha").asInt
+				var instant   = Instant.ofEpochMilli(date)
+      		    var fecha     = instant.atZone(ZoneId.systemDefault).toLocalDateTime.toString
 				
-				var emisorUserName = usuario.get("userName").asString()
-				var estado		   =  EstadoDeSolicitud.valueOf(solicitud.get("estado").asString()) 	
-				return new Solicitud(fecha,emisorUserName,aUserName,estado);
-			];
-			
+				var emisorUserName = usuario.get("userName").asString
+				var estado		   =  EstadoDeSolicitud.valueOf(solicitud.get("estado").asString) 	
+				return new Solicitud(fecha, emisorUserName, aUserName, estado)
+			]
 			
 		} finally {
-			session.close();
+			session.close
 		}
 	}
 	
 	def aceptarSolicitudDeAmistad(String aUserName, String unEmisor, Long fecha) {
-		var session = this.driver.session();
+		
+		var session = this.driver.session
 		try {
 			var query = 
 					"MATCH (receptorUser:User {userName: {aReceptorid}}) 		" 	+
@@ -115,23 +132,16 @@ class Neo4jDAO {
 					"MERGE (receptorUser)-[b:ESAMIGO]->(emisorUser)				"	+
 					"SET    b.fecha 	= {fechaAmistad}                        "
 
-		
-			session.run(query, Values.parameters			("aReceptorid", aUserName,
-															  "aEmisorId",unEmisor,
-															  "estadoDeSolicitud",EstadoDeSolicitud.Aceptado.name,
-															  "fechaAmistad", fecha
-															 )
-											
-									);
-			
-
-					
+			session.run(query, Values.parameters("aReceptorid"      , aUserName,
+												 "aEmisorId"        , unEmisor,
+												 "estadoDeSolicitud", EstadoDeSolicitud.Aceptado.name,
+												 "fechaAmistad"     , fecha
+												)					
+						)
 		} finally {
-			session.close();
-		}
-		
+			session.close
+		}	
 	}
-	
 	
 	def getAmistades(String aUserName) {
 		
@@ -145,9 +155,9 @@ class Neo4jDAO {
 					
 			var result = session.run(query, Values.parameters("userNameid", aUserName))
 			
-		    return result.list[record |
-				var usuario = record.get(0)
-				var userName = usuario.get("userName").asString() 	
+		    return result.list[ record |
+				var usuario  = record.get(0)
+				var userName = usuario.get("userName").asString 	
 				return userName
 			]
 			
@@ -172,9 +182,9 @@ class Neo4jDAO {
 															  )
 									 )
 			
-		    return result.list[record |
-				var usuario = record.get(0)
-				var userName = usuario.get("userName").asString() 	
+		    return result.list[ record |
+				var usuario  = record.get(0)
+				var userName = usuario.get("userName").asString	
 				return userName
 			]
 			
@@ -185,24 +195,23 @@ class Neo4jDAO {
 	}
 	
 	def enviarMensaje(String emisor, String cuerpo, Long fecha, String receptor) {
-		var session = this.driver.session();
+		var session = this.driver.session
 
 		try {
 			var query = "MATCH (emisor:User {userName: {emisorUserName}}) " +
 					"MATCH (receptor:User {userName: {receptorUserName}}) " +
-					"MERGE (emisor)-[m:MENSAJE]->(receptor)"+
-					"SET m.fecha 	= {fechaDelMensaje} "+
-					"SET m.cuerpo	= {cuerpoDelMensaje} ";
+					"MERGE (emisor)-[m:MENSAJE]->(receptor)               " +
+					"SET m.fecha 	= {fechaDelMensaje}                   " +
+					"SET m.cuerpo	= {cuerpoDelMensaje}                  "
 					
 			session.run(query, Values.parameters("emisorUserName"		, emisor,
 												 "receptorUserName"		, receptor,
 												 "fechaDelMensaje"	    , fecha,
 												 "cuerpoDelMensaje" 	, cuerpo
 												 )
-						);
-
+						)
 		} finally {
-			session.close();
+			session.close
 		}
 	}
 	
@@ -245,13 +254,13 @@ class Neo4jDAO {
 			var query = 
 					"MATCH (amigo:User {userName: {userNameid}}) " +
 					"MATCH (amigo)-[s:ESAMIGO*]->(otroAmigo)  	 " +
-					"RETURN DISTINCT otroAmigo                            "
+					"RETURN DISTINCT otroAmigo                   "
 					
 			var result = session.run(query, Values.parameters("userNameid", user))
 			
-		    return result.list[record |
+		    return result.list[ record |
 		    	var usuario  = record.get(0)
-				var userName = usuario.get("userName").asString() 	
+				var userName = usuario.get("userName").asString	
 				return userName
 			]
 			
