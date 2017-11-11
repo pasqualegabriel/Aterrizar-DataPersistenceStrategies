@@ -6,6 +6,7 @@ import runner.SessionFactoryProvider
 import org.hibernate.Session
 import dao.UserDAO
 import aereolinea.Destino
+import org.hibernate.query.Query
 
 class HibernateUserDAO implements UserDAO {
 	
@@ -67,5 +68,37 @@ class HibernateUserDAO implements UserDAO {
 		var query = session.createQuery(hql, User).setMaxResults(10)
 		query.getResultList
 	}
+	
+	def searchUserForUserNameAndMail(String userName, String mail) {
+
+		searchUserHibernate("FROM User u WHERE u.mail = '" + mail + "'" + " or u.userName = '" + userName + "'")
+
+	}
+
+	def searchUserForUserNameAndPassword(String userName, String oldPassword){
+
+		searchUserHibernate( "FROM User u WHERE u.userPassword = '" + oldPassword + "'" + " and u.userName = '" + userName + "'") 
+
+	}
+	
+	def searchUserForCode(String code) {
+
+		searchUserHibernate("FROM User u WHERE u.validateCode = '" + code + "'")
+	}
+	
+	
+	def searchUserHibernate(String queryHql) {
+
+		val Query<User> query = Runner.getCurrentSession.createQuery(queryHql, User)
+		val result = query.getResultList
+		
+		if(result.size == 0){
+			return null
+		}
+		result.get(0)
+	}
+
+
+
 	
 }

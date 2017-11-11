@@ -12,13 +12,12 @@ import Excepciones.ExceptionUsuarioExistente
 import Excepciones.InvalidValidationCode
 import Excepciones.IncorrectUsernameOrPassword
 import Excepciones.IdenticPasswords
-import daoImplementacion.HibernateUserDAO
-import runner.Runner
+import daoImplementacion.JDBCUserDAO
+import dao.UserDAO
 
-class TestUserService {
-	
+class TestUserServiceJDBC {
 	UserService			serviceTest
-	HibernateUserDAO	userDAO
+	UserDAO				userDAO
 	CodeGenerator       unGeneradorDeCodigo
 	@Mock EmailService  unMailService
 	@Mock MailGenerator generatorMail
@@ -27,10 +26,8 @@ class TestUserService {
 	def void setUp(){
 		MockitoAnnotations.initMocks(this)
         unGeneradorDeCodigo = new RandomNumberGenerator
-//	    unMailService 		= new Postman
-//	    generatorMail 		= new SimpleMailer
-        userDAO      		= new HibernateUserDAO
-		serviceTest   		= new ServiceHibernate(userDAO, generatorMail, unGeneradorDeCodigo, unMailService)
+        userDAO      		= new JDBCUserDAO
+		serviceTest   		= new ServiceJDBC(userDAO, generatorMail, unGeneradorDeCodigo, unMailService)
 	}
 
 	@Test
@@ -75,20 +72,16 @@ class TestUserService {
         var isValid = serviceTest.validate(newUser.validateCode)
         
         assertTrue(isValid)
-        
-        Runner.runInSession [{
-        
-        	var userExample      = new User
-        	userExample.userName = "vegetaUser"
-			var user             = userDAO.load(userExample)
-		
-	    	assertEquals(user.name,     "Vegeta")
-			assertEquals(user.lastName, "Saiyan")
-			assertEquals(user.userName, "vegetaUser")
-			assertEquals(user.mail,     "vegeta@gmail.com")
-			assertTrue(user.validate)
-			null
-	    }]
+       
+    	var userExample      = new User
+    	userExample.userName = "vegetaUser"
+		var user             = userDAO.load(userExample)
+	
+    	assertEquals(user.name,     "Vegeta")
+		assertEquals(user.lastName, "Saiyan")
+		assertEquals(user.userName, "vegetaUser")
+		assertEquals(user.mail,     "vegeta@gmail.com")
+		assertTrue(user.validate)
 	}
 	
 	
@@ -141,17 +134,13 @@ class TestUserService {
 
 		serviceTest.changePassword("dionisiaUser","dionisiaPassword","newPassword")
         
-        Runner.runInSession [
-			var userExample      = new User
-        	userExample.userName = "dionisiaUser"
-		
-			var user = userDAO.load(userExample)
-		
-	    	assertEquals(user.userPassword, "newPassword")
-	    	
-	    	null
-	    ]
-	    
+		var userExample      = new User
+    	userExample.userName = "dionisiaUser"
+	
+		var user = userDAO.load(userExample)
+	
+    	assertEquals(user.userPassword, "newPassword")
+
 	}
 
 	@Test(expected=IdenticPasswords)
@@ -175,32 +164,8 @@ class TestUserService {
 	@After
 	def void tearDown(){
 
-		new TruncateTables => [ vaciarTablas ]
+		userDAO.clearAll
 
 	}
+
 }
-
-class TruncateTables {
-	
-	def vaciarTablas(){
-
-		Runner.runInSession [
-			
-			val session = Runner.getCurrentSession
-			var nombreDeTablas = session.createNativeQuery("show tables").getResultList
-			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate
-			nombreDeTablas.forEach [
-				session.createNativeQuery("truncate table " + it).executeUpdate
-			]
-			session.createNativeQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate
-            session.createNativeQuery("insert into hibernate_sequence(next_val) values(0);").executeUpdate
-			null	
-		]
-
-	}
-	
-}
-
-
-
-

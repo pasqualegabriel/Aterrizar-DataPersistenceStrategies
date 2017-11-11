@@ -19,7 +19,6 @@ import java.time.ZoneId
 import unq.amistad.Mensaje
 import service.ServiceHibernate
 import service.UserService
-import dao.UserDAO
 import service.SimpleMailer
 import service.RandomNumberGenerator
 import mailSender.Postman
@@ -31,8 +30,8 @@ class TestAmigoService {
 	User 				  	pepita
 	User 				  	dionisia
 	User				  	loqui
-	UserNeo4jDAO				neo4jDao
-	UserDAO 			    userDAO
+	UserNeo4jDAO			neo4jDao
+	HibernateUserDAO	    userDAO
 	UserService             service
 	
 	@Before
