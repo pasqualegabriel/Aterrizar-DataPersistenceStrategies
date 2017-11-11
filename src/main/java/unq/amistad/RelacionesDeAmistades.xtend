@@ -1,19 +1,19 @@
 package unq.amistad
 
 import java.time.LocalDateTime
-import daoImplementacion.Neo4jDAO
 import runner.Runner
 import daoImplementacion.HibernateUserDAO
 import java.time.ZoneId
+import daoImplementacion.UserNeo4jDAO
 
 class RelacionesDeAmistades implements AmigoService {
 	
-	Neo4jDAO 		  userDAONeo4j
+	UserNeo4jDAO 		  userDAONeo4j
 	HibernateUserDAO  userDAOHibernate
 	ZoneId 			  zoneId = ZoneId.systemDefault
 
 	new(){
-		userDAONeo4j     = new Neo4jDAO
+		userDAONeo4j     = new UserNeo4jDAO
 		userDAOHibernate = new HibernateUserDAO
 	}
 	

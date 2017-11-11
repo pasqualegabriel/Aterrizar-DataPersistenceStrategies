@@ -6,11 +6,9 @@ import static org.junit.Assert.*
 import org.junit.After
 import unq.amistad.RelacionesDeAmistades
 import service.User
-import daoImplementacion.Neo4jDAO
 import unq.amistad.EstadoDeSolicitud
 import java.util.List
 import unq.amistad.Solicitud
-import runner.Runner
 import java.util.Date
 import daoImplementacion.HibernateUserDAO
 import service.TruncateTables
@@ -25,6 +23,7 @@ import dao.UserDAO
 import service.SimpleMailer
 import service.RandomNumberGenerator
 import mailSender.Postman
+import daoImplementacion.UserNeo4jDAO
 
 class TestAmigoService {
 
@@ -32,7 +31,7 @@ class TestAmigoService {
 	User 				  	pepita
 	User 				  	dionisia
 	User				  	loqui
-	Neo4jDAO				neo4jDao
+	UserNeo4jDAO				neo4jDao
 	UserDAO 			    userDAO
 	UserService             service
 	
@@ -40,52 +39,54 @@ class TestAmigoService {
 	def void setUp(){
 		
 		amigoService = new RelacionesDeAmistades
-		neo4jDao     = new Neo4jDAO
+		neo4jDao     = new UserNeo4jDAO
 		
 		userDAO      = new HibernateUserDAO
 		service      = new ServiceHibernate(userDAO, new SimpleMailer, new RandomNumberGenerator, new Postman)
 		
-		pepita 		 = new User("Pepita", "LaGolondrina", "PepitaUser", "pepitagolondrina@gmail.com", "password", new Date())
-		dionisia 	 = new User("Dionisia", "LaGolondrinaVieja", "DionisiaUser", "dionisiagolondrina@gmail.com", "password", new Date())	
-		loqui 		 = new User("Loqui", "ElPerro", "Loqui", "perroPerrucho@gmail.com", "password", new Date())	
-		val usuarios = #[pepita, dionisia, loqui]
-		Runner.runInSession[
-			usuarios.forEach[
-				userDAO.save(it)
-				neo4jDao.save(it)
-			]
-			null
-		]
+		pepita 		 = service.singUp("Pepita", "LaGolondrina", "PepitaUser", "pepitagolondrina@gmail.com", "password", new Date())
+		dionisia 	 = service.singUp("Dionisia", "LaGolondrinaVieja", "DionisiaUser", "dionisiagolondrina@gmail.com", "password", new Date())	
+		loqui 		 = service.singUp("Loqui", "ElPerro", "Loqui", "perroPerrucho@gmail.com", "password", new Date())	
 	}
 	
-//	@Test
-//	def tirarBase(){
-//		assertTrue(true)
-//	}
 	
 	@Test
 	def elUsuarioPepitaLeEnviaUnaSolicitudDeAmistadAlUsuarioDionisia(){
+		// SetUp
+		var users		= #["PepitaUser"]
+		
+		// Exercise
+		// Se envian las solicitudes 
 		amigoService.mandarSolicitud("PepitaUser","DionisiaUser")
 		var solicitudes = amigoService.verSolicitudes("DionisiaUser")
-		var users		= #["PepitaUser"]
+		
+		// Assertion
 		validarIntegridadesSolicitudes(users,solicitudes,1)
 	}
 	
 	@Test
 	def elUsuarioDionisiaUserLeLlegaDosSolicitudes(){
-		this.enviarSolicitudes
-		var solicitudes = amigoService.verSolicitudes("DionisiaUser")
+		// SetUp
 		var users		= #["Loqui", "PepitaUser"]
+		
+		// Exercise
+		// Se envian las solicitudes 
+		this.enviarSolicitudes
+		
+		var solicitudes = amigoService.verSolicitudes("DionisiaUser")
+
 		
 		validarIntegridadesSolicitudes(users, solicitudes, 2)
 	}
 	
 	@Test
 	def testSeRegistraUnUsuarioExitosamenteQuedandoGuardadoEnLaBaseDeDatosDeNeo4j(){
-
+		// Exercise
 		var usuario = service.singUp("Goku","Kakaroto","GokuUser","goku@gmail.com","password",new Date())
 		
 		var userName = neo4jDao.load(usuario)
+		
+		// Assertion
 		
 	    assertEquals(userName, "GokuUser")
 	}
@@ -94,6 +95,7 @@ class TestAmigoService {
 	def elUsuarioDionisiaAceptaLaSolicitudDeLoquiLaSolicitudPasaAEstarAceptadaSeIntanciaUnaRelacionDeAmistadYAhoraTieneUnAmigoDionisia(){
 
 		/**Antes de aceptar  una Solicitud */
+		//Pepita y Loqui le envian una solicitud a Dionisia
 		this.enviarSolicitudes
 		var solicitudPendiente = amigoService.verSolicitudes("DionisiaUser")
 		var users			   = #["Loqui", "PepitaUser"]
@@ -116,6 +118,7 @@ class TestAmigoService {
 	def ElUsuarioDionisiaAceptaLaSolicitudDePepitaEnEl2000LaSolicitudDeLoquiEnLaActualidadYLuegoPideLosAmigosDespuesDel2001DevolviendoALoqui(){
 
 		/**Antes de aceptar  una Solicitud */
+		//Pepita y Loqui le envian una solicitud a Dionisia
 		this.enviarSolicitudes
 		var solicitudPendiente = amigoService.verSolicitudes("DionisiaUser")
 		var users			   = #["Loqui", "PepitaUser"]
@@ -150,32 +153,45 @@ class TestAmigoService {
 	
 	@Test
 	def elUsuarioDionisiaLeMandaUnMensajeASuAmigoLoqui(){
-
+		
+		//Exercise
+		
+		/**  Antes de enviar un mensaje */
 		amigoService.mandarSolicitud("Loqui"        , "DionisiaUser")
-		amigoService.aceptarSolicitud("DionisiaUser", "Loqui");
+		amigoService.aceptarSolicitud("DionisiaUser", "Loqui")
 		
 		var mensajesDeLoquiConDionisiaAntes= amigoService.mensajes("Loqui","DionisiaUser")
 		
 		assertTrue (mensajesDeLoquiConDionisiaAntes.isEmpty)
 		
+		/**  Se envia un mensaje de Dionisia a Loqui */
 		
 		val mensaje = new Mensaje("Hola!",LocalDateTime.now)
 		
 		amigoService.enviar("DionisiaUser",mensaje,"Loqui")
 		
+		// Assertion
+		
 		var mensajesDeLoquiConDionisiaDespues= amigoService.mensajes("Loqui","DionisiaUser")
 		assertFalse (mensajesDeLoquiConDionisiaDespues.isEmpty)
 		assertEquals (mensajesDeLoquiConDionisiaDespues.get(0).cuerpo, mensaje.cuerpo)
 		
+		/**  Se envia un mensaje de Loqui a Dionisia */
+		
+		// Exercise
 		
 		val mensaje2 = new Mensaje("Buen Dia!",LocalDateTime.now)
 		amigoService.enviar("Loqui",mensaje2,"DionisiaUser")
+		
+		// Assertion
 		
 		var mensajesFinalesDeLoquiConDionisia= amigoService.mensajes("Loqui","DionisiaUser")
 		assertFalse (mensajesFinalesDeLoquiConDionisia.isEmpty)
 		assertEquals (2,mensajesFinalesDeLoquiConDionisia.size)
 	}
 	
+	/** Dada una Lista de usuarios, una lista de solicitudes, y un numero; verifica que esos usuarios, mandaron esas solicitudes
+	 *  y de ellas la cantidad que estan en estado pendiente son ese numero*/
 	def void validarIntegridadesSolicitudes(List<String> usuarios, List<Solicitud> solicitud, Integer cantSolicitPendienteEsperada){
 		
 		assertEquals(cantSolicitPendienteEsperada,solicitud.size)
@@ -185,39 +201,36 @@ class TestAmigoService {
 	
 	@Test
 	def void testConectados(){
+		// SetUp
+		// Se generan las amistades
 		amistades
+		
+		// Exercise
 		var usuarios = amigoService.conectados("PepitaUser")
 		
-		assertEquals(9, usuarios.size)
+		// Assertion
+		assertEquals(8, usuarios.size)
 		assertTrue(true)
 	}
 
+	/**  Pepita y Loqui le envian una solicitud de Amistad A Dionisia */
 	def void enviarSolicitudes(){
 		amigoService.mandarSolicitud("PepitaUser","DionisiaUser")
 		amigoService.mandarSolicitud("Loqui","DionisiaUser")
 	}
 	
+	/**  Se genera el grafo de amistades entre los usuarios */
 	def void amistades(){
 		
-		//PepitaUser, DionisiaUser, Loqui
-		var odin	= new User("Odin")
-		var perrito = new User("Perrito")
-		var maximo 	= new User("Maximo")
-		var bandido = new User("Bandido")
-		var cloyoe 	= new User("Cloyoe")
-		var alegro 	= new User("Alegro")
-		var pepon 	= new User("Pepon")
+		service.singUp("a", "n", "Odin"   ,  "o@gmail.com", "password", new Date())	
+		service.singUp("b", "m", "Perrito",  "p@gmail.com", "password", new Date())	
+		service.singUp("c", "l", "Maximo" ,  "q@gmail.com", "password", new Date())	
+		service.singUp("d", "k", "Bandido",  "r@gmail.com", "password", new Date())	
+	    service.singUp("e", "j", "Cloyoe" ,  "s@gmail.com", "password", new Date())	
+		service.singUp("f", "i", "Alegro" ,  "t@gmail.com", "password", new Date())	
+		service.singUp("g", "h", "Pepon"  ,  "u@gmail.com", "password", new Date())	
 		
-		val users 	= #[odin, perrito, maximo, bandido, cloyoe, alegro, pepon]
 		
-		Runner.runInSession[
-			users.forEach[
-				userDAO.save(it)
-				neo4jDao.save(it)
-			]
-			null
-		]
-
 		amigoService.mandarSolicitud("PepitaUser"	, "DionisiaUser")
 		amigoService.mandarSolicitud("DionisiaUser"	, "Perrito")
 		amigoService.mandarSolicitud("DionisiaUser"	, "Loqui")

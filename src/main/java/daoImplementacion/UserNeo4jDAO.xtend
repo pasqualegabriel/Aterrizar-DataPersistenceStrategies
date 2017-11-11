@@ -12,7 +12,7 @@ import java.time.ZoneId
 import java.time.Instant
 import unq.amistad.Mensaje
 
-class Neo4jDAO {
+class UserNeo4jDAO {
 
 	Driver driver
 
@@ -258,11 +258,13 @@ class Neo4jDAO {
 					
 			var result = session.run(query, Values.parameters("userNameid", user))
 			
-		    return result.list[ record |
+		    var listaDeAmigos= result.list[ record |
 		    	var usuario  = record.get(0)
 				var userName = usuario.get("userName").asString	
 				return userName
 			]
+			listaDeAmigos.remove(user)
+			return listaDeAmigos
 			
 		} finally {
 			session.close

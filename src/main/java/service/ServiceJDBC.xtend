@@ -7,19 +7,19 @@ import java.util.Date
 import Excepciones.IncorrectUsernameOrPassword
 import Excepciones.IdenticPasswords
 import Excepciones.InvalidValidationCode
-import daoImplementacion.Neo4jDAO
+import daoImplementacion.UserNeo4jDAO
 
 class ServiceJDBC implements UserService {
 	
 	UserDAO  			userDAO
-	Neo4jDAO  			userNeo4JDAO
+	UserNeo4jDAO  			userNeo4JDAO
 	EmailService  	    mailSender
 	MailGenerator	    generadorDeMail
 	CodeGenerator 	    generadorDeCodigo
 	
 	new(UserDAO userDao, MailGenerator unGeneradorDeMail, CodeGenerator unGeneradorDeCodigo, EmailService unMailService) {
 		userDAO           = userDao
-		userNeo4JDAO      = new Neo4jDAO
+		userNeo4JDAO      = new UserNeo4jDAO
 		mailSender		  = unMailService
 		generadorDeMail   = unGeneradorDeMail
 		generadorDeCodigo = unGeneradorDeCodigo
