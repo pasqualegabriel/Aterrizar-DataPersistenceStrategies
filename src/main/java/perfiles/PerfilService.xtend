@@ -2,9 +2,9 @@ package perfiles
 
 interface PerfilService {
 	
-	def Publicacion agregarPublicación(String aUser, Publicacion aPublication) 
+	def Publication agregarPublicación(String aUser, Publication aPublication) 
 	
-	def Comentario agregarComentario(String aUser, int aPublication, Comentario aComentary)
+	def Comentary agregarComentario(String aUser, int aPublication, Comentary aComentary)
 	
 	def void meGusta(String aUser, Integer publicacion)
 	

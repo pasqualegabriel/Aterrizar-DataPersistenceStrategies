@@ -6,17 +6,16 @@ import org.junit.Test
 import static org.junit.Assert.*
 import aereolinea.Destino
 
-class TestPublicacion {
+class TestPublication {
 	
-	Publicacion publicacion
-	Comentario  unComentario
+	Publication publicacion
+	Comentary   unComentario
 	Destino     jamaica
 	
 	@Before
 	def void setUp(){
 		jamaica      = new Destino("Jamaica") 
-		publicacion  = new Publicacion("Pepita La Loca",Visibilidad.SoloAmigos, jamaica )
-	
+		publicacion  = new Publication("Juan","Pepita La Loca",Visibilidad.SoloAmigos,jamaica)
 	}
 
 	@Test
@@ -32,8 +31,6 @@ class TestPublicacion {
 		
 		assertFalse(publicacion.tieneComoMensaje(mensaje))
 	}
-	
-	
 	
 	@Test
 	def testUnaPublicacionSeInstanciaConUnDestino(){
@@ -55,7 +52,6 @@ class TestPublicacion {
 		assertFalse(publicacion.tieneComoVisibilidad(visibilidadPrivado) )
 	}
 
-	
 	@Test
 	def testUnaPublicacionSeInstanciaSinComentarios(){
 		assertFalse(publicacion.tieneComentarios)
@@ -65,11 +61,24 @@ class TestPublicacion {
 	def testAlAgregarseUnComentarioUnaPublicacionSabeQueLoTiene(){
 		assertFalse(publicacion.tieneComentarios)
 		
-		unComentario = new Comentario(1,"Pepa",Visibilidad.SoloAmigos,"Juan")
+		unComentario = new Comentary("Pepe","RE COOl el viaje",Visibilidad.SoloAmigos)
 		
-		publicacion.agregarComentario(unComentario)
+		publicacion.agregarComentario("HunterPepe")
 		
 		assertTrue(publicacion.tieneComentarios)
+	}
+		
+	@Test
+	def testUnaNuevaPublicationNoTieneUnComentaryDePedro(){
+		
+		assertFalse(publicacion.tieneComentaryDe("idComentaryHunterPedro"))
+	}
+	
+	@Test
+	def testUnaNuevaPublicationTieneUnComentaryDeHunterPepe(){
+		
+		publicacion.agregarComentario("idComentaryHunterPedro")
+		assertTrue(publicacion.tieneComentaryDe("idComentaryHunterPedro"))
 	}
 	
 	@Test

@@ -1,37 +1,52 @@
 package perfiles
 
-import daoImplementacion.ProfileDAO
+
 import daoImplementacion.HibernateUserDAO
+import daoImplementacion.PublicationDAO
 import runner.Runner
 import Excepciones.ExceptionNoVisitoDestino
 
 class Xxxx implements PerfilService{
 	
-	ProfileDAO  		profileDAO
+
 	HibernateUserDAO 	hibernateUserDAO
+	PublicationDAO		publicationDAO
 	
-	new(ProfileDAO aProfileDAO,HibernateUserDAO aHibernateUserDAO) {
-		this.profileDAO			= aProfileDAO
-		this.hibernateUserDAO	= aHibernateUserDAO
+	new(PublicationDAO aPublicationDAO, HibernateUserDAO aHibernateUserDAO) {
+		this.hibernateUserDAO	= 	aHibernateUserDAO
+		this.publicationDAO		=	aPublicationDAO	
 	}
 	
-	override agregarPublicación(String aUser, Publicacion aPublication) {
+	override agregarPublicación(String aUser, Publication aPublication) {
+			
+		if(this.visitoDestinoYNoPublico(aUser,aPublication) ){
+				throw new AssertionError("No puede publicar sin haber visitado el destino")
+		}
 		
-		Runner.runInSession [	
-			if(!hibernateUserDAO.visito(aUser, aPublication.destino.id)){
-				throw new ExceptionNoVisitoDestino("No puede publicar sin haber visitado el destino")
-			}
-		]
-		var profile = profileDAO.load(aUser)
-		profile.publicar(aPublication)
-	
-		profileDAO.update(profile)
-	
+		aPublication.userProprietor	= aUser
+		publicationDAO.save(aPublication)
+
 		aPublication
 		
 	}
 	
-	override agregarComentario(String aUser, int aPublication, Comentario aComentary) {
+	def visitoDestinoYNoPublico(String aUser, Publication aPublication) {
+		 
+		 this.sePublico(aUser,aPublication)	 &&  !this.visito(aUser, aPublication)
+	}
+	
+	def sePublico(String aUser, Publication aPublication) {
+		publicationDAO.hayPublicacion(aUser,aPublication)
+	}
+	
+	
+	def visito(String aUser, Publication aPublication) {
+		Runner.runInSession [
+			hibernateUserDAO.visito(aUser, aPublication.destino.id) 
+		]
+	}
+	
+	override agregarComentario(String aUser, int aPublication, Comentary aComentary) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	

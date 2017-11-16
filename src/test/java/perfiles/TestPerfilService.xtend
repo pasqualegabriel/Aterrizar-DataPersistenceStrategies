@@ -6,7 +6,6 @@ import static org.junit.Assert.*
 import org.junit.After
 import service.User
 import aereolinea.Destino
-import daoImplementacion.ProfileDAO
 import daoImplementacion.HibernateUserDAO
 import service.UserService
 import mailSender.EmailService
@@ -31,72 +30,81 @@ import aereolinea.Vuelo
 import aereolinea.Aereolinea
 import service.TruncateTables
 import daoImplementacion.UserNeo4jDAO
-import Excepciones.ExceptionNoVisitoDestino
+import daoImplementacion.PublicationDAO
 
 class TestPerfilService {
 	
-	User 			usuario
-	PerfilService 	perfilService
-	ProfileDAO      profileDAO
-	HibernateUserDAO hibernateUserDAO
-	UserService serviceTest
+	User 				usuario
+	PerfilService 		perfilService
+	HibernateUserDAO 	hibernateUserDAO
+	UserService 		serviceTest
 	@Mock EmailService  unMailService
 	@Mock MailGenerator generatorMail
-	Destino destino
-	AsientoService reservaCompraDeAsientos
-	
+	Destino 			destino
+	AsientoService 		reservaCompraDeAsientos
 	HibernateAsientoDAO asientoDAO
-	
-	UserNeo4jDAO			neo4jDao
+	UserNeo4jDAO		neo4jDao
+	PublicationDAO 		publicationDao
 	
 	@Before
 	def void setUp(){
+		
 		MockitoAnnotations.initMocks(this)
+		publicationDao		= new PublicationDAO
 		hibernateUserDAO 	= new HibernateUserDAO
 		neo4jDao            = new UserNeo4jDAO
-		profileDAO			= new ProfileDAO
 		asientoDAO          = new HibernateAsientoDAO
         hibernateUserDAO    = new HibernateUserDAO
 		serviceTest   		= new ServiceHibernate(hibernateUserDAO, generatorMail, new RandomNumberGenerator, unMailService)
-		usuario      	 	= serviceTest.singUp("Pepita","LaGolondrina","PepitaUser","pepitagolondrina@gmail.com", "password",new Date())
-		perfilService 		= new Xxxx(profileDAO,hibernateUserDAO)
+		usuario      	 	= serviceTest.singUp("Pepita","LaGolondrina","HunterJose","pepitagolondrina@gmail.com", "password",new Date())
+		perfilService 		= new Xxxx(publicationDao,hibernateUserDAO)
 		reservaCompraDeAsientos = new ReservaCompraDeAsientos(hibernateUserDAO, asientoDAO, new HibernateReservaDAO, new HibernateTramoDAO, new HibernateCompraDAO)
 		destino = new Destino("Rosario")
-		
-		
+		this.inicializarBaseDePrueba()
 	}
 	
-	////
+	////////////////////////////////////////////////////////
 	/**Agregar test signUp */
-	////////////////
+	////////////////////////////////////////////////////////
 	
 	@Test
 	def testUnUsuarioQueNoTeniaNingunaPublicacionAgregeUnaPublicacionExitosamente(){
 		
-		this.xxxx()
-		var aPublication 			 = new Publicacion("Hola pepita", Visibilidad.Publico, destino)
-		var unaPublicacionResultado	 = perfilService.agregarPublicación(usuario.userName, aPublication) 
-		
-		assertEquals(aPublication, unaPublicacionResultado)
+		var unaPublicacionResultado	 = agregarPublicacion("HunterJose","Hola pepita", Visibilidad.Publico, destino)
+
+		assertNotNull(unaPublicacionResultado.id);
 	}
-	@Test(expected=ExceptionNoVisitoDestino)
+	
+	@Test(expected=AssertionError)
+	def testgetName(){
+		
+		agregarPublicacion("HunterJose","Hola pepita", Visibilidad.Publico, destino)
+		agregarPublicacion("HunterJose","Hola pepita", Visibilidad.Publico, destino)
+		fail()
+	}
+	
+	@Test(expected=AssertionError)
 	def testxxx(){
 		
-		this.xxxx()
-		var aPublication 			 = new Publicacion("Hola pepita", Visibilidad.Publico, destino)
+	
+		var aPublication 			 = new Publication("HunterJose","Hola pepita", Visibilidad.Publico, destino)
 		perfilService.agregarPublicación("ddddd", aPublication) 
 		fail()
 	}
-	@Test(expected=ExceptionNoVisitoDestino)
+	@Test(expected=AssertionError)
 	def testyyy(){
 		
-		this.xxxx()
-		var aPublication 			 = new Publicacion("Hola pepita", Visibilidad.Publico, new Destino("noExiste"))
+	
+		var aPublication 			 = new Publication("HunterJose","Hola pepita", Visibilidad.Publico, new Destino("noExiste"))
 		perfilService.agregarPublicación(usuario.userName, aPublication) 
 		fail()
 	}
 	
-	def void xxxx(){
+	def Publication agregarPublicacion(String aUserName, String aCampo , Visibilidad aVisibilidad, Destino unDestino){
+		perfilService.agregarPublicación(usuario.userName, new Publication(aUserName,aCampo, aVisibilidad,unDestino))
+	}
+	
+	def void inicializarBaseDePrueba(){
 		var aerolinea=new Aereolinea("Aterrizar")
 		
 		val asiento	= new Asiento(new Tramo(100.00, new Vuelo(aerolinea), 
@@ -118,25 +126,21 @@ class TestPerfilService {
 		#[asiento,asiento2].forEach
 		[
 			reservaCompraDeAsientos.comprar(reservaCompraDeAsientos.reservar(it.id, usuario.userName).id, usuario.userName)
-		]
-
-	
-		
-		
+		]	
 	}
 
-//	@Test
-//	def limpiador(){
-//		neo4jDao.clearAll
-//		profileDAO.deleteAll
-//		new TruncateTables => [ vaciarTablas ]
-//		assertTrue(true)
-//	}
+	@Test
+	def limpiador(){
+		neo4jDao.clearAll
+		publicationDao.deleteAll
+		new TruncateTables => [ vaciarTablas ]
+		assertTrue(true)
+	}
 	
 	@After
 	def void tearDown(){
 		neo4jDao.clearAll
-		profileDAO.deleteAll
+		publicationDao.deleteAll
 		new TruncateTables => [ vaciarTablas ]
 	}
 	

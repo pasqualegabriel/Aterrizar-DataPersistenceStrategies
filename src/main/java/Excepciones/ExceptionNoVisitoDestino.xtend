@@ -1,9 +1,7 @@
 package Excepciones
 
-import javax.persistence.NoResultException
-
-class ExceptionNoVisitoDestino extends NoResultException{
+class ExceptionNoVisitoDestino extends AssertionError {
 	new(String unMensaje){
 		super(unMensaje)
 	}
-}
+} 

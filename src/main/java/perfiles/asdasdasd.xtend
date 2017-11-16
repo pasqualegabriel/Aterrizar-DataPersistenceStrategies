@@ -9,24 +9,27 @@ import org.jongo.marshall.jackson.oid.MongoObjectId
 @Accessors
 abstract class asdasdasd {
 
+	@MongoId
+	@MongoObjectId
+	String     		id
 	
 	Visibilidad 	visibilidad
 	String      	cuerpo
 	Set<String> 	meGustan
 	Set<String>     noMeGustan
+	String 			userProprietor
 	
 	new(){				
 		this.meGustan		= new LinkedHashSet<String>
 		this.noMeGustan		= new LinkedHashSet<String>	
 	}
 
-
-		
-	new ( String unCuerpo,Visibilidad unaVisibilidad){
+	new (String aUserProprietor , String unCuerpo,Visibilidad unaVisibilidad){
 		this()
 		
 		this.visibilidad 	= unaVisibilidad
 		this.cuerpo    		= unCuerpo 
+		this.userProprietor = aUserProprietor
 
 	}
 	

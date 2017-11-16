@@ -8,17 +8,17 @@ import static org.junit.Assert.*
 
 class TestComentario {
 	
-	Comentario comentario
+	Comentary comentario
 	
 	@Before
 	def void setUp(){
-		comentario = new Comentario(1,"Pepita La Loca",Visibilidad.SoloAmigos,"Juan") 
+		comentario = new Comentary("Pepita La Loca","Re cool viaje",Visibilidad.SoloAmigos) 
 		
 	}
 
 	@Test
 	def testUnComentarioSeCreaConUnMensajeYSabeQueLoTiene(){
-		var mensaje = "Pepita La Loca"
+		var mensaje = "Re cool viaje"
 		
 		assertTrue(comentario.tieneComoMensaje(mensaje))
 	}

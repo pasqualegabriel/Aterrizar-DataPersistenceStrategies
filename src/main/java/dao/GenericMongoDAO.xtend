@@ -54,14 +54,19 @@ abstract class GenericMongoDAO<T> {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	def void update(T aObject) {
+		this.mongoCollection.save(aObject)
+	}
+	
 
-	def void findUpdate(String query, Object... parameters) {
+	def List<T> findUpdate(String query, Object... parameters) {
 		try {
 			var MongoCursor<T> all = mongoCollection.find(query, parameters).^as(this.entityType);
 
 			var List<T> result = this.copyToList(all);
 			all.close();
-
+			return result
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
