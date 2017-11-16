@@ -5,10 +5,10 @@ import java.util.Date
 import java.util.List
 import asientoServicio.Reserva
 import asientoServicio.Compra
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.CascadeType
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.OneToMany
 import javax.persistence.OneToOne
 
 @Accessors
@@ -39,9 +39,12 @@ class User {
 		monedero		  = 0.00
 		gastoTotal		  = 0.00
 		reserva  		  = null
+		this.validate     = false
+		this.validateCode = ""
 		
 	}
 	new(String userName){
+		this()
 		this.userName     = userName
 	}
 	
@@ -53,8 +56,6 @@ class User {
 		this.mail         = mail
 		this.userPassword = userPassword
 		this.birthDate    = birthDate
-		this.validate     = false
-		this.validateCode = ""
 		
 
 	}

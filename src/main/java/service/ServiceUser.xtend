@@ -9,6 +9,7 @@ import Excepciones.ExceptionUsuarioExistente
 import Excepciones.InvalidValidationCode
 import Excepciones.IdenticPasswords
 import Excepciones.IncorrectUsernameOrPassword
+import daoImplementacion.ProfileDAO
 
 @Accessors
 abstract class ServiceUser implements UserService {
@@ -18,6 +19,7 @@ abstract class ServiceUser implements UserService {
 	EmailService  	    mailSender
 	MailGenerator	    generadorDeMail
 	CodeGenerator 	    generadorDeCodigo
+	ProfileDAO 			profileDAO
 	
 	new(UserDAO userDao, MailGenerator unGeneradorDeMail, CodeGenerator unGeneradorDeCodigo, EmailService unMailService) {
 		userDAO           = userDao
@@ -25,7 +27,7 @@ abstract class ServiceUser implements UserService {
 		mailSender		  = unMailService
 		generadorDeMail   = unGeneradorDeMail
 		generadorDeCodigo = unGeneradorDeCodigo
-		
+		profileDAO		  = new ProfileDAO
 	}
 	
 	override singUp(String name, String lastName, String userName, String mail, String password, Date birthDate) {
@@ -96,6 +98,8 @@ abstract class ServiceUser implements UserService {
 	def void saveUser(User aUser){
 		userDAO.save(aUser)
 		userNeo4JDAO.save(aUser)
+		var perfil = new Profile(aUser.userName)
+		profileDAO.save(perfil)
 	}
 		
 	def void updateUser(User aUser) {

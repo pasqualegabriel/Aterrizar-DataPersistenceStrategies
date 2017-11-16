@@ -27,8 +27,6 @@ class TestUserService {
 	def void setUp(){
 		MockitoAnnotations.initMocks(this)
         unGeneradorDeCodigo = new RandomNumberGenerator
-//	    unMailService 		= new Postman
-//	    generatorMail 		= new SimpleMailer
         userDAO      		= new HibernateUserDAO
 		serviceTest   		= new ServiceHibernate(userDAO, generatorMail, unGeneradorDeCodigo, unMailService)
 	}
@@ -116,7 +114,7 @@ class TestUserService {
 		assertEquals(userSignIn.mail,     "trunks@gmail.com")
 	}
 	
-	@Test(expected=typeof(RuntimeException))
+	@Test(expected=IncorrectUsernameOrPassword)
 	def test008UnUsuarioNoSeLogueaExitosamentePorqueNoSeValido(){
 		
 		serviceTest.singUp("Goten","SonGoten","GotenUser","Goten@gmail.com", "password",new Date())
@@ -126,7 +124,7 @@ class TestUserService {
 		fail()
 	}
 	
-	@Test(expected=typeof(RuntimeException))
+	@Test(expected=IncorrectUsernameOrPassword)
 	def testUnUsuarioNoSeLogueaExitosamentePorqueNoExiste(){
 		
 		serviceTest.signIn("usuarioNoExistente","passwordNoExistente")
