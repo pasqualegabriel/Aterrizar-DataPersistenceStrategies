@@ -31,6 +31,7 @@ import aereolinea.Aereolinea
 import service.TruncateTables
 import daoImplementacion.UserNeo4jDAO
 import daoImplementacion.PublicationDAO
+import Excepciones.ExceptionNoVisitoDestino
 
 class TestPerfilService {
 	
@@ -50,71 +51,28 @@ class TestPerfilService {
 	def void setUp(){
 		
 		MockitoAnnotations.initMocks(this)
-		publicationDao		= new PublicationDAO
-		hibernateUserDAO 	= new HibernateUserDAO
-		neo4jDao            = new UserNeo4jDAO
-		asientoDAO          = new HibernateAsientoDAO
-        hibernateUserDAO    = new HibernateUserDAO
-		serviceTest   		= new ServiceHibernate(hibernateUserDAO, generatorMail, new RandomNumberGenerator, unMailService)
-		usuario      	 	= serviceTest.singUp("Pepita","LaGolondrina","HunterJose","pepitagolondrina@gmail.com", "password",new Date())
-		perfilService 		= new Xxxx(publicationDao,hibernateUserDAO)
+		publicationDao			= new PublicationDAO
+		hibernateUserDAO 		= new HibernateUserDAO
+		neo4jDao           		= new UserNeo4jDAO
+		asientoDAO         		= new HibernateAsientoDAO
+        hibernateUserDAO 	    = new HibernateUserDAO
+		serviceTest   			= new ServiceHibernate(hibernateUserDAO, generatorMail, new RandomNumberGenerator, unMailService)
+		usuario      	 		= serviceTest.singUp("Pepita","LaGolondrina","HunterJose","pepitagolondrina@gmail.com", "password",new Date())
+		perfilService 			= new Xxxx(publicationDao,hibernateUserDAO)
 		reservaCompraDeAsientos = new ReservaCompraDeAsientos(hibernateUserDAO, asientoDAO, new HibernateReservaDAO, new HibernateTramoDAO, new HibernateCompraDAO)
-		destino = new Destino("Rosario")
-		this.inicializarBaseDePrueba()
-	}
-	
-	////////////////////////////////////////////////////////
-	/**Agregar test signUp */
-	////////////////////////////////////////////////////////
-	
-	@Test
-	def testUnUsuarioQueNoTeniaNingunaPublicacionAgregeUnaPublicacionExitosamente(){
-		
-		var unaPublicacionResultado	 = agregarPublicacion("HunterJose","Hola pepita", Visibilidad.Publico, destino)
-
-		assertNotNull(unaPublicacionResultado.id);
-	}
-	
-	@Test(expected=AssertionError)
-	def testgetName(){
-		
-		agregarPublicacion("HunterJose","Hola pepita", Visibilidad.Publico, destino)
-		agregarPublicacion("HunterJose","Hola pepita", Visibilidad.Publico, destino)
-		fail()
-	}
-	
-	@Test(expected=AssertionError)
-	def testxxx(){
-		
-	
-		var aPublication 			 = new Publication("HunterJose","Hola pepita", Visibilidad.Publico, destino)
-		perfilService.agregarPublicación("ddddd", aPublication) 
-		fail()
-	}
-	@Test(expected=AssertionError)
-	def testyyy(){
-		
-	
-		var aPublication 			 = new Publication("HunterJose","Hola pepita", Visibilidad.Publico, new Destino("noExiste"))
-		perfilService.agregarPublicación(usuario.userName, aPublication) 
-		fail()
-	}
-	
-	def Publication agregarPublicacion(String aUserName, String aCampo , Visibilidad aVisibilidad, Destino unDestino){
-		perfilService.agregarPublicación(usuario.userName, new Publication(aUserName,aCampo, aVisibilidad,unDestino))
+		destino 				= new Destino("Rosario")
+		this.inicializarBaseDePrueba
 	}
 	
 	def void inicializarBaseDePrueba(){
+		
 		var aerolinea=new Aereolinea("Aterrizar")
 		
-		val asiento	= new Asiento(new Tramo(100.00, new Vuelo(aerolinea), 
-			new Destino("asdas"), destino, LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)
-		),new Turista)
+		val asiento	= new Asiento(new Tramo(100.00, new Vuelo(aerolinea), new Destino("asdas"), 
+			destino, LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)),new Turista)
 		 
-		val asiento2	= new Asiento(new Tramo(100.00, new Vuelo(aerolinea), 
-			 new Destino("kk"), new Destino("caku"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)
-		),new Turista)
-		
+		val asiento2 = new Asiento(new Tramo(100.00, new Vuelo(aerolinea), new Destino("kk"), 
+			new Destino("caku"), LocalDateTime.of(2017, 1, 10, 10,10, 30,00), LocalDateTime.of(2017, 1, 10, 10, 19, 30,00)), new Turista)
 		
 		Runner.runInSession[
 			usuario.monedero = 5000.00
@@ -123,19 +81,47 @@ class TestPerfilService {
 			asientoDAO.save(asiento2)
 			null
 		]
-		#[asiento,asiento2].forEach
-		[
+		#[asiento,asiento2].forEach[
 			reservaCompraDeAsientos.comprar(reservaCompraDeAsientos.reservar(it.id, usuario.userName).id, usuario.userName)
 		]	
 	}
-
+	
 	@Test
-	def limpiador(){
-		neo4jDao.clearAll
-		publicationDao.deleteAll
-		new TruncateTables => [ vaciarTablas ]
-		assertTrue(true)
+	def testUnUsuarioQueNoTeniaNingunaPublicacionAgregaUnaPublicacionSobreUnDestinoVisitadoExitosamente(){
+		
+		var unaPublicacionResultado	 = agregarPublicacion("HunterJose","Hola pepita", Visibilidad.Publico, destino)
+
+		assertNotNull(unaPublicacionResultado.id);
 	}
+	
+	@Test(expected=ExceptionNoVisitoDestino)
+	def testUnUsuarioConUnaPublicacionSobreUnDestinoVisitadoNoPuedeVolverAPublicarSobreDichoDestino(){
+		
+		agregarPublicacion(usuario.userName,"Hola pepita", Visibilidad.Publico, destino)
+		agregarPublicacion(usuario.userName,"Hola pepita", Visibilidad.Publico, destino)
+		fail()
+	}
+	
+	@Test(expected=ExceptionNoVisitoDestino)
+	def testUnUsuarioSinPublicacionesNoPuedePublicarSobreUnDestinoNoVisitado(){
+
+		agregarPublicacion(usuario.userName, "Hola pepita", Visibilidad.Publico, new Destino("DestinoNoVisitado")) 
+		fail()
+	}
+	
+	def Publication agregarPublicacion(String aUserName, String aCampo , Visibilidad aVisibilidad, Destino unDestino){
+		
+		var aPublication = new Publication(aUserName, aCampo, aVisibilidad, unDestino)
+		perfilService.agregarPublicación(usuario.userName, aPublication)
+	}
+
+//	@Test
+//	def limpiador(){
+//		neo4jDao.clearAll
+//		publicationDao.deleteAll
+//		new TruncateTables => [ vaciarTablas ]
+//		assertTrue(true)
+//	}
 	
 	@After
 	def void tearDown(){
@@ -148,15 +134,13 @@ class TestPerfilService {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }
+
+
+
+
+
+
+
+
+

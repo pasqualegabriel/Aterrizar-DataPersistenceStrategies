@@ -2,16 +2,19 @@ package perfiles
 
 class Comentary extends asdasdasd{
 
+	String idPublication
 	
-	//Esta Pareciendo que al final, comentario es la clase Abstracta y publicacion extiende de este!
 	new(){
 		
 	}
 	
-	new(String aUserProprietor,String unMensaje, Visibilidad unaVisibilidad) {
-		super(aUserProprietor,unMensaje,unaVisibilidad)
-		
+	new(String aUserProprietor, String unMensaje, Visibilidad unaVisibilidad) {
+		super(aUserProprietor,unMensaje,unaVisibilidad)	
 	}
 	
+	new(String aUserProprietor, String aIdPublication, String unMensaje, Visibilidad unaVisibilidad) {
+		super(aUserProprietor,unMensaje,unaVisibilidad)
+		idPublication = aIdPublication
+	}
 	
 }

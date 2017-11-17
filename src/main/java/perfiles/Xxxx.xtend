@@ -19,8 +19,8 @@ class Xxxx implements PerfilService{
 	
 	override agregarPublicación(String aUser, Publication aPublication) {
 			
-		if(this.visitoDestinoYNoPublico(aUser,aPublication) ){
-				throw new AssertionError("No puede publicar sin haber visitado el destino")
+		if(this.noVisitoDestinoOYaPublico(aUser,aPublication) ){
+			throw new ExceptionNoVisitoDestino("No puede publicar sin haber visitado el destino")
 		}
 		
 		aPublication.userProprietor	= aUser
@@ -30,9 +30,9 @@ class Xxxx implements PerfilService{
 		
 	}
 	
-	def visitoDestinoYNoPublico(String aUser, Publication aPublication) {
+	def noVisitoDestinoOYaPublico(String aUser, Publication aPublication) {
 		 
-		 this.sePublico(aUser,aPublication)	 &&  !this.visito(aUser, aPublication)
+		 this.sePublico(aUser,aPublication)	|| !this.visito(aUser, aPublication)
 	}
 	
 	def sePublico(String aUser, Publication aPublication) {

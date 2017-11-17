@@ -15,7 +15,7 @@ class PublicationDAO extends GenericMongoDAO<Publication>{
 					     "{userProprietor: # , destino: { id : #, nombre : # } }", 
 					     aUserName, publication.idDestino, publication.nombreDestino)	
 		     	
-		result.length != 0
+		!result.empty
 	}
 
 	
