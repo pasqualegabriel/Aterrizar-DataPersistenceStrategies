@@ -12,11 +12,12 @@ class PublicationDAO extends GenericMongoDAO<Publication>{
 	def boolean hayPublicacion(String aUserName, Publication publication) {
 
 		var result = this.find(
-					     "{userProprietor: # , destino: { id : #, nombre : # } }", 
+					     "{author: # , destino: { id : #, nombre : # } }", 
 					     aUserName, publication.idDestino, publication.nombreDestino)	
 		     	
 		!result.empty
 	}
 
+//UUID FIJARSE
 	
 }

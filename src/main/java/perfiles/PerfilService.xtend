@@ -4,15 +4,15 @@ interface PerfilService {
 	
 	def Publication agregarPublicación(String aUser, Publication aPublication) 
 	
-	def Comentary agregarComentario(String aUser, int aPublication, Comentary aComentary)
+	def Comentary agregarComentario(String aPublication, Comentary aComentary)
 	
-	def void meGusta(String aUser, Integer publicacion)
+	def void meGusta(String aUser, String publicacion)
 	
-	def void noMeGusta(String aUser,Integer publicacion)
+	def void noMeGusta(String aUser,String publicacion)
 	
-	def void meGusta(String aUser, int comentario) 
+	def void meGustaComentario(String aUser, String comentario) 
 	
-	def void noMeGusta(String aUser, int comentario) 
+	def void noMeGustaComentario(String aUser, String comentario) 
 	
 	def int verPerfil(String aUser, String otherUser)
 }

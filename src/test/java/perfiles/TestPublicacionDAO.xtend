@@ -42,7 +42,7 @@ class TestPublicacionDAO {
 		var loadPublicationAfterUpdate=publicationDao.load(publication.id)  
 		
 		assertNotEquals(publication,loadPublicationAfterUpdate)
-		assertEquals(publication.userProprietor,loadPublicationAfterUpdate.userProprietor)
+		assertEquals(publication.getAuthor,loadPublicationAfterUpdate.getAuthor)
 		assertEquals(publication.visibilidad,loadPublicationAfterUpdate.visibilidad)
 		assertEquals(publication.cuerpo,loadPublicationAfterUpdate.cuerpo)
 		assertTrue(loadPublicationAfterUpdate.leDioMeGusta("Juan"));
@@ -56,7 +56,7 @@ class TestPublicacionDAO {
 		publicationDao.save(aPublication)
 		var loadPublication=publicationDao.load(aPublication.id) 
 		assertNotEquals(aPublication,loadPublication)
-		assertEquals(aPublication.userProprietor,loadPublication.userProprietor)
+		assertEquals(aPublication.getAuthor,loadPublication.getAuthor)
 		assertEquals(aPublication.visibilidad,loadPublication.visibilidad)
 		assertEquals(aPublication.cuerpo,loadPublication.cuerpo)
 		assertNotNull(loadPublication.id)

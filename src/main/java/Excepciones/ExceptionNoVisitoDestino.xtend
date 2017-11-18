@@ -1,6 +1,6 @@
 package Excepciones
 
-class ExceptionNoVisitoDestino extends AssertionError {
+class ExceptionNoVisitoDestino extends RuntimeException {
 	new(String unMensaje){
 		super(unMensaje)
 	}

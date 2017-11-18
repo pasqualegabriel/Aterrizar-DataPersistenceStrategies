@@ -14,6 +14,7 @@ import Excepciones.IncorrectUsernameOrPassword
 import Excepciones.IdenticPasswords
 import daoImplementacion.JDBCUserDAO
 import dao.UserDAO
+import daoImplementacion.UserNeo4jDAO
 
 class TestUserServiceJDBC {
 	UserService			serviceTest
@@ -21,11 +22,13 @@ class TestUserServiceJDBC {
 	CodeGenerator       unGeneradorDeCodigo
 	@Mock EmailService  unMailService
 	@Mock MailGenerator generatorMail
+	UserNeo4jDAO		neo4jDao
 	
 	@Before
 	def void setUp(){
 		MockitoAnnotations.initMocks(this)
         unGeneradorDeCodigo = new RandomNumberGenerator
+        neo4jDao           	= new UserNeo4jDAO
         userDAO      		= new JDBCUserDAO
 		serviceTest   		= new ServiceJDBC(userDAO, generatorMail, unGeneradorDeCodigo, unMailService)
 	}
@@ -163,7 +166,7 @@ class TestUserServiceJDBC {
 	
 	@After
 	def void tearDown(){
-
+		neo4jDao.clearAll
 		userDAO.clearAll
 
 	}

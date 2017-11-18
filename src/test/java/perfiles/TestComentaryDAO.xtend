@@ -38,7 +38,7 @@ class TestComentaryDAO {
 		var loadComentaryAfterUpdate = comentaryDAO.load(comentary.id)
 		
 		assertNotEquals(comentary, loadComentaryAfterUpdate)
-		assertEquals(comentary.userProprietor,loadComentaryAfterUpdate.userProprietor)
+		assertEquals(comentary.getAuthor,loadComentaryAfterUpdate.getAuthor)
 		assertEquals(comentary.visibilidad,loadComentaryAfterUpdate.visibilidad)
 		assertEquals(comentary.cuerpo,loadComentaryAfterUpdate.cuerpo)
 		assertTrue(loadComentaryAfterUpdate.leDioMeGusta("PedroElCool"));
@@ -52,7 +52,7 @@ class TestComentaryDAO {
 		comentaryDAO.save(aComentary)
 		var loadPublication = comentaryDAO.load(aComentary.id) 
 		assertNotEquals(aComentary,loadPublication)
-		assertEquals(aComentary.userProprietor,loadPublication.userProprietor)
+		assertEquals(aComentary.getAuthor,loadPublication.getAuthor)
 		assertEquals(aComentary.visibilidad,loadPublication.visibilidad)
 		assertEquals(aComentary.cuerpo,loadPublication.cuerpo)
 		assertNotNull(loadPublication.id)

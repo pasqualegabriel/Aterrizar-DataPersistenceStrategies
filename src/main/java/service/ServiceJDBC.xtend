@@ -25,10 +25,10 @@ class ServiceJDBC extends ServiceUser {
 	}
 
 	override existeUsuarioCon(String userName, String mail){
-		var userExampleWithUserName	 = new User
-		var userExampleWithMail		 = new User
-		userExampleWithMail.userName = userName
-		userExampleWithUserName.mail = mail	
+		var userExampleWithUserName	 	 = new User
+		var userExampleWithMail		 	 = new User
+		userExampleWithUserName.userName = userName
+		userExampleWithMail.mail		 = mail	
 		var userNick = loadUser(userExampleWithMail)
 		var userMail = loadUser(userExampleWithUserName)
 		userNick != null || userMail != null

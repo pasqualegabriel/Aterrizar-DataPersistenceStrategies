@@ -17,19 +17,19 @@ abstract class asdasdasd {
 	String      	cuerpo
 	Set<String> 	meGustan
 	Set<String>     noMeGustan
-	String 			userProprietor
+	String 			author
 	
 	new(){				
 		this.meGustan		= new LinkedHashSet<String>
 		this.noMeGustan		= new LinkedHashSet<String>	
 	}
 
-	new (String aUserProprietor , String unCuerpo,Visibilidad unaVisibilidad){
+	new (String author , String unCuerpo,Visibilidad unaVisibilidad){
 		this()
 		
 		this.visibilidad 	= unaVisibilidad
 		this.cuerpo    		= unCuerpo 
-		this.userProprietor = aUserProprietor
+		this.author = author
 
 	}
 	
@@ -41,10 +41,12 @@ abstract class asdasdasd {
 		this.cuerpo.equals(unMensaje)
 	}
 	
+	
+	// logica y codigo repetido, falta abstraccion!
 	def agregarMeGusta(String aUserName){
 		this.meGustan.add(aUserName)
 	}
-	
+	// logica y codigo repetido, falta abstraccion!
 	def agregarNoMeGusta(String aUserName){
 		this.noMeGustan.add(aUserName);
 	}

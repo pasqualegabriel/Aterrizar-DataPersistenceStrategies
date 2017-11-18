@@ -23,16 +23,17 @@ import service.SimpleMailer
 import service.RandomNumberGenerator
 import mailSender.Postman
 import daoImplementacion.UserNeo4jDAO
+import unq.amistad.AmigoService
 
 class TestAmigoService {
 
-	RelacionesDeAmistades 	amigoService
-	User 				  	pepita
-	User 				  	dionisia
-	User				  	loqui
-	UserNeo4jDAO			neo4jDao
-	HibernateUserDAO	    userDAO
-	UserService             service
+	AmigoService    	amigoService
+	User 			  	pepita
+	User 			  	dionisia
+	User			  	loqui
+	UserNeo4jDAO		neo4jDao
+	HibernateUserDAO	userDAO
+	UserService         service
 	
 	@Before
 	def void setUp(){

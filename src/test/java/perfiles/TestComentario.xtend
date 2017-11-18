@@ -66,7 +66,7 @@ class TestComentario {
 	}
 
 	@Test
-	def testUnComentarioSabeQueHatersDioNoMeGustaEnEste(){
+	def testUnComentarioSabeQueHatersDioNoMeGusta(){
 		comentario.agregarNoMeGusta("Haters") 
 		assertTrue(comentario.leDioNoMeGusta("Haters"))
 	}

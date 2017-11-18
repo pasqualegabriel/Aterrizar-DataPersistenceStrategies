@@ -34,8 +34,8 @@ class Publication extends asdasdasd{
 		destino.nombre
 	}
 	
-	def tieneComentaryDe(String aUserName) {
-		comentarios.contains(aUserName)
+	def hasCommentary(String idCommentary) {
+		comentarios.contains(idCommentary)
 	}
 	
 	def getIdDestino() {

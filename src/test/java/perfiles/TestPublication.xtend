@@ -71,14 +71,14 @@ class TestPublication {
 	@Test
 	def testUnaNuevaPublicationNoTieneUnComentaryDePedro(){
 		
-		assertFalse(publicacion.tieneComentaryDe("idComentaryHunterPedro"))
+		assertFalse(publicacion.hasCommentary("idComentaryHunterPedro"))
 	}
 	
 	@Test
 	def testUnaNuevaPublicationTieneUnComentaryDeHunterPepe(){
 		
 		publicacion.agregarComentario("idComentaryHunterPedro")
-		assertTrue(publicacion.tieneComentaryDe("idComentaryHunterPedro"))
+		assertTrue(publicacion.hasCommentary("idComentaryHunterPedro"))
 	}
 	
 	@Test
