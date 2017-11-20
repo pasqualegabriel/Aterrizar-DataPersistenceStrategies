@@ -16,10 +16,10 @@ class MongoConnection {
 
 	MongoClient client;
 	Jongo jongo;
-	
+
 	new() {
 		this.client = new MongoClient("localhost", 27017);
-		this.jongo = new Jongo(this.client.getDB("epersMongo"));
+		this.jongo  = new Jongo(this.client.getDB("epersMongo"));
 	}
 	
 	def Jongo getJongo() {

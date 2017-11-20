@@ -5,7 +5,8 @@ import Excepciones.ExceptionNoTienePermisoParaInteractuarConLaPublicacion
 class AcessDenied extends AccessOfPrivacy {
 		
 	override canHandle(Visibilidad visibilidad, String author, String anUserName) { 
-		(!elUsuarioEsAmigoDelAutor(author,anUserName) && !elUsuarioEsElAutorDeLapublicacion(author,anUserName) && !visibilidad.equals(Visibilidad.Publico))
+//		(!elUsuarioEsAmigoDelAutor(author,anUserName) && !elUsuarioEsElAutorDeLapublicacion(author,anUserName) && !visibilidad.equals(Visibilidad.Publico))
+		true
 	}
 	
 	override assertRule (StrategyOfPublication strategy) {

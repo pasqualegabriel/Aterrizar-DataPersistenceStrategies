@@ -13,7 +13,6 @@ class TestComentario {
 	@Before
 	def void setUp(){
 		comentario = new Comentary("Pepita La Loca","Re cool viaje",Visibilidad.SoloAmigos) 
-		
 	}
 
 	@Test
@@ -47,10 +46,10 @@ class TestComentario {
 	
 	@Test
 	def testUnComentarioQueNoTeniaMeGustaAgregaUnMegustaDeJuancho(){
-		assertFalse(comentario.tieneMeGusta)
+		assertTrue(comentario.meGustan.empty)
 		
 		comentario.agregarMeGusta("Juancho")
-		assertTrue(comentario.tieneMeGusta)
+		assertFalse(comentario.meGustan.empty)
 	}
 	@Test
 	def testUnComentarioSabeQueJuanchoDioMeGustaEnEste(){
@@ -60,9 +59,9 @@ class TestComentario {
 	
 	@Test
 	def testUnComentarioQueNoTeniaNingunNoMeGustaAgregaUnNoMeGustaDeHaters(){
-		assertFalse(comentario.tieneNoMeGusta)
+		assertTrue(comentario.noMeGustan.empty)
 		comentario.agregarNoMeGusta("Haters")
-		assertTrue(comentario.tieneNoMeGusta)
+		assertFalse(comentario.noMeGustan.empty)
 	}
 
 	@Test

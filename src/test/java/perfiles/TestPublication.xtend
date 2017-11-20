@@ -40,6 +40,7 @@ class TestPublication {
 	
 	@Test
 	def testUnaPublicacionSeInstanciaConLaVisibilidadSoloAmigos(){
+		
 		var visibilidadSoloAmigos = Visibilidad.SoloAmigos
 		
 		assertTrue(publicacion.tieneComoVisibilidad(visibilidadSoloAmigos) )
@@ -47,6 +48,7 @@ class TestPublication {
 	
 	@Test
 	def testUnaPublicacionQueseInstanciaConVisibilidadComoAmigosSabeQueNoTieneVisibilidadPrivado(){
+		
 		var visibilidadPrivado = Visibilidad.Privado
 		
 		assertFalse(publicacion.tieneComoVisibilidad(visibilidadPrivado) )
@@ -63,7 +65,7 @@ class TestPublication {
 		
 		unComentario = new Comentary("Pepe","RE COOl el viaje",Visibilidad.SoloAmigos)
 		
-		publicacion.agregarComentario("HunterPepe")
+		publicacion.agregarComentario(unComentario)
 		
 		assertTrue(publicacion.tieneComentarios)
 	}
@@ -71,53 +73,61 @@ class TestPublication {
 	@Test
 	def testUnaNuevaPublicationNoTieneUnComentaryDePedro(){
 		
-		assertFalse(publicacion.hasCommentary("idComentaryHunterPedro"))
+		var aComentary = new Comentary("Pepon","Good el viaje", Visibilidad.SoloAmigos)
+		
+		assertFalse(publicacion.hasCommentary(aComentary.id))
 	}
 	
 	@Test
 	def testUnaNuevaPublicationTieneUnComentaryDeHunterPepe(){
 		
-		publicacion.agregarComentario("idComentaryHunterPedro")
-		assertTrue(publicacion.hasCommentary("idComentaryHunterPedro"))
+		var aComentary = new Comentary("Pepon","Good el viaje", Visibilidad.SoloAmigos)
+		
+		publicacion.agregarComentario(aComentary)
+		assertTrue(publicacion.hasCommentary(aComentary.id))
 	}
 	
 	@Test
 	def testUnaPublicacionSeInstanciaSinMegusta(){
 		
-		assertFalse(publicacion.tieneMeGusta)
+		assertTrue(publicacion.meGustan.empty)
 	}
 	
 	@Test
 	def testSeAgregaUnMeGustaAUnaPublicacionYEstaSabeQueLaTiene(){
-		assertFalse(publicacion.tieneMeGusta)
+		
+		assertTrue(publicacion.meGustan.empty)
 		publicacion.agregarMeGusta("Juan")
 		
-		assertTrue(publicacion.tieneMeGusta)
+		assertFalse(publicacion.meGustan.empty)
 	}
 	
 	@Test
 	def testUnaPublicacionSeInstanciaSinNoMegusta(){
 		
-		assertFalse(publicacion.tieneNoMeGusta)
+		assertTrue(publicacion.noMeGustan.empty)
 	}
 	
 	@Test
 	def testSeAgregaUnNoMeGustaAUnaPublicacionYEstaSabeQueLaTiene(){
-		assertFalse(publicacion.tieneNoMeGusta)
+		
+		assertTrue(publicacion.noMeGustan.empty)
 		publicacion.agregarNoMeGusta("Pedro")
 		
-		assertTrue(publicacion.tieneNoMeGusta)
+		assertFalse(publicacion.noMeGustan.empty)
 	}
 	@Test
 	def testSeLeAgregoUnMeGustaPedroYPublicacionSabeSiEsteDioMeGusta(){
-		assertFalse(publicacion.tieneNoMeGusta)
+		
+		assertTrue(publicacion.noMeGustan.empty)
 		publicacion.agregarMeGusta("Pedro")
 		assertTrue(publicacion.leDioMeGusta("Pedro"))
 	}
 	
 	@Test
 	def testSeLeAgregoUnNoMeGustaPedroYPublicacionSabeSiEsteDioNOMeGusta(){
-		assertFalse(publicacion.tieneNoMeGusta)
+		
+		assertTrue(publicacion.noMeGustan.empty)
 		publicacion.agregarNoMeGusta("Juan")
 		assertTrue(publicacion.leDioNoMeGusta("Juan"))
 	}

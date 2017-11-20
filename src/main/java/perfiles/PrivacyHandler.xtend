@@ -6,7 +6,6 @@ class PrivacyHandler {
 	
 	List<AccessOfPrivacy> accesOfPrivacy = newArrayList
 	
-	
 	new(){
 		accesOfPrivacy = # [new PrivateAcess, new PublicAcess, new OnlyFriendsAcess, new AcessDenied]
 	}

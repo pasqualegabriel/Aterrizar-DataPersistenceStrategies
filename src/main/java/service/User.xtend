@@ -38,18 +38,12 @@ class User {
 		super()
 		monedero		  = 0.00
 		gastoTotal		  = 0.00
-		reserva  		  = null
-		this.validate     = false
-		this.validateCode = ""
-		
-	}
-	new(String userName){
-		this()
-		this.userName     = userName
 	}
 	
 	new(String name, String lastName, String userName, String mail, String userPassword, Date birthDate) {
 		this()
+		this.validate     = false
+		this.validateCode = ""
 		this.name 	      = name
 		this.lastName     = lastName
 		this.userName     = userName

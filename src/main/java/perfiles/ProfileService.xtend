@@ -7,7 +7,7 @@ import runner.Runner
 import Excepciones.ExceptionNoVisitoDestino
 import daoImplementacion.UserNeo4jDAO
 import Excepciones.ExceptionYaExisteUnaPublicacionSobreElDestino
-import Excepciones.ExceptionNoTienePermisoParaInteractuarConLaPublicacion
+//import Excepciones.ExceptionNoTienePermisoParaInteractuarConLaPublicacion
 import daoImplementacion.ComentaryDAO
 
 class ProfileService implements PerfilService{
@@ -61,28 +61,25 @@ class ProfileService implements PerfilService{
 	override agregarComentario(String anIdPublication, Comentary aComentary) {
 		
 		//buscamos la publicacion
-		val unaPublicacion= publicationDAO.load(anIdPublication) 
+		val unaPublicacion = publicationDAO.load(anIdPublication) 
 		
 		//Utilizamos un manejador de Privacidad que se responsabiliza de hacerse cargo de proveer el comportamiento
 		//Correcto dependiendo la privacidad de la publicacion.
-		val strategy = new CommentaryStrategy(aComentary,unaPublicacion, this) 
-		new PrivacyHandler=>[hasPermission (unaPublicacion,strategy, aComentary.author)]
+		val strategy       = new CommentaryStrategy(aComentary,unaPublicacion, this) 
+		new PrivacyHandler => [ hasPermission(unaPublicacion,strategy, aComentary.author) ]
 	
 		aComentary
-		
-	
 	}
-	
 	
 	override meGusta(String aUser, String anIdPublication) {
 			
 		//buscamos la publicacion
-		val unaPublicacion= publicationDAO.load(anIdPublication) 
+		val unaPublicacion = publicationDAO.load(anIdPublication) 
 		
 		//Utilizamos un manejador de Privacidad que se responsabiliza de hacerse cargo de proveer el comportamiento
 		//Correcto dependiendo la privacidad de la publicacion.
-		val strategy = new MeGustaStrategy(unaPublicacion,aUser, this) 
-		new PrivacyHandler=>[hasPermission (unaPublicacion, strategy,aUser)]
+		val strategy       = new MeGustaStrategy(unaPublicacion, aUser, this) 
+		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy,aUser) ]
 	}
 
 	
@@ -97,7 +94,7 @@ class ProfileService implements PerfilService{
 	def publicitarComentario(Publication publication, Comentary comentary) {
 		
 		comentaryDAO.save(comentary)
-		publication.agregarComentario(comentary.id)
+		publication.agregarComentario(comentary)
 		
 		publicationDAO.update(publication)
 	}
@@ -110,8 +107,21 @@ class ProfileService implements PerfilService{
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
+	// logica repetida, falta abstraccion!
 	def publicitarMeGusta(Publication publication, String aUserId) {
+		if(publication.leDioNoMeGusta(aUserId)){
+			publication.noMeGustan.remove(aUserId)
+		}
 		publication.agregarMeGusta(aUserId)
+		publicationDAO.update(publication)
+	}
+	
+	// logica repetida, falta abstraccion!
+	def publicitarNoMeGusta(Publication publication, String aUserId) {
+		if(publication.leDioMeGusta(aUserId)){
+			publication.meGustan.remove(aUserId)
+		}
+		publication.agregarNoMeGusta(aUserId)
 		publicationDAO.update(publication)
 	}
 	

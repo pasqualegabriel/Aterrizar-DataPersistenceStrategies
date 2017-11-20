@@ -4,38 +4,44 @@ import java.util.List
 
 import aereolinea.Destino
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.jongo.marshall.jackson.oid.MongoId
+import org.jongo.marshall.jackson.oid.MongoObjectId
+import java.util.UUID
 
 @Accessors
 class Publication extends asdasdasd{
-			
-	List<String>     comentarios = newArrayList
-	Destino 		 destino
+	
+	@MongoId
+	@MongoObjectId
+	String     		id
+	List<Comentary> comentarios = newArrayList
+	Destino 	    destino
 	
 	new(){}
 	
-	new( String aUserPropietor , String unMensaje,Visibilidad unaVisibilidad, Destino unDestino){
-		super(aUserPropietor,unMensaje,unaVisibilidad)
-		this.destino    = unDestino
+	new(String author, String unMensaje,Visibilidad unaVisibilidad, Destino unDestino){
+		super(author,unMensaje,unaVisibilidad)
+		this.destino = unDestino
 	}
 	
 	def tieneComentarios() {
 		!comentarios.isEmpty
 	}
 	
-	def agregarComentario(String idComentary) {
-		comentarios.add(idComentary)
+	def agregarComentario(Comentary aComentary) {
+		comentarios.add(aComentary)
 	}
 	
 	def tieneComoDestino(Destino unDestino) {
-		this.destino.equals(unDestino) 
+		destino.equals(unDestino) 
 	}
 	
 	def getNombreDestino(){
 		destino.nombre
 	}
 	
-	def hasCommentary(String idCommentary) {
-		comentarios.contains(idCommentary)
+	def hasCommentary(UUID idCommentary) {
+		comentarios.stream.anyMatch[ it.id == idCommentary ]
 	}
 	
 	def getIdDestino() {
