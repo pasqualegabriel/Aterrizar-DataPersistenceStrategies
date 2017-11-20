@@ -9,7 +9,7 @@ import org.jongo.marshall.jackson.oid.MongoObjectId
 import java.util.UUID
 
 @Accessors
-class Publication extends asdasdasd{
+class Publication extends Nota{
 	
 	@MongoId
 	@MongoObjectId
@@ -40,13 +40,21 @@ class Publication extends asdasdasd{
 		destino.nombre
 	}
 	
-	def hasCommentary(UUID idCommentary) {
-		comentarios.stream.anyMatch[ it.id == idCommentary ]
+	def hasCommentary(Comentary aComentary) {
+		comentarios.contains(aComentary)
 	}
 	
 	def getIdDestino() {
 		destino.id
 	}
+	
+	def searchCommentary(UUID idCommentary) {
+		comentarios.findFirst[ commentary | commentary.id.equals(idCommentary)]
+	}
+	
+
+	
+
 	
 	
 

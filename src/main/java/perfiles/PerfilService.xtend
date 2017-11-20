@@ -1,5 +1,7 @@
 package perfiles
 
+import java.util.UUID
+
 interface PerfilService {
 	
 	def Publication agregarPublicación(String aUser, Publication aPublication) 
@@ -10,9 +12,9 @@ interface PerfilService {
 	
 	def void noMeGusta(String aUser,String publicacion)
 	
-	def void meGustaComentario(String aUser, String comentario) 
+	def void meGusta(String aUser, UUID idCommentary) 
 	
-	def void noMeGustaComentario(String aUser, String comentario) 
+	def void noMeGusta(String aUser, UUID idCommentary) 
 	
 	def int verPerfil(String aUser, String otherUser)
 }

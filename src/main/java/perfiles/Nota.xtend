@@ -3,9 +3,10 @@ package perfiles
 import org.eclipse.xtend.lib.annotations.Accessors
 import java.util.LinkedHashSet
 import java.util.Set
+import java.util.List
 
 @Accessors
-abstract class asdasdasd {
+abstract class Nota {
 
 	Visibilidad 	visibilidad
 	String      	cuerpo
@@ -48,6 +49,14 @@ abstract class asdasdasd {
 	
 	def leDioNoMeGusta(String unUserName){
 		noMeGustan.contains(unUserName)
+	}
+	
+	/**  */
+	def agregar(Set<String> aSet, String aUserName) {
+		 aSet.add(aUserName)
+	}
+	def quitar(Set<String> aSet, String aUserName) {
+		 aSet.remove(aUserName)
 	}
 	
 }

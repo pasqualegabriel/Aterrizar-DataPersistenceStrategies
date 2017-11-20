@@ -42,6 +42,7 @@ class TestPerfilService {
 
 	User 				jose
 	User 				pepita
+	User 				dionisia
 	PerfilService 		perfilService
 	HibernateUserDAO 	hibernateUserDAO
 	UserService 		serviceTest
@@ -69,6 +70,7 @@ class TestPerfilService {
 		serviceTest 			= new ServiceHibernate(hibernateUserDAO, generatorMail, new RandomNumberGenerator, unMailService)
 		jose 					= serviceTest.singUp("Jose", "ElJose", "HunterJose", "jose@gmail.com", "password", new Date())
 		pepita 					= serviceTest.singUp("Pepita", "LaGolondrina", "PepitaUser", "pepitagolondrina@gmail.com", "password", new Date())
+		dionisia 				= serviceTest.singUp("Dionisia", "LaGolondrinaVieja", "DionisiaUser", "dionisia@gmail.com", "password", new Date())
 		perfilService 			= new ProfileService(publicationDAO, comentaryDAO, hibernateUserDAO, neo4jDao)
 		reservaCompraDeAsientos = new ReservaCompraDeAsientos(hibernateUserDAO, asientoDAO, new HibernateReservaDAO, new HibernateTramoDAO, new HibernateCompraDAO)
 		destino 				= new Destino("Rosario")
@@ -130,7 +132,7 @@ class TestPerfilService {
 		var publicacion    = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.hasCommentary(unComentario.id));
+		assertTrue(publicacion.hasCommentary(unComentario));
 	}
 	
 	@Test
@@ -147,7 +149,7 @@ class TestPerfilService {
 		var publicacion    = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.hasCommentary(unComentario.id));
+		assertTrue(publicacion.hasCommentary(unComentario));
 	}
 	
 	@Test
@@ -160,7 +162,7 @@ class TestPerfilService {
 		var publicacion    = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.hasCommentary(unComentario.id));
+		assertTrue(publicacion.hasCommentary(unComentario));
 	}
 
 	@Test
@@ -178,7 +180,7 @@ class TestPerfilService {
 		var publicacion  = publicationDAO.load(aPublication.id)
 
 		// Assertion
-		assertTrue(publicacion.hasCommentary(unComentario.id));
+		assertTrue(publicacion.hasCommentary(unComentario));
 	}
 	
 	
@@ -200,7 +202,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(aPublication.id)
 		
 		// Assertion
-		assertTrue(publicacion.hasCommentary(unComentario.id))
+		assertTrue(publicacion.hasCommentary(unComentario))
 	}
 	
 	
@@ -228,7 +230,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(aPublication.id)
 		
 		// Assertion
-		assertTrue(publicacion.hasCommentary(unComentario.id))
+		assertTrue(publicacion.hasCommentary(unComentario))
 	
 	}
 	
@@ -260,17 +262,6 @@ class TestPerfilService {
 		fail
 	}
 
-	def Comentary agregarComentario(String aUserName, String idPublication, String aCampo, Visibilidad aVisibilidad) {
-
-		var aComentary = new Comentary(aUserName, aCampo, aVisibilidad)
-		perfilService.agregarComentario(idPublication, aComentary)
-	}
-
-	def Publication agregarPublicacionAJose(String aUserName, String aCampo, Visibilidad aVisibilidad, Destino unDestino) {
-
-		var aPublication = new Publication(aUserName, aCampo, aVisibilidad, unDestino)
-		perfilService.agregarPublicación(jose.userName, aPublication)
-	}
 
 	@Test
 	def testPepitaUserAregaUnMeGustaALaPublicacionPublicaDeHunterJose() {
@@ -452,7 +443,7 @@ class TestPerfilService {
 
 		// Exercise
 		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
-		perfilService.meGusta(jose.userName, unaPublicacion.id)
+		perfilService.noMeGusta(jose.userName, unaPublicacion.id)
 
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
@@ -568,6 +559,33 @@ class TestPerfilService {
 		// Assertion
 		assertTrue( publicacion.leDioNoMeGusta(pepita.userName))
 		assertFalse(publicacion.leDioMeGusta(  pepita.userName))
+	}
+	
+	@Test
+	def test() {
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Publico, destino)
+		var unComentario   = agregarComentario(pepita.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Publico)
+
+		perfilService.meGusta(dionisia.userName, unComentario.id)
+
+		var publicacion    = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.comentarios.stream.anyMatch[comentario | comentario.leDioMeGusta(dionisia.userName)]);
+	}
+	
+	def Comentary agregarComentario(String aUserName, String idPublication, String aCampo, Visibilidad aVisibilidad) {
+
+		var aComentary = new Comentary(aUserName, aCampo, aVisibilidad)
+		perfilService.agregarComentario(idPublication, aComentary)
+	}
+
+	def Publication agregarPublicacionAJose(String aUserName, String aCampo, Visibilidad aVisibilidad, Destino unDestino) {
+
+		var aPublication = new Publication(aUserName, aCampo, aVisibilidad, unDestino)
+		perfilService.agregarPublicación(jose.userName, aPublication)
 	}
 
 

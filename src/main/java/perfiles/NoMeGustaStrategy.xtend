@@ -10,7 +10,9 @@ class NoMeGustaStrategy extends StrategyOfPublication {
 	}
 	
 	override execute() {
-		aService.publicitarNoMeGusta(aPublication, aUserId)
+		aNota.quitar(aNota.meGustan,aUserId)
+		aNota.agregar(aNota.noMeGustan,aUserId)
+		aService.update(aNota)
 	}
 	
 }

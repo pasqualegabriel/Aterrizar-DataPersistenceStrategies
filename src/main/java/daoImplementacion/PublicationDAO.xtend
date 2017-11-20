@@ -2,6 +2,7 @@ package daoImplementacion
 
 import perfiles.Publication
 import dao.GenericMongoDAO
+import java.util.UUID
 
 class PublicationDAO extends GenericMongoDAO<Publication>{
 	
@@ -17,7 +18,21 @@ class PublicationDAO extends GenericMongoDAO<Publication>{
 		     	
 		!result.empty
 	}
-
-//UUID FIJARSE
 	
+	def loadForCommentary(UUID idCommentary) {
+		
+//		var result = this.find(
+//					     "{  }", 
+//					     aUserName, publication.idDestino, publication.nombreDestino)	
+//		     	
+//		!result.empty
+		new Publication
+	}
+
+
+
+
 }
+
+
+

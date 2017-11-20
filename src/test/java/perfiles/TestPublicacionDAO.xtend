@@ -6,6 +6,7 @@ import static org.junit.Assert.*
 import org.junit.After
 import daoImplementacion.PublicationDAO
 import aereolinea.Destino
+import java.util.UUID
 
 class TestPublicacionDAO {
 	
@@ -34,9 +35,9 @@ class TestPublicacionDAO {
 		publication.agregarNoMeGusta("Pedro")
 		publication.cuerpo      = "re Cool el viaje por nordelta re TOOL"
 		publication.visibilidad = Visibilidad.Privado
-		var aComentary = new Comentary("Pepon","Good el viaje", Visibilidad.SoloAmigos)
+		var aComentary = new Comentary("Pepon","Good el viaje", Visibilidad.SoloAmigos) => [ id = UUID.randomUUID ]
 		publication.agregarComentario(aComentary)
-		
+
 		publicationDao.update(publication)
 		var loadPublicationAfterUpdate = publicationDao.load(publication.id)  
 		
@@ -46,7 +47,7 @@ class TestPublicacionDAO {
 		assertEquals(publication.cuerpo,loadPublicationAfterUpdate.cuerpo)
 		assertTrue(loadPublicationAfterUpdate.leDioMeGusta("Juan"));
 		assertTrue(loadPublicationAfterUpdate.leDioNoMeGusta("Pedro"))
-		assertTrue(loadPublicationAfterUpdate.hasCommentary(aComentary.id))
+		assertTrue(loadPublicationAfterUpdate.hasCommentary(aComentary))
 		assertEquals(publication.id, loadPublicationAfterUpdate.id)
 	}
 	
@@ -61,9 +62,55 @@ class TestPublicacionDAO {
 		assertNotNull(loadPublication.id)
 	}
 	
+	@Test
+	def borrar(){
+
+		this.saveAndTestPublication(publication)
+		
+		publication.agregarMeGusta("Juan")
+		publication.agregarNoMeGusta("Pedro")
+		publication.cuerpo      = "re Cool el viaje por nordelta re TOOL"
+		publication.visibilidad = Visibilidad.Privado
+		
+		var aComentary = new Comentary("Pepon","Good el viaje", Visibilidad.SoloAmigos) => [ id = UUID.randomUUID ]
+		publication.agregarComentario(aComentary)
+
+		var aComentary2 = new Comentary("Peponaaaa","Good eldfdfd viaje", Visibilidad.SoloAmigos) => [ id = UUID.randomUUID ]
+		publication.agregarComentario(aComentary2)
+
+		var publication2 = new Publication("HunterJuan","re COOL el viaje a nordelta",Visibilidad.Publico,new Destino("dfdf"));
+
+		var aComentary3 = new Comentary("Peponaaaa","Good eldfdfd viaje", Visibilidad.SoloAmigos) => [ id = UUID.randomUUID ]
+		
+		var aComentary4 = new Comentary("Peponaaaa","Good eldfdfd viaje", Visibilidad.SoloAmigos) => [ id = UUID.randomUUID ]
+		
+		publication2.agregarComentario(aComentary3)
+		publication2.agregarComentario(aComentary4)
+		publicationDao.save(publication2)
+		
+		publicationDao.update(publication2)
+		publicationDao.update(publication)
+		var loadPublicationAfterUpdate = publicationDao.load(publication.id)  
+		
+		assertNotEquals(publication,loadPublicationAfterUpdate)
+		assertEquals(publication.getAuthor,loadPublicationAfterUpdate.getAuthor)
+		assertEquals(publication.visibilidad,loadPublicationAfterUpdate.visibilidad)
+		assertEquals(publication.cuerpo,loadPublicationAfterUpdate.cuerpo)
+		assertTrue(loadPublicationAfterUpdate.leDioMeGusta("Juan"));
+		assertTrue(loadPublicationAfterUpdate.leDioNoMeGusta("Pedro"))
+		assertTrue(loadPublicationAfterUpdate.hasCommentary(aComentary))
+		assertEquals(publication.id, loadPublicationAfterUpdate.id)
+	}
+	
+	@Test
+	def te(){
+		publicationDao.deleteAll
+		assertEquals(1,1)
+	}
+	
 	@After
 	def void tearDown(){
-		publicationDao.deleteAll
+		//publicationDao.deleteAll
 		
 	}
 }

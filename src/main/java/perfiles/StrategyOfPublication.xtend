@@ -5,11 +5,11 @@ import org.eclipse.xtend.lib.annotations.Accessors
 @Accessors
 abstract class StrategyOfPublication {
 	
-	protected Publication    aPublication
-	protected ProfileService  aService
+	protected Publication    		  aNota
+	protected ProfileService  		  aService
 	
-	new(Publication publication, ProfileService service) {
-		this.aPublication = publication
+	new(Publication nota, ProfileService service) {
+		this.aNota 			= nota
 		this.aService     = service
 	}
 	

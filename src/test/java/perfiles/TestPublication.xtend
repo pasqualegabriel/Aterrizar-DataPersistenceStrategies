@@ -5,6 +5,7 @@ import org.junit.Test
 
 import static org.junit.Assert.*
 import aereolinea.Destino
+import java.util.UUID
 
 class TestPublication {
 	
@@ -75,16 +76,16 @@ class TestPublication {
 		
 		var aComentary = new Comentary("Pepon","Good el viaje", Visibilidad.SoloAmigos)
 		
-		assertFalse(publicacion.hasCommentary(aComentary.id))
+		assertFalse(publicacion.hasCommentary(aComentary))
 	}
 	
 	@Test
 	def testUnaNuevaPublicationTieneUnComentaryDeHunterPepe(){
 		
-		var aComentary = new Comentary("Pepon","Good el viaje", Visibilidad.SoloAmigos)
+		var aComentary = new Comentary("Pepon","Good el viaje", Visibilidad.SoloAmigos) => [ id = UUID.randomUUID ]
 		
 		publicacion.agregarComentario(aComentary)
-		assertTrue(publicacion.hasCommentary(aComentary.id))
+		assertTrue(publicacion.hasCommentary(aComentary))
 	}
 	
 	@Test

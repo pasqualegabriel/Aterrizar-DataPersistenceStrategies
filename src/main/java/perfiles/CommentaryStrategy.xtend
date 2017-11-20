@@ -10,7 +10,7 @@ class CommentaryStrategy extends StrategyOfPublication{
 	}
 	
 	override execute() {
-		aService.publicitarComentario(aPublication,aComentary)
+		aService.publicitarComentario(aNota,aComentary)
 	}
 	
 }

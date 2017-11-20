@@ -9,6 +9,8 @@ import daoImplementacion.UserNeo4jDAO
 import Excepciones.ExceptionYaExisteUnaPublicacionSobreElDestino
 //import Excepciones.ExceptionNoTienePermisoParaInteractuarConLaPublicacion
 import daoImplementacion.ComentaryDAO
+import java.util.UUID
+
 
 class ProfileService implements PerfilService{
 	
@@ -97,38 +99,35 @@ class ProfileService implements PerfilService{
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
-	def publicitarComentario(Publication publication, Comentary comentary) {
+	def publicitarComentario(Publication publication, Comentary aComentary) {
 		
-		comentaryDAO.save(comentary)
-		publication.agregarComentario(comentary)
+		aComentary.id =  UUID.randomUUID
+		publication.agregarComentario(aComentary)
 		
 		publicationDAO.update(publication)
 	}
+
+	def update(Publication publication){
+		publicationDAO.update(publication)
+	}
 	
-	override meGustaComentario(String aUser, String comentario) {
+	override meGusta(String aUser, UUID idCommentary) {
+//		var Publication aPublication = publicationDAO.loadForCommentary(idCommentary)
+//		var aCommentary  = aPublication.searchCommentary(idCommentary)
+//		
+//		val strategy       = new MeGustaStrategy(aPublication, aUser, aCommentary, this)  
+//		new PrivacyHandler => [ hasPermission(aCommentary, strategy, aUser) ]
+		
+	}
+	
+	override noMeGusta(String aUser, UUID idCommentary) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
-	
-	override noMeGustaComentario(String aUser, String comentario) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
-	// logica repetida, falta abstraccion!
-	def publicitarMeGusta(Publication publication, String aUserId) {
-		if(publication.leDioNoMeGusta(aUserId)){
-			publication.noMeGustan.remove(aUserId)
-		}
-		publication.agregarMeGusta(aUserId)
-		publicationDAO.update(publication)
-	}
-	
-	// logica repetida, falta abstraccion!
-	def publicitarNoMeGusta(Publication publication, String aUserId) {
-		if(publication.leDioMeGusta(aUserId)){
-			publication.meGustan.remove(aUserId)
-		}
-		publication.agregarNoMeGusta(aUserId)
-		publicationDAO.update(publication)
-	}
+
+
 	
 }
+
+
+
+
