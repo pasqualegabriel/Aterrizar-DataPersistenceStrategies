@@ -66,7 +66,7 @@ class ProfileService implements PerfilService{
 		//Utilizamos un manejador de Privacidad que se responsabiliza de hacerse cargo de proveer el comportamiento
 		//Correcto dependiendo la privacidad de la publicacion.
 		val strategy       = new CommentaryStrategy(aComentary,unaPublicacion, this) 
-		new PrivacyHandler => [ hasPermission(unaPublicacion,strategy, aComentary.author) ]
+		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy, aComentary.author) ]
 	
 		aComentary
 	}
@@ -79,12 +79,18 @@ class ProfileService implements PerfilService{
 		//Utilizamos un manejador de Privacidad que se responsabiliza de hacerse cargo de proveer el comportamiento
 		//Correcto dependiendo la privacidad de la publicacion.
 		val strategy       = new MeGustaStrategy(unaPublicacion, aUser, this) 
-		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy,aUser) ]
+		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy, aUser) ]
 	}
 
 	
-	override noMeGusta(String aUser, String comentario) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	override noMeGusta(String aUser, String anIdPublication) {
+		//buscamos la publicacion
+		val unaPublicacion = publicationDAO.load(anIdPublication) 
+		
+		//Utilizamos un manejador de Privacidad que se responsabiliza de hacerse cargo de proveer el comportamiento
+		//Correcto dependiendo la privacidad de la publicacion.
+		val strategy       = new NoMeGustaStrategy(unaPublicacion, aUser, this) 
+		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy, aUser) ]
 	}
 	
 	override verPerfil(String aUser, String otherUser) {

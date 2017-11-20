@@ -404,6 +404,172 @@ class TestPerfilService {
 		assertEquals(1, publicacion.meGustan.map[ it.equals(pepita.userName) ].size)
 	}
 
+	@Test
+	def testPepitaUserAregaUnNoMeGustaALaPublicacionPublicaDeHunterJose() {
+
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
+		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
+
+		var publicacion = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.leDioNoMeGusta(pepita.userName))
+	}
+	
+	@Test
+	def testHunterJoseAregaUnNoMeGustaASuPublicacionPublica() {
+
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Buen viaje", Visibilidad.Publico, destino)
+		perfilService.noMeGusta(jose.userName, unaPublicacion.id)
+
+		var publicacion = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.leDioNoMeGusta(jose.userName))
+	}
+	
+	@Test
+	def testPepitaUserAmigoDeHunterJoseAregaUnNoMeGustaALaPublicacionPublicaDeHunterJose() {
+		
+		/** creando relacion de amistad entre jose y pepita */
+		relacionesDeAmistades.mandarSolicitud(jose.userName,pepita.userName)
+		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
+		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
+
+		var publicacion = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.leDioNoMeGusta(pepita.userName))
+	}
+	
+	@Test
+	def testHunterJoseAregaUnNoMeGustaASuPublicacionSoloAmigos() {
+
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
+		perfilService.meGusta(jose.userName, unaPublicacion.id)
+
+		var publicacion = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.leDioNoMeGusta(jose.userName))
+	}
+	
+	@Test
+	def testPepitaUserAmigoDeHunterJoseAregaUnNoMeGustaALaPublicacionSoloAmigosDeHunterJose() {
+		
+		/** creando relacion de amistad entre jose y pepita */
+		relacionesDeAmistades.mandarSolicitud(jose.userName,pepita.userName)
+		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
+
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
+		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
+
+		var publicacion = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.leDioNoMeGusta(pepita.userName))
+	}
+	
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	def testPepitaUserNoTienePermisoParaAregaUnNoMeGustaALaPublicacionSoloAmigosDeHunterJose() {
+
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
+		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
+		fail
+	}
+	
+	@Test
+	def testHunterJoseAregaUnNoMeGustaASuPublicacionPrivada() {
+
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Buen viaje", Visibilidad.Privado, destino)
+		perfilService.noMeGusta(jose.userName, unaPublicacion.id)
+
+		var publicacion = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.leDioNoMeGusta(jose.userName))
+	}
+	
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	def testPepitaUserNoTienePermisoParaAregaUnNoMeGustaALaPublicacionPrivadaDeHunterJose() {
+
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.Privado, destino)
+		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
+		fail
+	}
+	
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	def testPepitaUserAmigoDeHunterJoseNoTienePermisoParaAregaUnNoMeGustaALaPublicacionPrivadaDeHunterJose() {
+
+		/** creando relacion de amistad entre jose y pepita */
+		relacionesDeAmistades.mandarSolicitud(jose.userName,pepita.userName)
+		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.Privado, destino)
+		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
+		fail
+	}
+	
+	@Test
+	def testPepitaUserVuelveAAregaUnNoMeGustaALaPublicacionPublicaDeHunterJoseRegistrandoseSoloUnNoMeGustaDePepitaUser() {
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
+		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
+		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
+
+		var publicacion = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.leDioNoMeGusta(pepita.userName))
+		assertEquals(1, publicacion.noMeGustan.map[ it.equals(pepita.userName) ].size)
+	}
+
+	@Test
+	def testPepitaUserAregaUnMeGustaALaPublicacionPublicaDeHunterJoseQueTeniaUnNoMeGustaDePepitaUser() {
+
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.Publico, destino)
+		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
+		perfilService.meGusta(  pepita.userName, unaPublicacion.id)
+
+		var publicacion = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue( publicacion.leDioMeGusta(  pepita.userName))
+		assertFalse(publicacion.leDioNoMeGusta(pepita.userName))
+	}
+	
+	@Test
+	def testPepitaUserAmigoDeHunterJoseAregaUnNoMeGustaALaPublicacionSoloAmigosDeHunterJoseQueTeniaUnMeGustaDePepitaUser() {
+
+		/** creando relacion de amistad entre jose y pepita */
+		relacionesDeAmistades.mandarSolicitud( jose.userName,   pepita.userName)
+		relacionesDeAmistades.aceptarSolicitud(pepita.userName, jose.userName)
+
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
+		perfilService.meGusta(  pepita.userName, unaPublicacion.id)
+		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
+
+		var publicacion = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue( publicacion.leDioNoMeGusta(pepita.userName))
+		assertFalse(publicacion.leDioMeGusta(  pepita.userName))
+	}
+
 
 //	@Test
 //	def limpiador(){
