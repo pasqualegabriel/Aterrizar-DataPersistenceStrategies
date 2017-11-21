@@ -2,16 +2,16 @@ package perfiles
 
 import java.util.Set
 
-abstract class StrategyOfCommentary implements  StrategyOfNote{
+abstract class StrategyOfCommentary extends  StrategyOfNote{
 	
 	protected Publication 		publication
-	protected String 	  		authorWhoPoint
+	protected String 	  		authorWhoIsRating
 	protected ProfileService	profileService
 	protected Comentary			comentary
 	
-	new(Publication aPublication, String aAuthorWhoPoint, Comentary aComentary, ProfileService aProfileService) {
+	new(Publication aPublication, String anAuthorWhoIsRating, Comentary aComentary, ProfileService aProfileService) {
 		this.publication		= aPublication
-		this.authorWhoPoint		= aAuthorWhoPoint
+		this.authorWhoIsRating	= anAuthorWhoIsRating
 		this.profileService		= aProfileService
 		this.comentary			= aComentary
 	}

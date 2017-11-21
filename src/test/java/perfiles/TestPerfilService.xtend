@@ -50,6 +50,8 @@ class TestPerfilService {
 	@Mock EmailService 	unMailService
 	@Mock MailGenerator generatorMail
 	Destino 			destino
+	Destino				destino2
+	Destino				destino3
 	AsientoService 		reservaCompraDeAsientos
 	HibernateAsientoDAO asientoDAO
 	UserNeo4jDAO 		neo4jDao
@@ -58,8 +60,9 @@ class TestPerfilService {
 
 	@Before
 	def void setUp() {
-
+		
 		MockitoAnnotations.initMocks(this)
+		
 		publicationDAO 			= new PublicationDAO
 		comentaryDAO 			= new ComentaryDAO
 		hibernateUserDAO 		= new HibernateUserDAO
@@ -74,6 +77,9 @@ class TestPerfilService {
 		perfilService 			= new ProfileService(publicationDAO, comentaryDAO, hibernateUserDAO, neo4jDao)
 		reservaCompraDeAsientos = new ReservaCompraDeAsientos(hibernateUserDAO, asientoDAO, new HibernateReservaDAO, new HibernateTramoDAO, new HibernateCompraDAO)
 		destino 				= new Destino("Rosario")
+		destino2 				= new Destino("Fuerte Apache")
+		destino3				= new Destino("La Plato")
+		
 		this.inicializarBaseDePrueba
 	}
 
@@ -84,7 +90,10 @@ class TestPerfilService {
 		val asiento = new Asiento(new Tramo(100.00, new Vuelo(aerolinea), new Destino("asdas"), destino,LocalDateTime.of(2017, 1, 10, 10, 10, 30, 00), 
 				LocalDateTime.of(2017, 1, 10, 10, 19, 30, 00)),new Turista)
 
-		val asiento2 = new Asiento(new Tramo(100.00, new Vuelo(aerolinea), new Destino("kk"), new Destino("caku"),LocalDateTime.of(2017, 1, 10, 10, 10, 30, 00), 
+		val asiento2 = new Asiento(new Tramo(100.00, new Vuelo(aerolinea), new Destino("vegeta"), destino2,LocalDateTime.of(2017, 1, 10, 10, 10, 30, 00), 
+			    LocalDateTime.of(2017, 1, 10, 10, 19, 30, 00)),new Turista)
+		
+		val asiento3 = new Asiento(new Tramo(100.00, new Vuelo(aerolinea), new Destino("kakaroto"), destino3,LocalDateTime.of(2017, 1, 10, 10, 10, 30, 00), 
 			    LocalDateTime.of(2017, 1, 10, 10, 19, 30, 00)),new Turista)
 
 		Runner.runInSession [
@@ -92,9 +101,11 @@ class TestPerfilService {
 			hibernateUserDAO.update(jose)
 			asientoDAO.save(asiento)
 			asientoDAO.save(asiento2)
+			asientoDAO.save(asiento3)
 			null
 		]
-		#[asiento, asiento2].forEach [
+		
+		#[asiento, asiento2,asiento3].forEach [
 			reservaCompraDeAsientos.comprar(reservaCompraDeAsientos.reservar(it.id, jose.userName).id, jose.userName)
 		]		
 	}
@@ -185,7 +196,7 @@ class TestPerfilService {
 	
 	
 	@Test
-	def testPepitaUserAregaUnComentarioALaPublicacionConVisibilidadSoloAmigosSuAmigoHunterJose() {
+	def testPepitaUserAregaUnComentarioALaPublicacionConVisibilidadSoloAmigosDeSuAmigoHunterJose() {
 		/** creando relacion de amistad entre jose y pepita */
 		relacionesDeAmistades.mandarSolicitud(jose.userName,pepita.userName)
 		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
@@ -207,7 +218,7 @@ class TestPerfilService {
 	
 	
 	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
-	def testElUsuarioPepitaNoPuedeComentarLaPublicidadConVisibilidadSoloAmigosDeJosePorqueNoSonAmigos() {
+	def testElUsuarioPepitaNoPuedeComentarLaPublicacionConVisibilidadSoloAmigosDeJosePorqueNoSonAmigos() {
 
 		var aPublication = new Publication(jose.userName, "unCampo", Visibilidad.SoloAmigos, destino)
 		
@@ -765,6 +776,115 @@ class TestPerfilService {
 		fail
 	}
 	
+	@Test
+	def xxxx1() {
+		
+		//Encontrar abstraccion para esto.
+		/** creando relacion de amistad entre jose y pepita */
+		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
+		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
+		
+		//y sobretodo para esto.
+		var unaPublicacion1 = agregarPublicacionAJose(jose.userName, "Hola pepita"      , Visibilidad.Privado   , destino )
+		var unaPublicacion2 = agregarPublicacionAJose(jose.userName, "Como andas pepita", Visibilidad.SoloAmigos, destino2)	
+		var unaPublicacion3 = agregarPublicacionAJose(jose.userName, "Chau pepita"      , Visibilidad.Publico   , destino3)
+		
+		agregarComentario  	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.Privado)
+		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.SoloAmigos)
+		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.Publico)
+		
+		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.Privado)
+		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.SoloAmigos)
+		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.Publico)
+		
+		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Privado)
+		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.SoloAmigos)
+		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Publico)
+		
+			
+		agregarComentario	 (pepita.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.Privado)
+		agregarComentario	 (pepita.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Privado)
+	
+		
+		var perfil = perfilService.verPerfil(jose.userName,jose.userName)
+		
+		assertEquals(perfil.publications.size,3 )
+		assertTrue(perfil.publications.stream.allMatch[it.comentarios.size.equals(3)])
+		// jose tiene un perfil con 3  publicaciones, 1 publica, una solo amigos, 1 privada. 
+		// cada una de esas publicaciones tiene 3 comentarios de jose, 1 publica, una solo amigos, 1 privada.
+		// pepita que es amigo de jose, hizo un comentario privado en la publica y solo amigos.
+		// quiero ver que cuando jose, pida su perfil, vea todo su perfil entero solo con sus propios comentarios.
+		
+	}
+
+	
+	@Test
+	def xxxx12() {
+		
+		var unaPublicacion1 = agregarPublicacionAJose(jose.userName, "Hola pepita"      , Visibilidad.Privado   , destino )
+		var unaPublicacion2 = agregarPublicacionAJose(jose.userName, "Como andas pepita", Visibilidad.SoloAmigos, destino2)	
+		var unaPublicacion3 = agregarPublicacionAJose(jose.userName, "Chau pepita"      , Visibilidad.Publico   , destino3)
+		
+		
+		agregarComentario  	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.Privado)
+		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.SoloAmigos)
+		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.Publico)
+		
+		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.Privado)
+		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.SoloAmigos)
+		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.Publico)
+		
+		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Privado)
+		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.SoloAmigos)
+		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Publico)
+		
+		
+		var perfil = perfilService.verPerfil(pepita.userName,jose.userName)
+		
+		assertEquals(1,perfil.publications.size )
+		assertTrue(perfil.publications.stream.allMatch[it.comentarios.size.equals(1)])
+		// jose tiene un perfil con 3  publicaciones, 1 publica, una solo amigos, 1 privada. 
+		// cada una de esas publicaciones tiene 3 comentarios de jose, 1 publica, una solo amigos, 1 privada.
+		// quiero ver que cuando pepita que no es amigo de jose, pida el perfil de esta, vea solo la publicacion con 1 solo comentario
+		
+	}
+	
+	@Test
+	def xxxx13() {
+		
+		/** creando relacion de amistad entre jose y pepita */
+		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
+		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
+		
+		var unaPublicacion1 = agregarPublicacionAJose(jose.userName, "Hola pepita"      , Visibilidad.Privado   , destino )
+		var unaPublicacion2 = agregarPublicacionAJose(jose.userName, "Como andas pepita", Visibilidad.SoloAmigos, destino2)	
+		var unaPublicacion3 = agregarPublicacionAJose(jose.userName, "Chau pepita"      , Visibilidad.Publico   , destino3)
+		
+		
+		agregarComentario  	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.Privado)
+		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.SoloAmigos)
+		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.Publico)
+		
+		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.Privado)
+		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.SoloAmigos)
+		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.Publico)
+		
+		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Privado)
+		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.SoloAmigos)
+		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Publico)
+		
+		
+		var perfil = perfilService.verPerfil(pepita.userName,jose.userName)
+		
+		assertEquals(perfil.publications.size,2 )
+		assertTrue(perfil.publications.stream.allMatch[it.comentarios.size.equals(2)])
+		// jose tiene un perfil con 3  publicaciones, 1 publica, una solo amigos, 1 privada. 
+		// cada una de esas publicaciones tiene 3 comentarios de jose, 1 publica, una solo amigos, 1 privada.
+		// quiero ver que cuando pepita que es amigo de jose, pida el perfil de esta, vea las dos publicaciones con 2 comentarios
+		
+	}
+	
+	
 	def Comentary agregarComentario(String aUserName, String idPublication, String aCampo, Visibilidad aVisibilidad) {
 
 		var aComentary = new Comentary(aUserName, aCampo, aVisibilidad)
@@ -777,11 +897,12 @@ class TestPerfilService {
 		perfilService.agregarPublicación(jose.userName, aPublication)
 	}
 
-
+   
+//
 //	@Test
 //	def limpiador(){
 //		neo4jDao.clearAll
-//		publicationDao.deleteAll
+//		publicationDAO.deleteAll
 //		new TruncateTables => [ vaciarTablas ]
 //		assertTrue(true)
 //	}

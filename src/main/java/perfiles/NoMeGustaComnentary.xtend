@@ -7,8 +7,10 @@ class NoMeGustaComnentary  extends StrategyOfCommentary{
 	}
 	
 	override execute() {
-		this.addAndRemove(comentary.noMeGustan,comentary.meGustan,authorWhoPoint)
+		this.addAndRemove(comentary.noMeGustan,comentary.meGustan,authorWhoIsRating)
 		profileService.update(publication)	
 	}
+	
+	
 	
 }

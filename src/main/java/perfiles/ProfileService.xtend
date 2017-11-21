@@ -27,7 +27,7 @@ class ProfileService implements PerfilService{
 	}
 	
 	override agregarPublicación(String aUser, Publication aPublication) {
-		
+		//Refactorizar aca.<<<<<<<<<<<<<<<<<<<<<<<<
 		chequearSiYaPublico(aUser, aPublication)
 		chequearSiNoVisitoDestino(aUser, aPublication)
 		
@@ -65,7 +65,6 @@ class ProfileService implements PerfilService{
 
 		val unaPublicacion = publicationDAO.load(anIdPublication) 
 		
-
 		val strategy       = new CommentaryStrategy(aComentary,unaPublicacion, this) 
 		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy, aComentary.author) ]
 	
@@ -86,14 +85,61 @@ class ProfileService implements PerfilService{
 
 		val unaPublicacion = publicationDAO.load(anIdPublication) 
 		
-
 		val strategy       = new NoMeGustaStrategy(unaPublicacion, aUser, this) 
 		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy, aUser) ]
 	}
 	
 	override verPerfil(String aUser, String otherUser) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		//perfilDAO. traeme el perfil del usuario otheruser
+		// despues con ese perfil le filtramos lo que puede ver el aUser
+		// y se lo damos.
+		
+		var unProfile = new Profile =>  [ publications=	publicationDAO.loadAllPublications(otherUser) ]
+		filtrarPublicacionesPermitidas(unProfile, aUser)
+		filtrarComentariosPermitidos(unProfile, aUser)
+		
+		unProfile
 	}
+	
+	def void filtrarPublicacionesPermitidas(Profile aProfile, String aUser) {
+		val aPrivacyHandler = new PrivacyHandler 
+		
+		val filteredPublications = aProfile.publications.filter[aPublication| aPrivacyHandler.xy(aPublication, aUser)].toList
+		aProfile.publications = filteredPublications
+		
+		//aProfile.publications.forEach[aPublication| aPrivacyHandler.hasPermission(aPublication, new AccesoAPublicacionStrategy(profileToReturn, aPublication) , aUser)]
+		
+		
+	}
+	
+	def filtrarComentariosPermitidos(Profile aProfile, String aUser) {
+	
+		
+		
+		//aProfile.publications.forEach[aPublication| xx(newProfile,aPublication, aUser)]
+		aProfile.publications.forEach[aPublication| xxyy(aPublication, aUser)]
+		
+		
+	}
+	
+	def xxyy(Publication publication, String aUser) {
+		val aPrivacyHandler = new PrivacyHandler 
+		
+		var filteredComentaries = publication.comentarios.filter[aComentary | aPrivacyHandler.xy(aComentary, aUser)].toList
+		publication.comentarios=filteredComentaries
+		
+	}
+	
+	//Elegir mejor nombre para este y el de arriba
+	def void xx(Profile aProfile,  Publication publication, String aUser) {
+		val aPrivacyHandler = new PrivacyHandler 
+		
+		val newPublication = new Publication
+		publication.comentarios.forEach[aComentary |  aPrivacyHandler.hasPermission(aComentary, new AccesoAComentarioStrategy(newPublication,  aComentary) , aUser)]
+		aProfile.publications.add(newPublication)
+		
+	}
+
 	
 	def publicitarComentario(Publication publication, Comentary aComentary) {
 		
@@ -107,17 +153,19 @@ class ProfileService implements PerfilService{
 		publicationDAO.update(publication)
 	}
 	
+	
+	// Generar abstraccion, logica repetida!!!! 
 	override meGusta(String aUser, UUID idCommentary) {
-		var Publication aPublication = publicationDAO.loadForCommentary(idCommentary)
-		val aCommentary  = aPublication.searchCommentary(idCommentary)
+		var aPublication	         = publicationDAO.loadForCommentary(idCommentary)
+		val aCommentary  		     = aPublication.searchCommentary(idCommentary)
 		
-		val strategy       = new MeGustaComnentary(aPublication, aUser, aCommentary, this)  
-		new PrivacyHandler => [ hasPermission(aCommentary, strategy, aUser) ]
+		val strategy     			 = new MeGustaComnentary(aPublication, aUser, aCommentary, this)  
+		new PrivacyHandler 			 => [ hasPermission(aCommentary, strategy, aUser) ]
 		
 	}
 	
 	override noMeGusta(String aUser, UUID idCommentary) {
-		var Publication aPublication = publicationDAO.loadForCommentary(idCommentary)
+		var aPublication = publicationDAO.loadForCommentary(idCommentary)
 		val aCommentary  = aPublication.searchCommentary(idCommentary)
 		
 		val strategy       = new NoMeGustaComnentary(aPublication, aUser, aCommentary, this)  

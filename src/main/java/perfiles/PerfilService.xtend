@@ -16,5 +16,5 @@ interface PerfilService {
 	
 	def void noMeGusta(String aUser, UUID idCommentary) 
 	
-	def int verPerfil(String aUser, String otherUser)
+	def Profile verPerfil(String aUser, String otherUser)
 }

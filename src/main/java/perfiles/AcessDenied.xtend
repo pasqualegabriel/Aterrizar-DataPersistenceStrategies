@@ -1,15 +1,16 @@
 package perfiles
 
-import Excepciones.ExceptionNoTienePermisoParaInteractuarConLaPublicacion
 
 class AcessDenied extends AccessOfPrivacy {
-		
+	
+	// Modificar para trabajar con logica de negocio en vez de logica de java.	
 	override canHandle(Visibilidad visibilidad, String author, String anUserName) { 
-		true
+		(visibilidad.equals(Visibilidad.Privado) && !elUsuarioEsElAutorDeLapublicacion(author,anUserName)) ||
+		(visibilidad.equals(Visibilidad.SoloAmigos) && !elUsuarioEsAmigoDelAutor(author,anUserName)) && !elUsuarioEsElAutorDeLapublicacion(author,anUserName)
 	}
 	
 	override assertRule (StrategyOfNote strategy) {
-		throw new ExceptionNoTienePermisoParaInteractuarConLaPublicacion("El usuario no tiene permiso para interactuar con la publicacion")
-	}
+		strategy.negateAccess
+		}
 	
 }

@@ -10,8 +10,15 @@ abstract class Nota {
 
 	Visibilidad 	visibilidad
 	String      	cuerpo
+	
+	
+	
+	
+	/// Refactorizar para que no sean mas Strings, RatingDeUsuario --> MeGusta  / NoMeGusta.
 	Set<String> 	meGustan
 	Set<String>     noMeGustan
+	
+	
 	String 			author
 	
 	new(){				

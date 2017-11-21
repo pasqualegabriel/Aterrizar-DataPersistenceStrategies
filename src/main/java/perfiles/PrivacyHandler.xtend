@@ -10,8 +10,12 @@ class PrivacyHandler {
 		accesOfPrivacy = # [new PrivateAcess, new PublicAcess, new OnlyFriendsAcess, new AcessDenied]
 	}
 	
-	def hasPermission(Nota publicacion,StrategyOfNote strategy, String author){
-		accesOfPrivacy.findFirst[it.canHandle(publicacion.visibilidad,publicacion.author, author)].assertRule(strategy)
+	def hasPermission(Nota aNote,StrategyOfNote strategy, String aUser){
+		accesOfPrivacy.findFirst[it.canHandle(aNote.visibilidad,aNote.author, aUser)].assertRule(strategy)
+	}
+	
+	def xy(Nota aNote, String aUser) {
+		#[new PrivateAcess, new PublicAcess, new OnlyFriendsAcess].stream.anyMatch[it.canHandle(aNote.visibilidad, aNote.author,aUser)]
 	}
 	
 }

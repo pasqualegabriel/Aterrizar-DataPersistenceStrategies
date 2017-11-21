@@ -1,5 +1,6 @@
 package perfiles
 
+
 class CommentaryStrategy extends StrategyOfPublication{
 	
 	Comentary aComentary
@@ -12,5 +13,7 @@ class CommentaryStrategy extends StrategyOfPublication{
 	override execute() {
 		aService.publicitarComentario(aNota,aComentary)
 	}
+	
+	
 	
 }

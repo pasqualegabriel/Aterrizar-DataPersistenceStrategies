@@ -12,8 +12,8 @@ class Comentary extends Nota{
 	
 	new(String aUserProprietor, String unMensaje, Visibilidad unaVisibilidad) {
 		super(aUserProprietor,unMensaje,unaVisibilidad)	
-		///sthis.id = UUID.randomUUID
 	}
+	
 	override equals(Object aCommentary){
 		var commentaryWork = aCommentary as Comentary 
 		commentaryWork.id.equals(this.id) && commentaryWork.author.equals(this.author)

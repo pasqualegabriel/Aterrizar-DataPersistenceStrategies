@@ -26,6 +26,13 @@ class PublicationDAO extends GenericMongoDAO<Publication>{
 		result.get(0)
 
 	}
+	
+	def loadAllPublications(String userName) {
+				
+		var result=find("{ author: # }", userName)
+		result
+		
+	}
 
 
 

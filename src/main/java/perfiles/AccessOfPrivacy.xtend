@@ -18,7 +18,7 @@ abstract class AccessOfPrivacy {
 	def Boolean canHandle(Visibilidad visibilidad, String author, String anUserName)
 	
 	def Boolean elUsuarioEsElAutorDeLapublicacion(String author, String anUserName){
-		author == anUserName
+		author.equals(anUserName) 
 	}
 	
 	def Boolean elUsuarioEsAmigoDelAutor(String author, String anUserName){

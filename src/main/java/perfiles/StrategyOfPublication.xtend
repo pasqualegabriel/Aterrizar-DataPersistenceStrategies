@@ -4,7 +4,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import java.util.Set
 
 @Accessors
-abstract class StrategyOfPublication  implements  StrategyOfNote{
+abstract class StrategyOfPublication  extends  StrategyOfNote{
 	
 	protected Publication    		  aNota
 	protected ProfileService  		  aService
@@ -21,4 +21,7 @@ abstract class StrategyOfPublication  implements  StrategyOfNote{
 		aNota.quitar(colleccionAQuitar,aUserId)		
 
 	}
+	
+	
+	
 }
