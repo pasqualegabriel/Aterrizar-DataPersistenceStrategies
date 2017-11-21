@@ -20,40 +20,11 @@ class TestPublication {
 	}
 
 	@Test
-	def testUnaPublicacionSeCreaConUnMensajeYSabeQueLoTiene(){
-		var mensaje = "Pepita La Loca"
-		
-		assertTrue(publicacion.tieneComoMensaje(mensaje))
-	}
-	
-	@Test
-	def testUnaPublicacionSeCreaConUnMensajeYSabeQueNoEsOtroDiferente(){
-		var mensaje = "Pepe el Sagaz"
-		
-		assertFalse(publicacion.tieneComoMensaje(mensaje))
-	}
-	
-	@Test
 	def testUnaPublicacionSeInstanciaConUnDestino(){
 		
 		assertTrue(publicacion.tieneComoDestino(jamaica) )
 	}
-	
-	@Test
-	def testUnaPublicacionSeInstanciaConLaVisibilidadSoloAmigos(){
-		
-		var visibilidadSoloAmigos = Visibilidad.SoloAmigos
-		
-		assertTrue(publicacion.tieneComoVisibilidad(visibilidadSoloAmigos) )
-	}
-	
-	@Test
-	def testUnaPublicacionQueseInstanciaConVisibilidadComoAmigosSabeQueNoTieneVisibilidadPrivado(){
-		
-		var visibilidadPrivado = Visibilidad.Privado
-		
-		assertFalse(publicacion.tieneComoVisibilidad(visibilidadPrivado) )
-	}
+
 
 	@Test
 	def testUnaPublicacionSeInstanciaSinComentarios(){
@@ -98,7 +69,7 @@ class TestPublication {
 	def testSeAgregaUnMeGustaAUnaPublicacionYEstaSabeQueLaTiene(){
 		
 		assertTrue(publicacion.meGustan.empty)
-		publicacion.agregarMeGusta("Juan")
+		publicacion.agregar(publicacion.meGustan,"Juan")
 		
 		assertFalse(publicacion.meGustan.empty)
 	}
@@ -113,7 +84,7 @@ class TestPublication {
 	def testSeAgregaUnNoMeGustaAUnaPublicacionYEstaSabeQueLaTiene(){
 		
 		assertTrue(publicacion.noMeGustan.empty)
-		publicacion.agregarNoMeGusta("Pedro")
+		publicacion.agregar(publicacion.noMeGustan,"Pedro")
 		
 		assertFalse(publicacion.noMeGustan.empty)
 	}
@@ -121,16 +92,16 @@ class TestPublication {
 	def testSeLeAgregoUnMeGustaPedroYPublicacionSabeSiEsteDioMeGusta(){
 		
 		assertTrue(publicacion.noMeGustan.empty)
-		publicacion.agregarMeGusta("Pedro")
-		assertTrue(publicacion.leDioMeGusta("Pedro"))
+		publicacion.agregar(publicacion.meGustan,"Pedro")
+		assertTrue(publicacion.meGustan.contains("Pedro"))
 	}
 	
 	@Test
 	def testSeLeAgregoUnNoMeGustaPedroYPublicacionSabeSiEsteDioNOMeGusta(){
 		
 		assertTrue(publicacion.noMeGustan.empty)
-		publicacion.agregarNoMeGusta("Juan")
-		assertTrue(publicacion.leDioNoMeGusta("Juan"))
+		publicacion.agregar(publicacion.noMeGustan,"Juan")
+		assertTrue(publicacion.noMeGustan.contains("Juan"))
 	}
 	
 }

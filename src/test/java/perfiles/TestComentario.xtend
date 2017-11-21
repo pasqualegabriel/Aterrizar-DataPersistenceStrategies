@@ -16,58 +16,45 @@ class TestComentario {
 	}
 
 	@Test
-	def testUnComentarioSeCreaConUnMensajeYSabeQueLoTiene(){
-		var mensaje = "Re cool viaje"
-		
-		assertTrue(comentario.tieneComoMensaje(mensaje))
-	}
-	
-	@Test
-	def testUnComentarioSeCreaConUnMensajeYSabeQueNoEsOtroDiferente(){
-		var mensaje = "Pepe el Sagaz"
-		
-		assertFalse(comentario.tieneComoMensaje(mensaje))
-	}
-	
-
-	@Test
-	def testUnComentarioSeCreaConLaVisibilidadSoloAmigosYSabeQueEsLaVisibilidadQueTiene(){
-		
-		var visibilidadSoloAmigos = Visibilidad.SoloAmigos
-		assertTrue(comentario.tieneComoVisibilidad(visibilidadSoloAmigos))
-	}
-	
-	@Test
-	def testUnComentarioSeCreaConLaVisibilidadSoloAmigosYSabeQueNoTieneVisibilidadPrivada(){
-		
-		var visibilidadPrivado = Visibilidad.Privado
-		assertFalse(comentario.tieneComoVisibilidad(visibilidadPrivado))
-	}
-	
-	@Test
 	def testUnComentarioQueNoTeniaMeGustaAgregaUnMegustaDeJuancho(){
 		assertTrue(comentario.meGustan.empty)
 		
-		comentario.agregarMeGusta("Juancho")
+		comentario.agregar(comentario.meGustan,"Juancho")
 		assertFalse(comentario.meGustan.empty)
 	}
 	@Test
 	def testUnComentarioSabeQueJuanchoDioMeGustaEnEste(){
-		comentario.agregarMeGusta("Juancho")
-		assertTrue(comentario.leDioMeGusta("Juancho"))
+		comentario.agregar(comentario.meGustan,"Juancho")
+		assertTrue(comentario.meGustan.contains("Juancho"))
 	}
+	
+	@Test
+	def testUnComentarioQuitaElMeGustaDeJuan(){
+		comentario.agregar(comentario.meGustan,"Juancho")
+		comentario.quitar(comentario.meGustan,"Juancho")
+		
+		assertFalse(comentario.meGustan.contains("Juancho"))
+	}
+	
 	
 	@Test
 	def testUnComentarioQueNoTeniaNingunNoMeGustaAgregaUnNoMeGustaDeHaters(){
 		assertTrue(comentario.noMeGustan.empty)
-		comentario.agregarNoMeGusta("Haters")
+		comentario.agregar(comentario.noMeGustan,"Juancho")
 		assertFalse(comentario.noMeGustan.empty)
 	}
 
 	@Test
 	def testUnComentarioSabeQueHatersDioNoMeGusta(){
-		comentario.agregarNoMeGusta("Haters") 
-		assertTrue(comentario.leDioNoMeGusta("Haters"))
+		comentario.agregar(comentario.noMeGustan,"Haters") 
+		assertTrue(comentario.noMeGustan.contains("Haters"))
+	}
+	
+	@Test
+	def testUnComentarioQuitaElNoMeGustaDeHaters(){
+		comentario.agregar(comentario.noMeGustan,"Haters") 
+		comentario.quitar(comentario.noMeGustan,"Haters") 
+		assertFalse(comentario.noMeGustan.contains("Haters"))
 	}
 	
 	

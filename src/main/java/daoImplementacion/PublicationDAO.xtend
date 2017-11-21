@@ -19,15 +19,14 @@ class PublicationDAO extends GenericMongoDAO<Publication>{
 		!result.empty
 	}
 	
+
 	def loadForCommentary(UUID idCommentary) {
-		
-//		var result = this.find(
-//					     "{  }", 
-//					     aUserName, publication.idDestino, publication.nombreDestino)	
-//		     	
-//		!result.empty
-		new Publication
+			
+		var result=find("{ comentarios.id: # }", idCommentary)
+		result.get(0)
+
 	}
+
 
 
 

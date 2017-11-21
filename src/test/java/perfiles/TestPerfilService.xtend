@@ -273,7 +273,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.leDioMeGusta(pepita.userName))
+		assertTrue(publicacion.meGustan.contains(pepita.userName))
 	}
 	
 	@Test
@@ -286,7 +286,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.leDioMeGusta(jose.userName))
+		assertTrue(publicacion.meGustan.contains(jose.userName))
 	}
 	
 	@Test
@@ -303,7 +303,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.leDioMeGusta(pepita.userName))
+		assertTrue(publicacion.meGustan.contains(pepita.userName))
 	}
 	
 	@Test
@@ -316,7 +316,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.leDioMeGusta(jose.userName))
+		assertTrue(publicacion.meGustan.contains(jose.userName))
 	}
 	
 	@Test
@@ -333,7 +333,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.leDioMeGusta(pepita.userName))
+		assertTrue(publicacion.meGustan.contains(pepita.userName))
 	}
 	
 	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
@@ -355,7 +355,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.leDioMeGusta(jose.userName))
+		assertTrue(publicacion.meGustan.contains(jose.userName))
 	}
 	
 	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
@@ -391,7 +391,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.leDioMeGusta(pepita.userName))
+		assertTrue(publicacion.meGustan.contains(pepita.userName))
 		assertEquals(1, publicacion.meGustan.map[ it.equals(pepita.userName) ].size)
 	}
 
@@ -405,7 +405,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.leDioNoMeGusta(pepita.userName))
+		assertTrue(publicacion.noMeGustan.contains(pepita.userName))
 	}
 	
 	@Test
@@ -418,7 +418,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.leDioNoMeGusta(jose.userName))
+		assertTrue(publicacion.noMeGustan.contains(jose.userName))
 	}
 	
 	@Test
@@ -435,7 +435,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.leDioNoMeGusta(pepita.userName))
+		assertTrue(publicacion.noMeGustan.contains(pepita.userName))
 	}
 	
 	@Test
@@ -448,7 +448,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.leDioNoMeGusta(jose.userName))
+		assertTrue(publicacion.noMeGustan.contains(jose.userName))
 	}
 	
 	@Test
@@ -465,7 +465,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.leDioNoMeGusta(pepita.userName))
+		assertTrue(publicacion.noMeGustan.contains(pepita.userName))
 	}
 	
 	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
@@ -487,7 +487,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.leDioNoMeGusta(jose.userName))
+		assertTrue(publicacion.noMeGustan.contains(jose.userName))
 	}
 	
 	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
@@ -523,7 +523,7 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.leDioNoMeGusta(pepita.userName))
+		assertTrue(publicacion.noMeGustan.contains(pepita.userName))
 		assertEquals(1, publicacion.noMeGustan.map[ it.equals(pepita.userName) ].size)
 	}
 
@@ -538,8 +538,8 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue( publicacion.leDioMeGusta(  pepita.userName))
-		assertFalse(publicacion.leDioNoMeGusta(pepita.userName))
+		assertTrue(publicacion.meGustan.contains(  pepita.userName))
+		assertFalse(publicacion.noMeGustan.contains(pepita.userName))
 	}
 	
 	@Test
@@ -557,12 +557,13 @@ class TestPerfilService {
 		var publicacion = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue( publicacion.leDioNoMeGusta(pepita.userName))
-		assertFalse(publicacion.leDioMeGusta(  pepita.userName))
+		assertTrue( publicacion.noMeGustan.contains(pepita.userName))
+		assertFalse(publicacion.meGustan.contains(  pepita.userName))
 	}
 	
+	/**TEST ME GUSTA A COMENTARIO CON TODAS SUS VISIBILIDADES */
 	@Test
-	def test() {
+	def testPepitaUserAgregaUnMeGustaAUnComentarioPublicoDeHunterJose() {
 		
 		// Exercise
 		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Publico, destino)
@@ -573,7 +574,195 @@ class TestPerfilService {
 		var publicacion    = publicationDAO.load(unaPublicacion.id)
 
 		// Assertion
-		assertTrue(publicacion.comentarios.stream.anyMatch[comentario | comentario.leDioMeGusta(dionisia.userName)]);
+		assertTrue(publicacion.comentarios.stream.anyMatch[comentario | comentario.meGustan.contains(dionisia.userName)]);
+	}
+	
+	@Test
+	def testHunterJoseAgregaUnMeGustaASuPropioComentarioConVisibilidadSoloAmigos() {
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
+		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.SoloAmigos)
+
+		perfilService.meGusta(jose.userName, unComentario.id)
+
+		var publicacion    = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.comentarios.stream.anyMatch[comentario | comentario.meGustan.contains(jose.userName)]);
+	}
+	
+	@Test
+	def testPepitaUserAmigoDeHunterJoseAgregaUnMeGustaAElComentarioConVisibilidadSoloAmigosDeHunterJose() {
+		
+		/** creando relacion de amistad entre jose y pepita */
+		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
+		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
+		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.SoloAmigos)
+
+		perfilService.meGusta(pepita.userName, unComentario.id)
+
+		var publicacion    = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.comentarios.stream.anyMatch[comentario | comentario.meGustan.contains(pepita.userName)]);
+	}
+	
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	def testPepitaUserAgregaUnMeGustaAElComentarioConVisibilidadSoloAmigosDeHunterJose() {
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
+		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.SoloAmigos)
+
+		perfilService.meGusta(pepita.userName, unComentario.id)
+		fail
+	}
+	
+	@Test
+	def testHunterJoseAgregaUnMeGustaASuPropioComentarioConVisibilidadPrivado() {
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
+		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Privado)
+
+		perfilService.meGusta(jose.userName, unComentario.id)
+
+		var publicacion    = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.comentarios.stream.anyMatch[comentario |  comentario.meGustan.contains(jose.userName)]);
+	}
+	
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	def testPepitaUserAmigoDeHunterJoseNoPuedeAgregarUnMeGustaAElComentarioConVisibilidadPrivadaDeHunterJose() {
+		
+		/** creando relacion de amistad entre jose y pepita */
+		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
+		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
+		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Privado)
+
+		perfilService.meGusta(pepita.userName, unComentario.id)
+		fail
+	}
+	
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	def testPepitaUserAgregaUnMeGustaAElComentarioConVisibilidadPrivadaDeHunterJose() {
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
+		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Privado)
+
+		perfilService.meGusta(pepita.userName, unComentario.id)
+		fail
+	}
+	
+/**TEST NO ME GUSTA A COMENTARIO CON TODAS SUS VISIBILIDADES */
+	@Test
+	def testPepitaUserAgregaUnNoMeGustaAUnComentarioPublicoDeHunterJose() {
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Publico, destino)
+		var unComentario   = agregarComentario(pepita.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Publico)
+
+		perfilService.noMeGusta(dionisia.userName, unComentario.id)
+
+		var publicacion    = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.comentarios.stream.anyMatch[comentario |  comentario.noMeGustan.contains(dionisia.userName)]);
+	}
+	
+	@Test
+	def testHunterJoseAgregaUnNoMeGustaASuPropioComentarioConVisibilidadSoloAmigos() {
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
+		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.SoloAmigos)
+
+		perfilService.noMeGusta(jose.userName, unComentario.id)
+
+		var publicacion    = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.comentarios.stream.anyMatch[comentario |  comentario.noMeGustan.contains(jose.userName)]);
+	}
+	
+	@Test
+	def testPepitaUserAmigoDeHunterJoseAgregaUnNoMeGustaAElComentarioConVisibilidadSoloAmigosDeHunterJose() {
+		
+		/** creando relacion de amistad entre jose y pepita */
+		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
+		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
+		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.SoloAmigos)
+
+		perfilService.noMeGusta(pepita.userName, unComentario.id)
+
+		var publicacion    = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.comentarios.stream.anyMatch[comentario | comentario.noMeGustan.contains(pepita.userName)]);
+	}
+	
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	def testPepitaUserAgregaUnNoMeGustaAElComentarioConVisibilidadSoloAmigosDeHunterJose() {
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
+		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.SoloAmigos)
+
+		perfilService.noMeGusta(pepita.userName, unComentario.id)
+		fail
+	}
+	
+	@Test
+	def testHunterJoseAgregaUnNoMeGustaASuPropioComentarioConVisibilidadPrivado() {
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
+		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Privado)
+
+		perfilService.noMeGusta(jose.userName, unComentario.id)
+
+		var publicacion    = publicationDAO.load(unaPublicacion.id)
+
+		// Assertion
+		assertTrue(publicacion.comentarios.stream.anyMatch[comentario | comentario.noMeGustan.contains(jose.userName)]);
+	}
+	
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	def testPepitaUserAmigoDeHunterJoseNoPuedeAgregarUnNoMeGustaAElComentarioConVisibilidadPrivadaDeHunterJose() {
+		
+		/** creando relacion de amistad entre jose y pepita */
+		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
+		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
+		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Privado)
+
+		perfilService.noMeGusta(pepita.userName, unComentario.id)
+		fail
+	}
+	
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	def testPepitaUserAgregaUnNoMeGustaAElComentarioConVisibilidadPrivadaDeHunterJose() {
+		
+		// Exercise
+		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
+		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Privado)
+
+		perfilService.noMeGusta(pepita.userName, unComentario.id)
+		fail
 	}
 	
 	def Comentary agregarComentario(String aUserName, String idPublication, String aCampo, Visibilidad aVisibilidad) {

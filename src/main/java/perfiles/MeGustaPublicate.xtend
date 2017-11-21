@@ -1,6 +1,6 @@
 package perfiles
 
-class MeGustaStrategy extends StrategyOfPublication{
+class MeGustaPublicate extends StrategyOfPublication{
 	
 	String aUserId
 	
@@ -10,9 +10,7 @@ class MeGustaStrategy extends StrategyOfPublication{
 	}
 	
 	override execute() {
-		//Logica repetida con noMeGustaStrategy
-		aNota.quitar(aNota.noMeGustan,aUserId)
-		aNota.agregar(aNota.meGustan,aUserId)		
+		this.addAndRemove(aNota.meGustan,aNota.noMeGustan,aUserId )
 		aService.update(aNota)
 	}
 	

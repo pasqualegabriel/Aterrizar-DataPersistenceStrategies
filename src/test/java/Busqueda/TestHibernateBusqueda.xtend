@@ -143,7 +143,7 @@ class TestHibernateBusqueda {
 	@Test
 	def void testUnaBusquedaHibernateFiltroCompuestoAndConUnFiltroSimpleConCampoFechaDeSalidaPrimeraYOtroFiltroSimpleConCampoDestinoRosarioConCriterioDuracionYOrdenDescendenteEncuentraUnaCoincidencia(){
 		
-		val filtroSimple1     = new FiltroSimple(new FechaDeSalida,"2017-01-10 15:10:30") 
+		val filtroSimple1     = new FiltroSimple(new FechaDeSalida,"2017-01-10 10:10:30") 
 		val filtroSimple2     = new FiltroSimple(new CampoDestino, "Bs As") 
 		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, Comparator.AND)
 		
@@ -159,7 +159,7 @@ class TestHibernateBusqueda {
 	@Test
 	def void testUnaBusquedaHibernateFiltroCompuestoAndConUnFiltroSimpleConCampoFechaDeLlegadaPrimeraYOtroFiltroSimpleConCampoDestinoRosarioConCriterioDuracionYOrdenDescendenteEncuentraUnaCoincidencia(){
 		
-		val filtroSimple1     = new FiltroSimple(new FechaDeLlegada,"2017-01-10 15:19:30") 
+		val filtroSimple1     = new FiltroSimple(new FechaDeLlegada,"2017-01-10 10:19:30") 
 		val filtroSimple2     = new FiltroSimple(new CampoDestino, "Bs As") 
 		val filtroCompuesto   = new FiltroCompuesto(filtroSimple1, filtroSimple2, Comparator.AND)
 		

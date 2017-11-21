@@ -11,7 +11,7 @@ abstract class AccessOfPrivacy {
 		servicioDeAmistad = new RelacionesDeAmistades
 	} 
 	
-	def void assertRule(StrategyOfPublication strategy){
+	def void assertRule(StrategyOfNote strategy){
 		strategy.execute
 	}
 	

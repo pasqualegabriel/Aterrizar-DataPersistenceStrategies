@@ -62,11 +62,10 @@ class ProfileService implements PerfilService{
 	
 	override agregarComentario(String anIdPublication, Comentary aComentary) {
 		
-		//buscamos la publicacion
+
 		val unaPublicacion = publicationDAO.load(anIdPublication) 
 		
-		//Utilizamos un manejador de Privacidad que se responsabiliza de hacerse cargo de proveer el comportamiento
-		//Correcto dependiendo la privacidad de la publicacion.
+
 		val strategy       = new CommentaryStrategy(aComentary,unaPublicacion, this) 
 		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy, aComentary.author) ]
 	
@@ -75,22 +74,19 @@ class ProfileService implements PerfilService{
 	
 	override meGusta(String aUser, String anIdPublication) {
 			
-		//buscamos la publicacion
 		val unaPublicacion = publicationDAO.load(anIdPublication) 
 		
-		//Utilizamos un manejador de Privacidad que se responsabiliza de hacerse cargo de proveer el comportamiento
-		//Correcto dependiendo la privacidad de la publicacion.
-		val strategy       = new MeGustaStrategy(unaPublicacion, aUser, this) 
+
+		val strategy       = new MeGustaPublicate(unaPublicacion, aUser, this) 
 		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy, aUser) ]
 	}
 
 	
 	override noMeGusta(String aUser, String anIdPublication) {
-		//buscamos la publicacion
+
 		val unaPublicacion = publicationDAO.load(anIdPublication) 
 		
-		//Utilizamos un manejador de Privacidad que se responsabiliza de hacerse cargo de proveer el comportamiento
-		//Correcto dependiendo la privacidad de la publicacion.
+
 		val strategy       = new NoMeGustaStrategy(unaPublicacion, aUser, this) 
 		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy, aUser) ]
 	}
@@ -112,16 +108,20 @@ class ProfileService implements PerfilService{
 	}
 	
 	override meGusta(String aUser, UUID idCommentary) {
-//		var Publication aPublication = publicationDAO.loadForCommentary(idCommentary)
-//		var aCommentary  = aPublication.searchCommentary(idCommentary)
-//		
-//		val strategy       = new MeGustaStrategy(aPublication, aUser, aCommentary, this)  
-//		new PrivacyHandler => [ hasPermission(aCommentary, strategy, aUser) ]
+		var Publication aPublication = publicationDAO.loadForCommentary(idCommentary)
+		val aCommentary  = aPublication.searchCommentary(idCommentary)
+		
+		val strategy       = new MeGustaComnentary(aPublication, aUser, aCommentary, this)  
+		new PrivacyHandler => [ hasPermission(aCommentary, strategy, aUser) ]
 		
 	}
 	
 	override noMeGusta(String aUser, UUID idCommentary) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		var Publication aPublication = publicationDAO.loadForCommentary(idCommentary)
+		val aCommentary  = aPublication.searchCommentary(idCommentary)
+		
+		val strategy       = new NoMeGustaComnentary(aPublication, aUser, aCommentary, this)  
+		new PrivacyHandler => [ hasPermission(aCommentary, strategy, aUser) ]
 	}
 
 
