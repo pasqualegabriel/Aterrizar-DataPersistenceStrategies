@@ -33,22 +33,21 @@ class ProfileService implements PerfilService{
 		]
 	}
 	
-	// Generar abstraccion, logica repetida!!!! 
 	override agregarComentario(String anIdPublication, Comentary aComentary) {
 		
 		val unaPublicacion = publicationDAO.load(anIdPublication) 
 		
-		val strategy       = new CommentaryStrategy(aComentary,unaPublicacion, this) 
+		val strategy       = new CommentaryStrategy(aComentary, unaPublicacion, this) 
 		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy, aComentary.author) ]
 	
 		aComentary
 	}
-	
+	// Generar abstraccion, logica repetida!!!! 
 	override meGusta(String aUser, String anIdPublication) {
 			
 		val unaPublicacion = publicationDAO.load(anIdPublication) 
 		
-		val strategy       = new MeGustaPublicate(unaPublicacion, aUser, this) 
+		val strategy       = new MeGustaPublication(unaPublicacion, aUser, this) 
 		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy, aUser) ]
 	}
 
@@ -56,7 +55,7 @@ class ProfileService implements PerfilService{
 
 		val unaPublicacion = publicationDAO.load(anIdPublication) 
 		
-		val strategy       = new NoMeGustaStrategy(unaPublicacion, aUser, this) 
+		val strategy       = new NoMeGustaPublication(unaPublicacion, aUser, this) 
 		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy, aUser) ]
 	}
 	

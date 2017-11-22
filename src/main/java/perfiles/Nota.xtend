@@ -10,14 +10,9 @@ abstract class Nota {
 
 	Visibilidad 	visibilidad
 	String      	cuerpo
-	
-	
-	
-	
-	/// Refactorizar para que no sean mas Strings, RatingDeUsuario --> MeGusta  / NoMeGusta.
+
 	Set<String> 	meGustan
 	Set<String>     noMeGustan
-	
 	
 	String 			author
 	
@@ -33,12 +28,24 @@ abstract class Nota {
 		this.author      = author
 	}
 
-	/**  */
-	def agregar(Set<String> aSet, String aUserName) {
-		 aSet.add(aUserName)
-	}
-	def quitar(Set<String> aSet, String aUserName) {
-		 aSet.remove(aUserName)
+	def agregarMeGusta(String aUserName) {
+		meGustan.add(aUserName)
 	}
 	
+	def agregarNoMeGusta(String aUserName) {
+		noMeGustan.add(aUserName)
+	}
+	
+	def quitarMeGusta(String aUserName) {
+		meGustan.remove(aUserName)
+	}
+	
+	def quitarNoMeGusta(String aUserName) {
+		noMeGustan.remove(aUserName)
+	}
+	
+	
 }
+
+
+

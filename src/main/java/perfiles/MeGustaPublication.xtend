@@ -1,16 +1,17 @@
 package perfiles
 
-class MeGustaPublicate extends StrategyOfPublication{
+class MeGustaPublication extends StrategyOfPublication{
 	
 	String aUserId
 	
 	new(Publication publication, String aUser, ProfileService service) {
 		super(publication, service)
-		aUserId = aUser;
+		aUserId = aUser
 	}
 	
 	override execute() {
-		this.addAndRemove(aNota.meGustan,aNota.noMeGustan,aUserId )
+		aNota.agregarMeGusta( aUserId)
+		aNota.quitarNoMeGusta(aUserId)
 		aService.update(aNota)
 	}
 	

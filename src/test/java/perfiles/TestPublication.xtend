@@ -69,7 +69,7 @@ class TestPublication {
 	def testSeAgregaUnMeGustaAUnaPublicacionYEstaSabeQueLaTiene(){
 		
 		assertTrue(publicacion.meGustan.empty)
-		publicacion.agregar(publicacion.meGustan,"Juan")
+		publicacion.agregarMeGusta("Juan")
 		
 		assertFalse(publicacion.meGustan.empty)
 	}
@@ -84,7 +84,7 @@ class TestPublication {
 	def testSeAgregaUnNoMeGustaAUnaPublicacionYEstaSabeQueLaTiene(){
 		
 		assertTrue(publicacion.noMeGustan.empty)
-		publicacion.agregar(publicacion.noMeGustan,"Pedro")
+		publicacion.agregarNoMeGusta("Pedro")
 		
 		assertFalse(publicacion.noMeGustan.empty)
 	}
@@ -92,7 +92,7 @@ class TestPublication {
 	def testSeLeAgregoUnMeGustaPedroYPublicacionSabeSiEsteDioMeGusta(){
 		
 		assertTrue(publicacion.noMeGustan.empty)
-		publicacion.agregar(publicacion.meGustan,"Pedro")
+		publicacion.agregarMeGusta("Pedro")
 		assertTrue(publicacion.meGustan.contains("Pedro"))
 	}
 	
@@ -100,7 +100,7 @@ class TestPublication {
 	def testSeLeAgregoUnNoMeGustaPedroYPublicacionSabeSiEsteDioNOMeGusta(){
 		
 		assertTrue(publicacion.noMeGustan.empty)
-		publicacion.agregar(publicacion.noMeGustan,"Juan")
+		publicacion.agregarNoMeGusta("Juan")
 		assertTrue(publicacion.noMeGustan.contains("Juan"))
 	}
 	

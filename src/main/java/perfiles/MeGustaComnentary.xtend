@@ -1,6 +1,6 @@
 package perfiles
 
-class MeGustaComnentary  extends StrategyOfCommentary{
+class MeGustaComnentary extends StrategyOfCommentary{
 
 	new(){}
 
@@ -9,7 +9,8 @@ class MeGustaComnentary  extends StrategyOfCommentary{
 	}
 
 	override execute() {
-		this.addAndRemove(comentary.meGustan, comentary.noMeGustan, authorWhoIsRating)
+		comentary.agregarMeGusta(authorWhoIsRating)
+		comentary.quitarNoMeGusta(authorWhoIsRating)
 		profileService.update(publication)	
 	}
 	

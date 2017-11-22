@@ -1,7 +1,5 @@
 package perfiles
 
-import java.util.Set
-
 abstract class StrategyOfCommentary extends StrategyOfNote{
 	
 	protected Publication 		publication
@@ -22,11 +20,7 @@ abstract class StrategyOfCommentary extends StrategyOfNote{
 		this.comentary			= aComentary
 	}
 	
-	override void addAndRemove(Set<String> colleccionAAgregar,Set<String> colleccionAQuitar, String aUserId){
-		comentary.agregar(colleccionAAgregar,aUserId)
-		comentary.quitar(colleccionAQuitar,aUserId)
-	}
-	
-	
-	
+
 }
+
+

@@ -177,8 +177,6 @@ class TestPerfilService {
 	def testHunterJoseUserAregaUnComentarioASuPublicacionSoloAmigos() {
 
 		// Exercise
-		//var unaPublicacion = agregarPublicacion("HunterJose", "Hola pepita", Visibilidad.SoloAmigos, destino)
-	
 		var aPublication = new Publication(jose.userName, "unCampo", Visibilidad.SoloAmigos, destino)
 		
 		perfilService.agregarPublicación(jose.userName, aPublication)

@@ -31,8 +31,8 @@ class TestPublicacionDAO {
 
 		this.saveAndTestPublication(publication)
 		
-		publication.agregar(publication.meGustan,"Juan")
-		publication.agregar(publication.noMeGustan,"Pedro")
+		publication.agregarMeGusta("Juan")
+		publication.agregarNoMeGusta("Pedro")
 		publication.cuerpo      = "re Cool el viaje por nordelta re TOOL"
 		publication.visibilidad = Visibilidad.Privado
 		var aComentary = new Comentary("Pepon","Good el viaje", Visibilidad.SoloAmigos) => [ id = UUID.randomUUID ]
@@ -67,8 +67,8 @@ class TestPublicacionDAO {
 
 		this.saveAndTestPublication(publication)
 		
-		publication.agregar(publication.meGustan,"Juan")
-		publication.agregar(publication.noMeGustan,"Pedro")
+		publication.agregarMeGusta("Juan")
+		publication.agregarNoMeGusta("Pedro")
 		publication.cuerpo      = "re Cool el viaje por nordelta re TOOL"
 		publication.visibilidad = Visibilidad.Privado
 		

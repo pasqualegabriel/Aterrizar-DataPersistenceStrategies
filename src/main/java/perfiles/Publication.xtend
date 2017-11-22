@@ -52,14 +52,9 @@ class Publication extends Nota{
 		comentarios.findFirst[ commentary | commentary.id.equals(idCommentary)]
 	}
 	
-
-	
-
-	
-	
-
-	
-
-	
 	
 }
+
+
+
+

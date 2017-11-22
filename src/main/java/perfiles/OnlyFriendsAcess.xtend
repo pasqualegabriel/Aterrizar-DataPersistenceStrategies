@@ -1,7 +1,5 @@
 package perfiles
 
-
-
 class OnlyFriendsAcess extends AccessOfPrivacy{
 	
 	override canHandle(Visibilidad visibilidad, String author, String anUserName) {
@@ -11,3 +9,5 @@ class OnlyFriendsAcess extends AccessOfPrivacy{
 	
 	
 }
+
+

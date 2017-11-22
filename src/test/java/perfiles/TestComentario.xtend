@@ -19,19 +19,19 @@ class TestComentario {
 	def testUnComentarioQueNoTeniaMeGustaAgregaUnMegustaDeJuancho(){
 		assertTrue(comentario.meGustan.empty)
 		
-		comentario.agregar(comentario.meGustan,"Juancho")
+		comentario.agregarMeGusta("Juancho")
 		assertFalse(comentario.meGustan.empty)
 	}
 	@Test
 	def testUnComentarioSabeQueJuanchoDioMeGustaEnEste(){
-		comentario.agregar(comentario.meGustan,"Juancho")
+		comentario.agregarMeGusta("Juancho")
 		assertTrue(comentario.meGustan.contains("Juancho"))
 	}
 	
 	@Test
 	def testUnComentarioQuitaElMeGustaDeJuan(){
-		comentario.agregar(comentario.meGustan,"Juancho")
-		comentario.quitar(comentario.meGustan,"Juancho")
+		comentario.agregarMeGusta("Juancho")
+		comentario.quitarMeGusta( "Juancho")
 		
 		assertFalse(comentario.meGustan.contains("Juancho"))
 	}
@@ -40,20 +40,20 @@ class TestComentario {
 	@Test
 	def testUnComentarioQueNoTeniaNingunNoMeGustaAgregaUnNoMeGustaDeHaters(){
 		assertTrue(comentario.noMeGustan.empty)
-		comentario.agregar(comentario.noMeGustan,"Juancho")
+		comentario.agregarNoMeGusta("Juancho")
 		assertFalse(comentario.noMeGustan.empty)
 	}
 
 	@Test
 	def testUnComentarioSabeQueHatersDioNoMeGusta(){
-		comentario.agregar(comentario.noMeGustan,"Haters") 
+		comentario.agregarNoMeGusta("Haters") 
 		assertTrue(comentario.noMeGustan.contains("Haters"))
 	}
 	
 	@Test
 	def testUnComentarioQuitaElNoMeGustaDeHaters(){
-		comentario.agregar(comentario.noMeGustan,"Haters") 
-		comentario.quitar(comentario.noMeGustan,"Haters") 
+		comentario.agregarNoMeGusta("Haters") 
+		comentario.quitarNoMeGusta("Haters") 
 		assertFalse(comentario.noMeGustan.contains("Haters"))
 	}
 	

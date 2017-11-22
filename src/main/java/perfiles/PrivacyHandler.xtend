@@ -7,7 +7,7 @@ class PrivacyHandler {
 	List<AccessOfPrivacy> accesOfPrivacy = newArrayList
 	
 	new(){
-		accesOfPrivacy = # [new PrivateAcess, new PublicAcess, new OnlyFriendsAcess, new AcessDenied]
+		accesOfPrivacy = #[new PrivateAcess, new PublicAcess, new OnlyFriendsAcess, new AcessDenied]
 	}
 	
 	def hasPermission(Nota aNote,StrategyOfNote strategy, String aUser){
