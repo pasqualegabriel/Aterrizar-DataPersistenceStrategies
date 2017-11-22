@@ -35,7 +35,6 @@ import Excepciones.ExceptionNoVisitoDestino
 import unq.amistad.AmigoService
 import unq.amistad.RelacionesDeAmistades
 import Excepciones.ExceptionYaExisteUnaPublicacionSobreElDestino
-import daoImplementacion.ComentaryDAO
 import Excepciones.ExceptionNoTienePermisoParaInteractuarConLaPublicacion
 
 class TestPerfilService {
@@ -56,7 +55,6 @@ class TestPerfilService {
 	HibernateAsientoDAO asientoDAO
 	UserNeo4jDAO 		neo4jDao
 	PublicationDAO 		publicationDAO
-	ComentaryDAO 		comentaryDAO
 
 	@Before
 	def void setUp() {
@@ -64,7 +62,6 @@ class TestPerfilService {
 		MockitoAnnotations.initMocks(this)
 		
 		publicationDAO 			= new PublicationDAO
-		comentaryDAO 			= new ComentaryDAO
 		hibernateUserDAO 		= new HibernateUserDAO
 		neo4jDao 				= new UserNeo4jDAO
 		asientoDAO 				= new HibernateAsientoDAO
@@ -74,7 +71,7 @@ class TestPerfilService {
 		jose 					= serviceTest.singUp("Jose", "ElJose", "HunterJose", "jose@gmail.com", "password", new Date())
 		pepita 					= serviceTest.singUp("Pepita", "LaGolondrina", "PepitaUser", "pepitagolondrina@gmail.com", "password", new Date())
 		dionisia 				= serviceTest.singUp("Dionisia", "LaGolondrinaVieja", "DionisiaUser", "dionisia@gmail.com", "password", new Date())
-		perfilService 			= new ProfileService(publicationDAO, comentaryDAO, hibernateUserDAO, neo4jDao)
+		perfilService 			= new ProfileService(publicationDAO, hibernateUserDAO)
 		reservaCompraDeAsientos = new ReservaCompraDeAsientos(hibernateUserDAO, asientoDAO, new HibernateReservaDAO, new HibernateTramoDAO, new HibernateCompraDAO)
 		destino 				= new Destino("Rosario")
 		destino2 				= new Destino("Fuerte Apache")

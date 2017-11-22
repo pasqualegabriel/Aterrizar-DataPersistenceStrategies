@@ -1,7 +1,6 @@
 package perfiles
 
 import java.util.Set
-import service.User
 
 class AccesoAPublicacionStrategy extends StrategyOfNote {
 	
