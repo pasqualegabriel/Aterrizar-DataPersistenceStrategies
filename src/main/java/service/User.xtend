@@ -10,6 +10,7 @@ import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.OneToMany
 import javax.persistence.OneToOne
+import javax.persistence.FetchType
 
 @Accessors
 @Entity
@@ -27,10 +28,10 @@ class User {
 	Double 	      monedero
 	Double 	      gastoTotal
 	
-	@OneToMany(cascade=CascadeType.ALL)
+	@OneToMany(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	List<Compra> compras  = newArrayList
 	
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(fetch= FetchType.EAGER,cascade=CascadeType.ALL)
 	Reserva reserva 
 
 	

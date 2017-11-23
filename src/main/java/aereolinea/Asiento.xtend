@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.Entity
 import javax.persistence.OneToOne
 import javax.persistence.CascadeType
+import javax.persistence.FetchType
 
 @Accessors
 @Entity
@@ -19,13 +20,13 @@ class Asiento {
 	@GeneratedValue
 	public int id
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	Reserva   reserva
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	Tramo	  tramo
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	Categoria categoria
 	
 	@OneToOne

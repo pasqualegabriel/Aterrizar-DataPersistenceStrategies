@@ -14,6 +14,7 @@ class PrivacyHandler {
 		accesOfPrivacy.findFirst[it.canHandle(aNote.visibilidad,aNote.author, aUser)].assertRule(strategy)
 	}
 	
+	//Pensar nombre o buscar mejor abstraccion.
 	def xy(Nota aNote, String aUser) {
 		#[new PrivateAcess, new PublicAcess, new OnlyFriendsAcess].stream.anyMatch[it.canHandle(aNote.visibilidad, aNote.author,aUser)]
 	}

@@ -23,12 +23,12 @@ class Reserva {
 	@GeneratedValue
 	public int id
 	
-	@OneToMany(fetch= FetchType.EAGER, cascade=CascadeType.ALL)
+	@OneToMany(fetch= FetchType.LAZY, cascade=CascadeType.ALL)
 	List<Asiento> asientos	
 	
 	LocalDateTime horaRealizada	
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	EstadoDeReserva estado
 	
 	new(){

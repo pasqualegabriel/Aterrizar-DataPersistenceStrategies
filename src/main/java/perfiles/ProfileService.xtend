@@ -33,6 +33,17 @@ class ProfileService implements PerfilService{
 		]
 	}
 	
+//	def pepe (String anIdPublication,StrategyOfPublication command  )
+//	{
+//		val unaPublicacion = publicationDAO.load(anIdPublication) 
+//		
+//		command.setParameters() 
+//		
+//		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy, aUser) ]
+//		
+//	}
+	
+	// Generar abstraccion, logica repetida!!!! 
 	override agregarComentario(String anIdPublication, Comentary aComentary) {
 		
 		val unaPublicacion = publicationDAO.load(anIdPublication) 
@@ -42,7 +53,7 @@ class ProfileService implements PerfilService{
 	
 		aComentary
 	}
-	// Generar abstraccion, logica repetida!!!! 
+
 	override meGusta(String aUser, String anIdPublication) {
 			
 		val unaPublicacion = publicationDAO.load(anIdPublication) 
@@ -59,11 +70,13 @@ class ProfileService implements PerfilService{
 		new PrivacyHandler => [ hasPermission(unaPublicacion, strategy, aUser) ]
 	}
 	
+	
+	
 	override verPerfil(String aUser, String otherUser) {
 
 		var aProfile = new Profile =>  [ publications=	publicationDAO.loadAllPublications(otherUser) ]
 		filtrarPublicacionesPermitidas(aProfile, aUser)
-		filtrarComentariosPermitidos(  aProfile, aUser)
+		filtrarComentariosEnPublicaciones(aProfile, aUser)
 		
 		aProfile
 	}
@@ -75,13 +88,12 @@ class ProfileService implements PerfilService{
 		aProfile.publications    = filteredPublications
 	}
 	
-	def filtrarComentariosPermitidos(Profile aProfile, String aUser) {
+	def filtrarComentariosEnPublicaciones(Profile aProfile, String aUser) {
 
-		aProfile.publications.forEach[aPublication| xxyy(aPublication, aUser)]
+		aProfile.publications.forEach[aPublication| filtrarComentariosPermitidos(aPublication, aUser)]
 	}
 	
-	// Cambiar Nombre
-	def xxyy(Publication publication, String aUser) {
+	def filtrarComentariosPermitidos(Publication publication, String aUser) {
 		
 		val aPrivacyHandler     = new PrivacyHandler 
 		var filteredComentaries = publication.comentarios.filter[aComentary | aPrivacyHandler.xy(aComentary, aUser)].toList
@@ -115,6 +127,8 @@ class ProfileService implements PerfilService{
 	
 	override noMeGusta(String aUser, UUID idCommentary) {
 		
+		
+		
 		var strategy = new NoMeGustaComnentary
 		rateComment(aUser, idCommentary, strategy)
 		
@@ -129,8 +143,10 @@ class ProfileService implements PerfilService{
 		
 		var aPublication   = publicationDAO.loadForCommentary(idCommentary)
 		val aCommentary    = aPublication.searchCommentary(idCommentary)
-  
+  		
+  		//Cambiar el nombre a command.
 		strategyOfCommentary.initialize(aPublication, aUser, aCommentary, this)
+		
 		new PrivacyHandler => [ hasPermission(aCommentary, strategyOfCommentary, aUser) ]
 	}
 	
