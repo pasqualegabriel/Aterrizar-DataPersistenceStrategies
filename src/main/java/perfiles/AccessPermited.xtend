@@ -1,10 +1,11 @@
 package perfiles
 
-import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 
+//Responsabilidad: Composite de las reglas que permiten el acceso
+
 @Accessors
-class AccessPermited extends AccessOfPrivacy{
+abstract class AccessPermited extends AccessOfPrivacy{
 	
 	// esta es la abstracta
 	//ruleofsucces Componedor
@@ -14,16 +15,8 @@ class AccessPermited extends AccessOfPrivacy{
 	// hay que revisar los commands y rehacerlos prolijos
 	// hay que cambiar los nombres que quedaron flojos y sacar las cosas comentadas
 	// hay que hacer bien los filtros.
-	List<AccessPermited> rulesOfPermition = newArrayList
 	
-	new (){
-		rulesOfPermition= #[new PrivateAcess, new PublicAcess, new OnlyFriendsAcess]
-		
-	}
-	
-	override canHandle(Visibilidad visibilidad, String author, String anUserName) {
-		rulesOfPermition.stream.anyMatch[it.canHandle(visibilidad,author,anUserName)]
-	}
+	abstract override canHandle(Visibilidad visibilidad, String author, String anUserName) 
 	
 	
 	

@@ -40,7 +40,7 @@ class ProfileService implements PerfilService{
 
 	override agregarComentario(String anIdPublication, Comentary aComentary) {
 		
-		val command       = new CommentaryStrategy(aComentary, this) 
+		val command       = new StrategyOfCommentary(aComentary, this) 
 		publicitarNota (anIdPublication,command,aComentary.author  )
 	
 		aComentary
@@ -135,11 +135,11 @@ class ProfileService implements PerfilService{
 	}
 	
 	
-	def publicitarNota (String anIdPublication,StrategyOfPublication command ,String aUser )
+	def publicitarNota (String anIdPublication,PublicationOfNote command ,String aUser )
 	{
 		val unaPublicacion = publicationDAO.load(anIdPublication) 
 		
-		command.aNota = unaPublicacion
+		command.publication = unaPublicacion
 		 
 		
 		aPrivacyHandler.permitAccess(unaPublicacion, command, aUser) 

@@ -11,13 +11,13 @@ class PrivacyHandler {
 	List<AccessOfPrivacy> accesOfPrivacy = newArrayList
 	
 	new(){
-		accesPermited = new AccessPermited
+		accesPermited = new RuleoOfSuccess
 		accesDenied   = new AcessDenied
 		accesOfPrivacy = #[accesPermited,accesDenied]
 		
 	}
 	
-	def permitAccess(Nota aNote,StrategyOfNote strategy, String aUser){
+	def permitAccess(Nota aNote,PublicationOfNote strategy, String aUser){
 		accesOfPrivacy.findFirst[it.canHandle(aNote.visibilidad,aNote.author, aUser)].assertRule(strategy)
 	}
 	

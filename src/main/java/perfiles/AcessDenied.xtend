@@ -7,7 +7,7 @@ class AcessDenied extends AccessOfPrivacy {
 		(visibilidad.equals(Visibilidad.SoloAmigos) && !elUsuarioEsAmigoDelAutor(author,anUserName)) && !elUsuarioEsElAutorDeLapublicacion(author,anUserName)
 	}
 	
-	override assertRule(StrategyOfNote strategy) {
+	override assertRule(PublicationOfNote strategy) {
 		strategy.negateAccess
 	}
 	

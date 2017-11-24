@@ -1,10 +1,7 @@
 package perfiles
 
-abstract class StrategyOfCommentary extends StrategyOfNote{
-	
-	protected Publication 		publication
-	protected String 	  		authorWhoIsRating
-	protected ProfileService	profileService
+class StrategyOfCommentary extends PublicationOfNote{
+		
 	protected Comentary			comentary
 	
 	new(){}
@@ -13,14 +10,22 @@ abstract class StrategyOfCommentary extends StrategyOfNote{
 		this.initialize(aPublication, anAuthorWhoIsRating, aComentary, aProfileService)
 	}
 	
+	new(Comentary comentary, ProfileService service) {
+		this.comentary= comentary
+		this.profileService = service
+	}
+	
 	def initialize(Publication aPublication, String anAuthorWhoIsRating, Comentary aComentary, ProfileService aProfileService){
 		this.publication		= aPublication
-		this.authorWhoIsRating	= anAuthorWhoIsRating
+		this.aUserId	        = anAuthorWhoIsRating
 		this.profileService		= aProfileService
 		this.comentary			= aComentary
 	}
 	
 
+	override execute() {
+		profileService.publicitarComentario(publication,comentary)
+	}
 }
 
 

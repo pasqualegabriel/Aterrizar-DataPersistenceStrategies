@@ -3,17 +3,16 @@ package perfiles
 import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
-abstract class StrategyOfPublication extends StrategyOfNote{
+abstract class StrategyOfPublication extends PublicationOfNote{
 	
-	protected Publication    aNota
-	protected ProfileService aService
+	
 	
 	new( ProfileService service) {
 		
-		this.aService = service
+		this.profileService = service
 	}
 	
-	override void execute() 
+	
 	
 	
 }
