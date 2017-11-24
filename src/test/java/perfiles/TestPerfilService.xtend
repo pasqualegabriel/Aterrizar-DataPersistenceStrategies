@@ -69,8 +69,8 @@ class TestPerfilService {
 		relacionesDeAmistades 	= new RelacionesDeAmistades
 		serviceTest 			= new ServiceHibernate(hibernateUserDAO, generatorMail, new RandomNumberGenerator, unMailService)
 		jose 					= serviceTest.singUp("Jose", "ElJose", "HunterJose", "jose@gmail.com", "password", new Date())
-		//pepita 					= serviceTest.singUp("Pepita", "LaGolondrina", "PepitaUser", "pepitagolondrina@gmail.com", "password", new Date())
-		//dionisia 				= serviceTest.singUp("Dionisia", "LaGolondrinaVieja", "DionisiaUser", "dionisia@gmail.com", "password", new Date())
+		pepita 					= serviceTest.singUp("Pepita", "LaGolondrina", "PepitaUser", "pepitagolondrina@gmail.com", "password", new Date())
+		dionisia 				= serviceTest.singUp("Dionisia", "LaGolondrinaVieja", "DionisiaUser", "dionisia@gmail.com", "password", new Date())
 		perfilService 			= new ProfileService(publicationDAO, hibernateUserDAO)
 		reservaCompraDeAsientos = new ReservaCompraDeAsientos(hibernateUserDAO, asientoDAO, new HibernateReservaDAO, new HibernateTramoDAO, new HibernateCompraDAO)
 		destino 				= new Destino("Rosario")

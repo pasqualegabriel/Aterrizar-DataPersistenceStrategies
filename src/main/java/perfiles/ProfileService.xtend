@@ -11,12 +11,13 @@ class ProfileService implements PerfilService{
 	
 	HibernateUserDAO 	hibernateUserDAO
 	PublicationDAO		publicationDAO
-	PrivacyHandler 	    aPrivacyHandler
+    PrivacyHandler      aPrivacyHandler
 	
 	new(PublicationDAO aPublicationDAO, HibernateUserDAO aHibernateUserDAO) {
 		this.hibernateUserDAO	= aHibernateUserDAO
 		this.publicationDAO		= aPublicationDAO
-		this.aPrivacyHandler 	= new PrivacyHandler   
+		this.aPrivacyHandler    = new PrivacyHandler
+ 
 	}
 	
 	override agregarPublicación(String aUser, Publication aPublication) {
@@ -99,6 +100,8 @@ class ProfileService implements PerfilService{
 	
 	def void filtrarPublicacionesPermitidas(Profile aProfile, String aUser) {
 		
+		
+		
 		val filteredPublications = aProfile.publications.filter[aPublication| aPrivacyHandler.hasPermition(aPublication, aUser)].toList
 		aProfile.publications    = filteredPublications
 	}
@@ -110,7 +113,7 @@ class ProfileService implements PerfilService{
 	}
 	
 	def filtrarComentariosPermitidos(Publication publication, String aUser) {
-		
+	
 		
 		var filteredComentaries = publication.comentarios.filter[aComentary | aPrivacyHandler.hasPermition(aComentary, aUser)].toList
 		publication.comentarios = filteredComentaries
@@ -127,6 +130,7 @@ class ProfileService implements PerfilService{
   		//Cambiar el nombre a command.
 		strategyOfCommentary.initialize(aPublication, aUser, aCommentary, this)
 		
+	
 		aPrivacyHandler.permitAccess(aCommentary, strategyOfCommentary, aUser) 
 	}
 	
@@ -135,7 +139,8 @@ class ProfileService implements PerfilService{
 	{
 		val unaPublicacion = publicationDAO.load(anIdPublication) 
 		
-		command.aNota = unaPublicacion 
+		command.aNota = unaPublicacion
+		 
 		
 		aPrivacyHandler.permitAccess(unaPublicacion, command, aUser) 
 		
