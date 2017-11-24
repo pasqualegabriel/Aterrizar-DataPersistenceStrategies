@@ -5,8 +5,8 @@ class CommentaryStrategy extends StrategyOfPublication{
 	
 	Comentary aComentary
 	
-	new(Comentary aComentary, Publication aPublication, ProfileService aProfileService){
-		super(aPublication, aProfileService)
+	new(Comentary aComentary, ProfileService aProfileService){
+		super(aProfileService)
 		this.aComentary = aComentary 
 	}
 	

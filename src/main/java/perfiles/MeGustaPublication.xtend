@@ -4,8 +4,8 @@ class MeGustaPublication extends StrategyOfPublication{
 	
 	String aUserId
 	
-	new(Publication publication, String aUser, ProfileService service) {
-		super(publication, service)
+	new( String aUser, ProfileService service) {
+		super(service)
 		aUserId = aUser
 	}
 	

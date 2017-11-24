@@ -4,19 +4,25 @@ import java.util.List
 
 class PrivacyHandler {
 	
+	
+	AccessPermited accesPermited
+	AcessDenied	   accesDenied
+	
 	List<AccessOfPrivacy> accesOfPrivacy = newArrayList
 	
 	new(){
-		accesOfPrivacy = #[new PrivateAcess, new PublicAcess, new OnlyFriendsAcess, new AcessDenied]
+		accesPermited = new AccessPermited
+		accesDenied   = new AcessDenied
+		accesOfPrivacy = #[accesPermited,accesDenied]
+		
 	}
 	
-	def hasPermission(Nota aNote,StrategyOfNote strategy, String aUser){
+	def permitAccess(Nota aNote,StrategyOfNote strategy, String aUser){
 		accesOfPrivacy.findFirst[it.canHandle(aNote.visibilidad,aNote.author, aUser)].assertRule(strategy)
 	}
 	
-	//Pensar nombre o buscar mejor abstraccion.
-	def xy(Nota aNote, String aUser) {
-		#[new PrivateAcess, new PublicAcess, new OnlyFriendsAcess].stream.anyMatch[it.canHandle(aNote.visibilidad, aNote.author,aUser)]
+	def hasPermition(Nota aNote, String aUser) {
+		accesPermited.canHandle(aNote.visibilidad, aNote.author,aUser)
 	}
 	
 }
