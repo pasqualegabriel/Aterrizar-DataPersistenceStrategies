@@ -1,12 +1,8 @@
 package perfiles
 
-class MeGustaComnentary extends StrategyOfCommentary{
+class MeGustaComnentary extends PublicationOfCommentary{
 
 	new(){}
-
-	new(Publication aPublication, String aAuthorWhoPoint, Comentary aComentary, ProfileService aProfileService) {
-		super(aPublication,aAuthorWhoPoint,aComentary,aProfileService)
-	}
 
 	override execute() {
 		comentary.agregarMeGusta(aUserId)

@@ -40,7 +40,7 @@ class ProfileService implements PerfilService{
 
 	override agregarComentario(String anIdPublication, Comentary aComentary) {
 		
-		val command       = new StrategyOfCommentary(aComentary, this) 
+		val command       = new PublicationOfCommentary(aComentary, this) 
 		publicitarNota (anIdPublication,command,aComentary.author  )
 	
 		aComentary
@@ -89,49 +89,50 @@ class ProfileService implements PerfilService{
 	
 
 	
-	override verPerfil(String aUser, String otherUser) {
-
-		var aProfile = new Profile =>  [ publications=	publicationDAO.loadAllPublications(otherUser) ]
-		filtrarPublicacionesPermitidas(aProfile, aUser)
-		filtrarComentariosEnPublicaciones(aProfile, aUser)
-		
-		aProfile
-	}
-	
-	def void filtrarPublicacionesPermitidas(Profile aProfile, String aUser) {
-		
-		
-		
-		val filteredPublications = aProfile.publications.filter[aPublication| aPrivacyHandler.hasPermition(aPublication, aUser)].toList
-		aProfile.publications    = filteredPublications
-	}
-	
-	
-	def filtrarComentariosEnPublicaciones(Profile aProfile, String aUser) {
-
-		aProfile.publications.forEach[aPublication| filtrarComentariosPermitidos(aPublication, aUser)]
-	}
-	
-	def filtrarComentariosPermitidos(Publication publication, String aUser) {
-	
-		
-		var filteredComentaries = publication.comentarios.filter[aComentary | aPrivacyHandler.hasPermition(aComentary, aUser)].toList
-		publication.comentarios = filteredComentaries
-	}
-	
-	
+//	override verPerfil(String aUser, String otherUser) {
+//
+//		var aProfile = new Profile =>  [ publications=	publicationDAO.loadAllPublications(otherUser) ]
+//		filtrarPublicacionesPermitidas(aProfile, aUser)
+//		filtrarComentariosEnPublicaciones(aProfile, aUser)
+//		
+//		aProfile
+//	}
+//	
+//	def void filtrarPublicacionesPermitidas(Profile aProfile, String aUser) {
+//		
+//		
+//		
+//		val filteredPublications = aProfile.publications.filter[aPublication| aPrivacyHandler.hasPermition(aPublication, aUser)].toList
+//		aProfile.publications    = filteredPublications
+//	}
+//	
+//	
+//	def filtrarComentariosEnPublicaciones(Profile aProfile, String aUser) {
+//
+//		aProfile.publications.forEach[aPublication| filtrarComentariosPermitidos(aPublication, aUser)]
+//	}
+//	
+//	def filtrarComentariosPermitidos(Publication publication, String aUser) {
+//	
+//		
+//		var filteredComentaries = publication.comentarios.filter[aComentary | aPrivacyHandler.hasPermition(aComentary, aUser)].toList
+//		publication.comentarios = filteredComentaries
+//	}
 	
 	
-	def rateComment(String aUser, UUID idCommentary, StrategyOfCommentary strategyOfCommentary){
+	
+	
+	
+	
+	def rateComment(String aUser, UUID idCommentary, PublicationOfCommentary strategyOfCommentary){
 		
 		var aPublication   = publicationDAO.loadForCommentary(idCommentary)
 		val aCommentary    = aPublication.searchCommentary(idCommentary)
   		
-  		//Cambiar el nombre a command.
-		strategyOfCommentary.initialize(aPublication, aUser, aCommentary, this)
+ 		strategyOfCommentary.initialize(aPublication, aUser, aCommentary, this)
 		
 	
-		aPrivacyHandler.permitAccess(aCommentary, strategyOfCommentary, aUser) 
+		aPrivacyHandler.permitPublicationAccess(aCommentary, strategyOfCommentary, aUser) 
 	}
 	
 	
@@ -142,13 +143,17 @@ class ProfileService implements PerfilService{
 		command.publication = unaPublicacion
 		 
 		
-		aPrivacyHandler.permitAccess(unaPublicacion, command, aUser) 
+		aPrivacyHandler.permitPublicationAccess(unaPublicacion, command, aUser) 
 		
 	}
 	
 	
 	def save(Publication publication) {
 		publicationDAO.save(publication)
+	}
+	
+	override verPerfil(String aUser, String otherUser) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
 

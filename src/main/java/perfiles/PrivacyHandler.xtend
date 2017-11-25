@@ -1,28 +1,25 @@
 package perfiles
 
-import java.util.List
+// Responsabilidad: Se hace cargo de Proveer el acceso adecuado para la publicacion y el usuario que accede.
 
 class PrivacyHandler {
 	
 	
-	AccessPermited accesPermited
-	AcessDenied	   accesDenied
+	new(){		}
 	
-	List<AccessOfPrivacy> accesOfPrivacy = newArrayList
-	
-	new(){
-		accesPermited = new RuleoOfSuccess
-		accesDenied   = new AcessDenied
-		accesOfPrivacy = #[accesPermited,accesDenied]
+	def permitPublicationAccess(Nota aNote,PublicationOfNote strategy, String aUser){
 		
+		#[new OnlyFriendsAcess, new PublicAcess, new PrivateAcess, new AcessDenied].findFirst[it.canHandleVisibility(aNote.visibilidad,aNote.author, aUser)].permitAcces(strategy)
 	}
 	
-	def permitAccess(Nota aNote,PublicationOfNote strategy, String aUser){
-		accesOfPrivacy.findFirst[it.canHandle(aNote.visibilidad,aNote.author, aUser)].assertRule(strategy)
+	
+	def permitViewAccess(String author ,PublicationOfNote strategy, String aUser){
+		
+		#[new OnlyFriendsAcess, new PublicAcess, new PrivateAcess].findFirst[it.canHandle(author, aUser)].permitView(strategy)
+	
 	}
 	
-	def hasPermition(Nota aNote, String aUser) {
-		accesPermited.canHandle(aNote.visibilidad, aNote.author,aUser)
-	}
+	
+	
 	
 }

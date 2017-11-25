@@ -115,7 +115,7 @@ class TestPublicacionDAO {
 	
 	@After
 	def void tearDown(){
-		//publicationDao.deleteAll
+		publicationDao.deleteAll
 		
 	}
 }

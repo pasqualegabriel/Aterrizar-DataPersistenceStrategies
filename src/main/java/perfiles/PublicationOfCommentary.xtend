@@ -1,15 +1,13 @@
 package perfiles
 
-class StrategyOfCommentary extends PublicationOfNote{
+
+
+class PublicationOfCommentary extends PublicationOfNote{
 		
 	protected Comentary			comentary
 	
 	new(){}
-	
-	new(Publication aPublication, String anAuthorWhoIsRating, Comentary aComentary, ProfileService aProfileService) {
-		this.initialize(aPublication, anAuthorWhoIsRating, aComentary, aProfileService)
-	}
-	
+		
 	new(Comentary comentary, ProfileService service) {
 		this.comentary= comentary
 		this.profileService = service

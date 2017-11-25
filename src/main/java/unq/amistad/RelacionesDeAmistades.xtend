@@ -68,5 +68,10 @@ class RelacionesDeAmistades implements AmigoService {
 			users
 		]
 	}
+		
+	override elUsuarioEsAmigoDe(String usuario1, String usuario2){
+		userDAONeo4j.sonAmigos(usuario1,usuario2)
+	
+	}
 	
 }

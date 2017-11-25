@@ -10,8 +10,8 @@ interface AmigoService {
 
 	def void aceptarSolicitud(String confirmador, String confirmado);
 
-	def List<Solicitud> verSolicitudes(String usuario); // solicitud
-
+	def List<Solicitud> verSolicitudes(String usuario); 
+	
 	def List<User> amigos(String usuario);
 
 	def List<User> amigosDespuesDe(String usuario, LocalDateTime fecha);
@@ -21,5 +21,9 @@ interface AmigoService {
 	def List<Mensaje> mensajes(String usuario, String amigo);
 
 	def List<User> conectados(String usuario);
+	
+	def Boolean elUsuarioEsAmigoDe(String usuario, String usuario2)
+	
+	
 }
 

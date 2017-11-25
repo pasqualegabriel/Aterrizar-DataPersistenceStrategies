@@ -270,6 +270,26 @@ class UserNeo4jDAO {
 			session.close
 		}
 	}
+	
+	def sonAmigos(String emisor, String receptor) {
+		var session = this.driver.session
+
+		try {
+			var query = "MATCH (emisor:User {userName: {emisorUserName}}) " +
+					"MATCH (receptor:User {userName: {receptorUserName}}) " +
+					"MATCH 	(emisor)-[s:ESAMIGO]->(receptor)"			    +
+					"RETURN s                 "
+					
+			var result = session.run(query, Values.parameters("emisorUserName"		, emisor,
+															 "receptorUserName"		, receptor
+												 )
+						)	
+			return (!result.list.isEmpty)
+			
+		} finally {
+			session.close
+		}
+	}
 
 
 }

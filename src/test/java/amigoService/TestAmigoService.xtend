@@ -109,6 +109,8 @@ class TestAmigoService {
 		
 		assertEquals(1, amigosDeDionisia.size)	
 		assertEquals(amigosDeDionisia.get(0).userName,"Loqui");
+		assertTrue(amigoService.elUsuarioEsAmigoDe("Loqui","DionisiaUser"))
+		assertFalse(amigoService.elUsuarioEsAmigoDe("Loqui","GokuUser"))
 		var solicitudPendienteDespuesDeAceptarUnaSolicitud = amigoService.verSolicitudes("DionisiaUser")
 		var users2 = #["PepitaUser"]
 		validarIntegridadesSolicitudes(users2,solicitudPendienteDespuesDeAceptarUnaSolicitud,1)

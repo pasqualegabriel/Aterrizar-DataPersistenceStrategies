@@ -1,13 +1,31 @@
 package perfiles
 
+//Resonsabilidad: Regla de acceso denegado
+
 class AcessDenied extends AccessOfPrivacy {
 	
-	override canHandle(Visibilidad visibilidad, String author, String anUserName) { 
-		(visibilidad.equals(Visibilidad.Privado) && !elUsuarioEsElAutorDeLapublicacion(author,anUserName)) ||
-		(visibilidad.equals(Visibilidad.SoloAmigos) && !elUsuarioEsAmigoDelAutor(author,anUserName)) && !elUsuarioEsElAutorDeLapublicacion(author,anUserName)
+	override canHandleVisibility(Visibilidad visibilidad, String author, String anUserName) { 
+		visibilidadPrivadoYNoEsElAutor(visibilidad,author,anUserName) ||
+		visibilidadSoloAmigosYnoSonAmigosNiEsElAutor(visibilidad,author,anUserName)
 	}
 	
-	override assertRule(PublicationOfNote strategy) {
+	
+	
+	def visibilidadSoloAmigosYnoSonAmigosNiEsElAutor(Visibilidad visibilidad, String author, String anUserName) {
+	visibilidadSoloAmigosYNoSonAmigos(visibilidad,author,anUserName) && !elUsuarioEsElAutorDeLapublicacion(author,anUserName)
+	}
+	
+	
+	
+	def visibilidadSoloAmigosYNoSonAmigos(Visibilidad visibilidad, String author, String anUserName) {
+		visibilidad.equals(Visibilidad.SoloAmigos) && !elUsuarioEsAmigoDelAutor(author,anUserName)
+	}
+	
+	def visibilidadPrivadoYNoEsElAutor(Visibilidad visibilidad, String author, String anUserName) {
+		visibilidad.equals(Visibilidad.Privado) && !elUsuarioEsElAutorDeLapublicacion(author,anUserName)
+	}
+	
+	override permitAcces(PublicationOfNote strategy) {
 		strategy.negateAccess
 	}
 	

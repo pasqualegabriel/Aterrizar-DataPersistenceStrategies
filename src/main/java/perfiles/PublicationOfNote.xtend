@@ -2,6 +2,8 @@ package perfiles
 
 import Excepciones.ExceptionNoTienePermisoParaInteractuarConLaPublicacion
 
+//Responsabilidad: Encapsular el comando que se ejecutar en ProfileService una vez se permite el acceso
+
 abstract class PublicationOfNote {
 	
 	protected Publication 		publication

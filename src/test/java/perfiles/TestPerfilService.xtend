@@ -771,15 +771,58 @@ class TestPerfilService {
 		fail
 	}
 	
-	@Test
-	def xxxx1() {
-		
-		//Encontrar abstraccion para esto.
-		/** creando relacion de amistad entre jose y pepita */
-		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
-		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
-		
-		//y sobretodo para esto.
+//	@Test
+//	def joseVeSus3PublicacionesY3ComentariosConDiferentesVisibilidadesPeroNoElComentarioPrivadoDePepita() {
+//		
+//		/** creando relacion de amistad entre jose y pepita */
+//		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
+//		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
+//		
+//		agregarPublicacionesYComentariosDeJoseYPepita()
+//	
+//		
+//		var perfil = perfilService.verPerfil(jose.userName,jose.userName)
+//		
+//		assertEquals(perfil.publications.size,3 )
+//		assertTrue(perfil.publications.stream.allMatch[it.comentarios.size.equals(3)])
+//		
+//	}
+//	
+//	
+//	
+//	@Test
+//	def pepiptaQueNoEsAmigaDeJoseVeLaUnicaPublicacionPublicaConElMensajePublicoYElSuyoPrivado() {
+//		
+//		agregarPublicacionesYComentariosDeJoseYPepita()
+//		
+//		
+//		var perfil = perfilService.verPerfil(pepita.userName,jose.userName)
+//		
+//		assertEquals(1,perfil.publications.size )
+//		assertTrue(perfil.publications.stream.allMatch[it.comentarios.size.equals(2)])
+//		
+//	}
+//	
+//	@Test
+//	def  pepiptaQueEsAmigaDeJoseVeLasPublicacionesNoPrivadasConLosMensajesNoPrivadosYElSuyoPrivado() {
+//		
+//		/** creando relacion de amistad entre jose y pepita */
+//		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
+//		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
+//		
+//		agregarPublicacionesYComentariosDeJoseYPepita()
+//		
+//		
+//		var perfil = perfilService.verPerfil(pepita.userName,jose.userName)
+//		
+//		assertEquals(perfil.publications.size,2 )
+//		assertTrue(perfil.publications.stream.anyMatch[it.comentarios.size.equals(3)])
+//		assertTrue(perfil.publications.stream.anyMatch[it.comentarios.size.equals(2)])
+//		
+//	}
+	
+	
+	def agregarPublicacionesYComentariosDeJoseYPepita() {
 		var unaPublicacion1 = agregarPublicacionAJose(jose.userName, "Hola pepita"      , Visibilidad.Privado   , destino )
 		var unaPublicacion2 = agregarPublicacionAJose(jose.userName, "Como andas pepita", Visibilidad.SoloAmigos, destino2)	
 		var unaPublicacion3 = agregarPublicacionAJose(jose.userName, "Chau pepita"      , Visibilidad.Publico   , destino3)
@@ -796,87 +839,7 @@ class TestPerfilService {
 		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.SoloAmigos)
 		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Publico)
 		
-			
-		agregarComentario	 (pepita.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.Privado)
 		agregarComentario	 (pepita.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Privado)
-	
-		
-		var perfil = perfilService.verPerfil(jose.userName,jose.userName)
-		
-		assertEquals(perfil.publications.size,3 )
-		assertTrue(perfil.publications.stream.allMatch[it.comentarios.size.equals(3)])
-		// jose tiene un perfil con 3  publicaciones, 1 publica, una solo amigos, 1 privada. 
-		// cada una de esas publicaciones tiene 3 comentarios de jose, 1 publica, una solo amigos, 1 privada.
-		// pepita que es amigo de jose, hizo un comentario privado en la publica y solo amigos.
-		// quiero ver que cuando jose, pida su perfil, vea todo su perfil entero solo con sus propios comentarios.
-		
-	}
-
-	
-	@Test
-	def xxxx12() {
-		
-		var unaPublicacion1 = agregarPublicacionAJose(jose.userName, "Hola pepita"      , Visibilidad.Privado   , destino )
-		var unaPublicacion2 = agregarPublicacionAJose(jose.userName, "Como andas pepita", Visibilidad.SoloAmigos, destino2)	
-		var unaPublicacion3 = agregarPublicacionAJose(jose.userName, "Chau pepita"      , Visibilidad.Publico   , destino3)
-		
-		
-		agregarComentario  	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.Privado)
-		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.SoloAmigos)
-		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.Publico)
-		
-		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.Privado)
-		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.SoloAmigos)
-		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.Publico)
-		
-		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Privado)
-		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.SoloAmigos)
-		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Publico)
-		
-		
-		var perfil = perfilService.verPerfil(pepita.userName,jose.userName)
-		
-		assertEquals(1,perfil.publications.size )
-		assertTrue(perfil.publications.stream.allMatch[it.comentarios.size.equals(1)])
-		// jose tiene un perfil con 3  publicaciones, 1 publica, una solo amigos, 1 privada. 
-		// cada una de esas publicaciones tiene 3 comentarios de jose, 1 publica, una solo amigos, 1 privada.
-		// quiero ver que cuando pepita que no es amigo de jose, pida el perfil de esta, vea solo la publicacion con 1 solo comentario
-		
-	}
-	
-	@Test
-	def xxxx13() {
-		
-		/** creando relacion de amistad entre jose y pepita */
-		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
-		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
-		
-		var unaPublicacion1 = agregarPublicacionAJose(jose.userName, "Hola pepita"      , Visibilidad.Privado   , destino )
-		var unaPublicacion2 = agregarPublicacionAJose(jose.userName, "Como andas pepita", Visibilidad.SoloAmigos, destino2)	
-		var unaPublicacion3 = agregarPublicacionAJose(jose.userName, "Chau pepita"      , Visibilidad.Publico   , destino3)
-		
-		
-		agregarComentario  	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.Privado)
-		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.SoloAmigos)
-		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.Publico)
-		
-		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.Privado)
-		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.SoloAmigos)
-		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.Publico)
-		
-		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Privado)
-		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.SoloAmigos)
-		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Publico)
-		
-		
-		var perfil = perfilService.verPerfil(pepita.userName,jose.userName)
-		
-		assertEquals(perfil.publications.size,2 )
-		assertTrue(perfil.publications.stream.allMatch[it.comentarios.size.equals(2)])
-		// jose tiene un perfil con 3  publicaciones, 1 publica, una solo amigos, 1 privada. 
-		// cada una de esas publicaciones tiene 3 comentarios de jose, 1 publica, una solo amigos, 1 privada.
-		// quiero ver que cuando pepita que es amigo de jose, pida el perfil de esta, vea las dos publicaciones con 2 comentarios
-		
 	}
 	
 	
