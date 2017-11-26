@@ -36,7 +36,26 @@ class PublicationDAO extends GenericMongoDAO<Publication>{
 	}
 	
 	// userName es quien busca el perfil del author
-	// amigos es la lista de amigos de userName
+	// amigos es la lista de amigos de userName (userName incluido)
+	def loadProfile(String userName, String author, List<String> amigos) {
+		var result = mongoCollection
+			.aggregate('{  $match : {$or: [ { visibilidad: "Publico" },
+											{ $and: [ { visibilidad: "SoloAmigos" }, { author: { $in: # } } ] }, 
+											{ $and: [ { visibilidad: "Privado" },    { author: # } ] } ] } }',
+	    			  							 amigos, userName)
+			.and('{ $project: { comentarios: { $filter: { input: "$comentarios", as: "coments", cond: 
+				{ $or: [ { $eq:  [ "$$coments.visibilidad", "Publico" ] },  
+						 { $and: [ { $eq: [ "$$coments.visibilidad", "SoloAmigos" ] }, 
+						           { $in: [ "$$coments.author", # ] } ] },  
+						 { $and: [ { $eq: [ "$$coments.visibilidad", "Privado" ] }, 
+						           { $eq: [ "$$coments.author", # ] } ] } ] } } }, 
+				author:1, visibilidad:1, cuerpo:1, meGustan:1, noMeGustan:1, destino:1 } }',
+				      amigos, userName).^as(Publication)
+				        
+		copyToList(result)
+	}
+
+/*
 	def loadProfile(String userName, String author, List<String> amigos) {
 		var result = mongoCollection
 						.aggregate('{  $match : {$or: [ { visibilidad: {$in:["Publico"]} },
@@ -53,29 +72,7 @@ class PublicationDAO extends GenericMongoDAO<Publication>{
 							amigos, userName).^as(Publication)  
 		copyToList(result)
 	}
-
-//	def loadProfile(String userName, List<Visibilidad> visibilidades) {
-//		
-////				var result = mongoCollection
-////						.aggregate('{ $match : { $and: [{ visibilidad: {$in: # } }, 
-////	 								{ author : # }]} }', visibilidades, userName)
-////						.and('{ $project: { comentarios: { $filter: {input: "$comentarios",as: 
-////							  "coments",cond: { $in: [ "$$coments.visibilidad", # ] }} }, 
-////							  author:1, visibilidad:1, cuerpo:1, 
-////						 	  meGustan:1, noMeGustan:1, destino:1 }}', visibilidades).^as(Publication)
-//		
-//		var result = mongoCollection
-//						.aggregate('{ $match: { $and: [ { visibilidad: { $in: # } }, 
-//	 								{ author: # } ] } }', visibilidades, userName)
-//						.and('{ $project: { comentarios: { $filter: { input: "$comentarios", as: 
-//							  "coments", cond: { 
-//                                                  $in: [ "$$coments.visibilidad", # ] 
-//                                               }} }, author:1, visibilidad:1, cuerpo:1, 
-//						 	  meGustan:1, noMeGustan:1, destino:1 }}', visibilidades).^as(Publication)
-//						 	  
-//		copyToList(result)
-//	}
-
+*/
 
 
 
