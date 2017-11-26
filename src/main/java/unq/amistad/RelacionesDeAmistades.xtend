@@ -40,7 +40,6 @@ class RelacionesDeAmistades implements AmigoService {
 			idsDeAmigos.forEach[ users.add(userDAOHibernate.loadbyname(it)) ]
 			users
 		]
-	
 	}
 	
 	override amigosDespuesDe(String usuario, LocalDateTime fecha) {

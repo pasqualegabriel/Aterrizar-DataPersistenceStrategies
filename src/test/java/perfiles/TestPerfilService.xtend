@@ -771,56 +771,51 @@ class TestPerfilService {
 		fail
 	}
 	
-//	@Test
-//	def joseVeSus3PublicacionesY3ComentariosConDiferentesVisibilidadesPeroNoElComentarioPrivadoDePepita() {
-//		
-//		/** creando relacion de amistad entre jose y pepita */
-//		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
-//		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
-//		
-//		agregarPublicacionesYComentariosDeJoseYPepita()
-//	
-//		
-//		var perfil = perfilService.verPerfil(jose.userName,jose.userName)
-//		
-//		assertEquals(perfil.publications.size,3 )
-//		assertTrue(perfil.publications.stream.allMatch[it.comentarios.size.equals(3)])
-//		
-//	}
-//	
-//	
-//	
-//	@Test
-//	def pepiptaQueNoEsAmigaDeJoseVeLaUnicaPublicacionPublicaConElMensajePublicoYElSuyoPrivado() {
-//		
-//		agregarPublicacionesYComentariosDeJoseYPepita()
-//		
-//		
-//		var perfil = perfilService.verPerfil(pepita.userName,jose.userName)
-//		
-//		assertEquals(1,perfil.publications.size )
-//		assertTrue(perfil.publications.stream.allMatch[it.comentarios.size.equals(2)])
-//		
-//	}
-//	
-//	@Test
-//	def  pepiptaQueEsAmigaDeJoseVeLasPublicacionesNoPrivadasConLosMensajesNoPrivadosYElSuyoPrivado() {
-//		
-//		/** creando relacion de amistad entre jose y pepita */
-//		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
-//		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
-//		
-//		agregarPublicacionesYComentariosDeJoseYPepita()
-//		
-//		
-//		var perfil = perfilService.verPerfil(pepita.userName,jose.userName)
-//		
-//		assertEquals(perfil.publications.size,2 )
-//		assertTrue(perfil.publications.stream.anyMatch[it.comentarios.size.equals(3)])
-//		assertTrue(perfil.publications.stream.anyMatch[it.comentarios.size.equals(2)])
-//		
-//	}
 	
+	@Test
+	def joseVeSus3PublicacionesY3ComentariosConDiferentesVisibilidadesPeroNoElComentarioPrivadoDePepita() {
+		
+		/** creando relacion de amistad entre jose y pepita */
+		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
+		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
+		
+		agregarPublicacionesYComentariosDeJoseYPepita()
+	
+		var perfil = perfilService.verPerfil(jose.userName, jose.userName)
+		
+		assertEquals(3, perfil.publications.size)
+		assertTrue(perfil.publications.stream.allMatch[it.comentarios.size.equals(3)])
+	}
+
+	@Test
+	def pepiptaQueNoEsAmigaDeJoseVeLaUnicaPublicacionPublicaConElMensajePublicoYElSuyoPrivado() {
+		
+		agregarPublicacionesYComentariosDeJoseYPepita()
+		
+		var perfil = perfilService.verPerfil(pepita.userName, jose.userName)
+		
+		assertEquals(1,perfil.publications.size )
+		assertTrue(perfil.publications.stream.allMatch[it.comentarios.size.equals(2)])
+		
+	}
+	
+	@Test
+	def  pepiptaQueEsAmigaDeJoseVeLasPublicacionesNoPrivadasConLosMensajesNoPrivadosYElSuyoPrivado() {
+		
+		/** creando relacion de amistad entre jose y pepita */
+		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
+		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
+		
+		agregarPublicacionesYComentariosDeJoseYPepita()
+		
+		
+		var perfil = perfilService.verPerfil(pepita.userName,jose.userName)
+		
+		assertEquals(perfil.publications.size,2 )
+		assertTrue(perfil.publications.stream.anyMatch[it.comentarios.size.equals(3)])
+		assertTrue(perfil.publications.stream.anyMatch[it.comentarios.size.equals(2)])
+		
+	}
 	
 	def agregarPublicacionesYComentariosDeJoseYPepita() {
 		var unaPublicacion1 = agregarPublicacionAJose(jose.userName, "Hola pepita"      , Visibilidad.Privado   , destino )

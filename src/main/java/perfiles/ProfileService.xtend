@@ -5,19 +5,20 @@ import daoImplementacion.HibernateUserDAO
 import daoImplementacion.PublicationDAO
 import runner.Runner
 import java.util.UUID
-
+import unq.amistad.RelacionesDeAmistades
 
 class ProfileService implements PerfilService{
 	
-	HibernateUserDAO 	hibernateUserDAO
-	PublicationDAO		publicationDAO
-    PrivacyHandler      aPrivacyHandler
+	HibernateUserDAO 	  hibernateUserDAO
+	PublicationDAO		  publicationDAO
+    PrivacyHandler        aPrivacyHandler
+    RelacionesDeAmistades relacionesDeAmistades
 	
 	new(PublicationDAO aPublicationDAO, HibernateUserDAO aHibernateUserDAO) {
-		this.hibernateUserDAO	= aHibernateUserDAO
-		this.publicationDAO		= aPublicationDAO
-		this.aPrivacyHandler    = new PrivacyHandler
- 
+		this.hibernateUserDAO	   = aHibernateUserDAO
+		this.publicationDAO		   = aPublicationDAO
+		this.aPrivacyHandler       = new PrivacyHandler
+        this.relacionesDeAmistades = new RelacionesDeAmistades
 	}
 	
 	override agregarPublicación(String aUser, Publication aPublication) {
@@ -80,11 +81,8 @@ class ProfileService implements PerfilService{
 	
 	override noMeGusta(String aUser, UUID idCommentary) {
 		
-		
-		
 		var strategy = new NoMeGustaComnentary
 		rateComment(aUser, idCommentary, strategy)
-
 	}
 	
 
@@ -142,18 +140,24 @@ class ProfileService implements PerfilService{
 		
 		command.publication = unaPublicacion
 		 
-		
 		aPrivacyHandler.permitPublicationAccess(unaPublicacion, command, aUser) 
-		
 	}
-	
 	
 	def save(Publication publication) {
 		publicationDAO.save(publication)
 	}
 	
-	override verPerfil(String aUser, String otherUser) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	override verPerfil(String aUserName, String author) {
+		
+		val friends = relacionesDeAmistades.amigos(aUserName)
+		val amigos  = newArrayList
+		friends.forEach[ amigos.add(it.userName) ]
+		amigos.add(aUserName)
+	
+		var aProfile = new Profile  
+		aProfile.publications =	publicationDAO.loadProfile(aUserName, author, amigos)
+			
+		aProfile
 	}
 
 

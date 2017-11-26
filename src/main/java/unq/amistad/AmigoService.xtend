@@ -25,5 +25,6 @@ interface AmigoService {
 	def Boolean elUsuarioEsAmigoDe(String usuario, String usuario2)
 	
 	
+	
 }
 
