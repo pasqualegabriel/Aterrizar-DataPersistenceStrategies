@@ -16,7 +16,7 @@ El TP se va a realizar en clase, a menos que estén muuuy complicados de tiempo.
 - Entrega 3 - ORM - Hibernate performance
 - [Entrega 4 - NoSQL - Neo4j](enunciado/entrega4.md)
 - [Entrega 5 - NoSQL - MongoDB](enunciado/entrega5.md)
-- [Entrega 6 - NoSQL - Redis]
+- [Entrega 6 - NoSQL - Redis](enunciado/entrega6.md)
 
 ## Consideraciones
 - Se entregará utilizando git. El grupo deberá subir el código del TP a github, hacer un tag y notificarnos de dicho tag para que podamos corregirlo. [Acá](https://sites.google.com/site/estrategiasdepersistencia/material/entregando-con-git) tienen un breve tutorial sobre como hacerlo.
