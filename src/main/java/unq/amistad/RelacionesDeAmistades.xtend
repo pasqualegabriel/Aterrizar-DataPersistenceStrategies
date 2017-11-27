@@ -73,4 +73,10 @@ class RelacionesDeAmistades implements AmigoService {
 	
 	}
 	
+	def userNames(String usuario) {
+		Runner.runInSession[
+			userDAONeo4j.getAmistades(usuario)
+		]
+	}
+	
 }

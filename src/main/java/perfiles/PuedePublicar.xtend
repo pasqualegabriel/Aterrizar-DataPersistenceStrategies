@@ -7,7 +7,7 @@ class PuedePublicar implements CanPublish {
 	}
 	
 	override execute(String aUserName, Publication publication, ProfileService service) {
-		publication.author	= aUserName
+		publication.author = aUserName
 		service.save(publication)
 
 		publication

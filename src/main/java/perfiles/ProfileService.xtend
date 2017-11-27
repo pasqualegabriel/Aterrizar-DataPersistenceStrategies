@@ -134,8 +134,7 @@ class ProfileService implements PerfilService{
 	}
 	
 	
-	def publicitarNota (String anIdPublication,PublicationOfNote command ,String aUser )
-	{
+	def publicitarNota(String anIdPublication, PublicationOfNote command, String aUser){
 		val unaPublicacion = publicationDAO.load(anIdPublication) 
 		
 		command.publication = unaPublicacion
@@ -149,10 +148,7 @@ class ProfileService implements PerfilService{
 	
 	override verPerfil(String aUserName, String author) {
 		
-		val friends = relacionesDeAmistades.amigos(aUserName)
-		val amigos  = newArrayList
-		friends.forEach[ amigos.add(it.userName) ]
-		amigos.add(aUserName)
+		var amigos = relacionesDeAmistades.userNames(aUserName)
 	
 		var aProfile = new Profile  
 		aProfile.publications =	publicationDAO.loadProfile(aUserName, author, amigos)

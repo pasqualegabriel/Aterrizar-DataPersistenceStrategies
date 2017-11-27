@@ -55,6 +55,7 @@ class TestPerfilService {
 	HibernateAsientoDAO asientoDAO
 	UserNeo4jDAO 		neo4jDao
 	PublicationDAO 		publicationDAO
+	Aereolinea          aerolinea
 
 	@Before
 	def void setUp() {
@@ -82,7 +83,7 @@ class TestPerfilService {
 
 	def void inicializarBaseDePrueba() {
 
-		var aerolinea = new Aereolinea("Aterrizar")
+		aerolinea = new Aereolinea("Aterrizar")
 
 		val asiento = new Asiento(new Tramo(100.00, new Vuelo(aerolinea), new Destino("asdas"), destino,LocalDateTime.of(2017, 1, 10, 10, 10, 30, 00), 
 				LocalDateTime.of(2017, 1, 10, 10, 19, 30, 00)),new Turista)
@@ -110,7 +111,7 @@ class TestPerfilService {
 	@Test
 	def testUnUsuarioQueNoTeniaNingunaPublicacionAgregaUnaPublicacionSobreUnDestinoVisitado() {
 
-		var unaPublicacionResultado = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Publico, destino)
+		var unaPublicacionResultado = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Publico, destino)
 
 		assertNotNull(unaPublicacionResultado.id);
 	}
@@ -118,15 +119,15 @@ class TestPerfilService {
 	@Test(expected=ExceptionYaExisteUnaPublicacionSobreElDestino)
 	def testUnUsuarioConUnaPublicacionSobreUnDestinoVisitadoNoPuedeVolverAPublicarSobreDichoDestino() {
 
-		agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Publico, destino)
-		agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Publico, destino)
+		agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Publico, destino)
+		agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Publico, destino)
 		fail()
 	}
 
 	@Test(expected=ExceptionNoVisitoDestino)
 	def testUnUsuarioSinPublicacionesNoPuedePublicarSobreUnDestinoNoVisitado() {
 
-		agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Publico, new Destino("DestinoNoVisitado"))
+		agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Publico, new Destino("DestinoNoVisitado"))
 		fail()
 	}
 
@@ -134,7 +135,7 @@ class TestPerfilService {
 	def testPepitaUserAregaUnComentarioALaPublicacionPublicaDeHunterJose() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
+		var unaPublicacion = agregarPublicacion("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
 		val unComentario   = agregarComentario("PepitaUser", unaPublicacion.id, "Alto viaje", Visibilidad.Publico)
 
 		var publicacion    = publicationDAO.load(unaPublicacion.id)
@@ -151,7 +152,7 @@ class TestPerfilService {
 		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
+		var unaPublicacion = agregarPublicacion("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
 		val unComentario   = agregarComentario("PepitaUser", unaPublicacion.id, "Alto viaje", Visibilidad.Publico)
 
 		var publicacion    = publicationDAO.load(unaPublicacion.id)
@@ -164,7 +165,7 @@ class TestPerfilService {
 	def testHunterJoseComentaSuPublicacionPublica() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose("HunterJose", "Buen viaje", Visibilidad.Publico, destino)
+		var unaPublicacion = agregarPublicacion("HunterJose", "Buen viaje", Visibilidad.Publico, destino)
 		val unComentario   = agregarComentario("HunterJose", unaPublicacion.id, "Alto viaje", Visibilidad.Publico)
 
 		var publicacion    = publicationDAO.load(unaPublicacion.id)
@@ -273,7 +274,7 @@ class TestPerfilService {
 	def testPepitaUserAregaUnMeGustaALaPublicacionPublicaDeHunterJose() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
+		var unaPublicacion = agregarPublicacion("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
 		perfilService.meGusta(pepita.userName, unaPublicacion.id)
 
 		var publicacion = publicationDAO.load(unaPublicacion.id)
@@ -286,7 +287,7 @@ class TestPerfilService {
 	def testHunterJoseAregaUnMeGustaASuPublicacionPublica() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Buen viaje", Visibilidad.Publico, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.Publico, destino)
 		perfilService.meGusta(jose.userName, unaPublicacion.id)
 
 		var publicacion = publicationDAO.load(unaPublicacion.id)
@@ -303,7 +304,7 @@ class TestPerfilService {
 		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
+		var unaPublicacion = agregarPublicacion("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
 		perfilService.meGusta(pepita.userName, unaPublicacion.id)
 
 		var publicacion = publicationDAO.load(unaPublicacion.id)
@@ -316,7 +317,7 @@ class TestPerfilService {
 	def testHunterJoseAregaUnMeGustaASuPublicacionSoloAmigos() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
 		perfilService.meGusta(jose.userName, unaPublicacion.id)
 
 		var publicacion = publicationDAO.load(unaPublicacion.id)
@@ -333,7 +334,7 @@ class TestPerfilService {
 		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
 		perfilService.meGusta(pepita.userName, unaPublicacion.id)
 
 		var publicacion = publicationDAO.load(unaPublicacion.id)
@@ -346,7 +347,7 @@ class TestPerfilService {
 	def testPepitaUserNoTienePermisoParaAregaUnMeGustaALaPublicacionSoloAmigosDeHunterJose() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
 		perfilService.meGusta(pepita.userName, unaPublicacion.id)
 		fail
 	}
@@ -355,7 +356,7 @@ class TestPerfilService {
 	def testHunterJoseAregaUnMeGustaASuPublicacionPrivada() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Buen viaje", Visibilidad.Privado, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.Privado, destino)
 		perfilService.meGusta(jose.userName, unaPublicacion.id)
 
 		var publicacion = publicationDAO.load(unaPublicacion.id)
@@ -368,7 +369,7 @@ class TestPerfilService {
 	def testPepitaUserNoTienePermisoParaAregaUnMeGustaALaPublicacionPrivadaDeHunterJose() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.Privado, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.Privado, destino)
 		perfilService.meGusta(pepita.userName, unaPublicacion.id)
 		fail
 	}
@@ -381,7 +382,7 @@ class TestPerfilService {
 		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.Privado, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.Privado, destino)
 		perfilService.meGusta(pepita.userName, unaPublicacion.id)
 		fail
 	}
@@ -390,7 +391,7 @@ class TestPerfilService {
 	def testPepitaUserVuelveAAregaUnMeGustaALaPublicacionPublicaDeHunterJoseRegistrandoseSoloUnMeGustaDePepitaUser() {
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
+		var unaPublicacion = agregarPublicacion("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
 		perfilService.meGusta(pepita.userName, unaPublicacion.id)
 		perfilService.meGusta(pepita.userName, unaPublicacion.id)
 
@@ -405,7 +406,7 @@ class TestPerfilService {
 	def testPepitaUserAregaUnNoMeGustaALaPublicacionPublicaDeHunterJose() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
+		var unaPublicacion = agregarPublicacion("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
 		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
 
 		var publicacion = publicationDAO.load(unaPublicacion.id)
@@ -418,7 +419,7 @@ class TestPerfilService {
 	def testHunterJoseAregaUnNoMeGustaASuPublicacionPublica() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Buen viaje", Visibilidad.Publico, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.Publico, destino)
 		perfilService.noMeGusta(jose.userName, unaPublicacion.id)
 
 		var publicacion = publicationDAO.load(unaPublicacion.id)
@@ -435,7 +436,7 @@ class TestPerfilService {
 		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
+		var unaPublicacion = agregarPublicacion("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
 		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
 
 		var publicacion = publicationDAO.load(unaPublicacion.id)
@@ -448,7 +449,7 @@ class TestPerfilService {
 	def testHunterJoseAregaUnNoMeGustaASuPublicacionSoloAmigos() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
 		perfilService.noMeGusta(jose.userName, unaPublicacion.id)
 
 		var publicacion = publicationDAO.load(unaPublicacion.id)
@@ -465,7 +466,7 @@ class TestPerfilService {
 		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
 		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
 
 		var publicacion = publicationDAO.load(unaPublicacion.id)
@@ -478,7 +479,7 @@ class TestPerfilService {
 	def testPepitaUserNoTienePermisoParaAregaUnNoMeGustaALaPublicacionSoloAmigosDeHunterJose() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
 		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
 		fail
 	}
@@ -487,7 +488,7 @@ class TestPerfilService {
 	def testHunterJoseAregaUnNoMeGustaASuPublicacionPrivada() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Buen viaje", Visibilidad.Privado, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.Privado, destino)
 		perfilService.noMeGusta(jose.userName, unaPublicacion.id)
 
 		var publicacion = publicationDAO.load(unaPublicacion.id)
@@ -500,7 +501,7 @@ class TestPerfilService {
 	def testPepitaUserNoTienePermisoParaAregaUnNoMeGustaALaPublicacionPrivadaDeHunterJose() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.Privado, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.Privado, destino)
 		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
 		fail
 	}
@@ -513,7 +514,7 @@ class TestPerfilService {
 		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.Privado, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.Privado, destino)
 		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
 		fail
 	}
@@ -522,7 +523,7 @@ class TestPerfilService {
 	def testPepitaUserVuelveAAregaUnNoMeGustaALaPublicacionPublicaDeHunterJoseRegistrandoseSoloUnNoMeGustaDePepitaUser() {
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
+		var unaPublicacion = agregarPublicacion("HunterJose", "Hola pepita", Visibilidad.Publico, destino)
 		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
 		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
 
@@ -537,7 +538,7 @@ class TestPerfilService {
 	def testPepitaUserAregaUnMeGustaALaPublicacionPublicaDeHunterJoseQueTeniaUnNoMeGustaDePepitaUser() {
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.Publico, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.Publico, destino)
 		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
 		perfilService.meGusta(  pepita.userName, unaPublicacion.id)
 
@@ -556,7 +557,7 @@ class TestPerfilService {
 		relacionesDeAmistades.aceptarSolicitud(pepita.userName, jose.userName)
 
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(pepita.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Buen viaje", Visibilidad.SoloAmigos, destino)
 		perfilService.meGusta(  pepita.userName, unaPublicacion.id)
 		perfilService.noMeGusta(pepita.userName, unaPublicacion.id)
 
@@ -572,7 +573,7 @@ class TestPerfilService {
 	def testPepitaUserAgregaUnMeGustaAUnComentarioPublicoDeHunterJose() {
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Publico, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Publico, destino)
 		var unComentario   = agregarComentario(pepita.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Publico)
 
 		perfilService.meGusta(dionisia.userName, unComentario.id)
@@ -587,7 +588,7 @@ class TestPerfilService {
 	def testHunterJoseAgregaUnMeGustaASuPropioComentarioConVisibilidadSoloAmigos() {
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
 		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.SoloAmigos)
 
 		perfilService.meGusta(jose.userName, unComentario.id)
@@ -606,7 +607,7 @@ class TestPerfilService {
 		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
 		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.SoloAmigos)
 
 		perfilService.meGusta(pepita.userName, unComentario.id)
@@ -621,7 +622,7 @@ class TestPerfilService {
 	def testPepitaUserAgregaUnMeGustaAElComentarioConVisibilidadSoloAmigosDeHunterJose() {
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
 		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.SoloAmigos)
 
 		perfilService.meGusta(pepita.userName, unComentario.id)
@@ -632,7 +633,7 @@ class TestPerfilService {
 	def testHunterJoseAgregaUnMeGustaASuPropioComentarioConVisibilidadPrivado() {
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
 		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Privado)
 
 		perfilService.meGusta(jose.userName, unComentario.id)
@@ -651,7 +652,7 @@ class TestPerfilService {
 		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
 		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Privado)
 
 		perfilService.meGusta(pepita.userName, unComentario.id)
@@ -662,7 +663,7 @@ class TestPerfilService {
 	def testPepitaUserAgregaUnMeGustaAElComentarioConVisibilidadPrivadaDeHunterJose() {
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
 		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Privado)
 
 		perfilService.meGusta(pepita.userName, unComentario.id)
@@ -674,7 +675,7 @@ class TestPerfilService {
 	def testPepitaUserAgregaUnNoMeGustaAUnComentarioPublicoDeHunterJose() {
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Publico, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Publico, destino)
 		var unComentario   = agregarComentario(pepita.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Publico)
 
 		perfilService.noMeGusta(dionisia.userName, unComentario.id)
@@ -689,7 +690,7 @@ class TestPerfilService {
 	def testHunterJoseAgregaUnNoMeGustaASuPropioComentarioConVisibilidadSoloAmigos() {
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
 		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.SoloAmigos)
 
 		perfilService.noMeGusta(jose.userName, unComentario.id)
@@ -708,7 +709,7 @@ class TestPerfilService {
 		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
 		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.SoloAmigos)
 
 		perfilService.noMeGusta(pepita.userName, unComentario.id)
@@ -723,7 +724,7 @@ class TestPerfilService {
 	def testPepitaUserAgregaUnNoMeGustaAElComentarioConVisibilidadSoloAmigosDeHunterJose() {
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.SoloAmigos, destino)
 		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.SoloAmigos)
 
 		perfilService.noMeGusta(pepita.userName, unComentario.id)
@@ -734,7 +735,7 @@ class TestPerfilService {
 	def testHunterJoseAgregaUnNoMeGustaASuPropioComentarioConVisibilidadPrivado() {
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
 		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Privado)
 
 		perfilService.noMeGusta(jose.userName, unComentario.id)
@@ -753,7 +754,7 @@ class TestPerfilService {
 		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
 		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Privado)
 
 		perfilService.noMeGusta(pepita.userName, unComentario.id)
@@ -764,7 +765,7 @@ class TestPerfilService {
 	def testPepitaUserAgregaUnNoMeGustaAElComentarioConVisibilidadPrivadaDeHunterJose() {
 		
 		// Exercise
-		var unaPublicacion = agregarPublicacionAJose(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
+		var unaPublicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
 		var unComentario   = agregarComentario(jose.userName, unaPublicacion.id, "Alto viaje", Visibilidad.Privado)
 
 		perfilService.noMeGusta(pepita.userName, unComentario.id)
@@ -817,24 +818,62 @@ class TestPerfilService {
 		
 	}
 	
+	@Test
+	def  pepiptaQueEsAmigaDeJoseVeLasPublicacionesNoPrivadasConLosMensajesNoPrivadosYElSuyoPrivadoYNoVeLaPublicacionDeDionisia() {
+		
+		/** creando relacion de amistad entre jose y pepita */
+		relacionesDeAmistades.mandarSolicitud(jose.userName,   pepita.userName)
+		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
+		
+		agregarPublicacionesYComentariosDeJoseYPepita()
+		var destinoA = new Destino("Roma")
+		var destinoB = new Destino("Madrid")
+		val unAsientoA = new Asiento(new Tramo(100.00, new Vuelo(aerolinea), destinoA, destinoA, LocalDateTime.of(2017, 1, 10, 10, 10, 30, 00), 
+				LocalDateTime.of(2017, 1, 10, 10, 19, 30, 00)),new Turista)
+		val unAsientoB = new Asiento(new Tramo(100.00, new Vuelo(aerolinea), destinoB, destinoB, LocalDateTime.of(2017, 1, 10, 10, 10, 30, 00), 
+				LocalDateTime.of(2017, 1, 10, 10, 19, 30, 00)),new Turista)
+		Runner.runInSession [
+			dionisia.monedero = 5000.00
+			hibernateUserDAO.update(dionisia)
+			pepita.monedero = 5000.00
+			hibernateUserDAO.update(pepita)
+			asientoDAO.save(unAsientoA)
+			asientoDAO.save(unAsientoB)
+			null
+		]
+		reservaCompraDeAsientos.comprar(reservaCompraDeAsientos.reservar(unAsientoA.id, dionisia.userName).id, dionisia.userName)
+		reservaCompraDeAsientos.comprar(reservaCompraDeAsientos.reservar(unAsientoB.id, pepita.userName).id,   pepita.userName)
+		var aPublicationA = agregarPublicacion(dionisia.userName, "hola pepita", Visibilidad.Publico , destinoA)
+		agregarComentario  	 (jose.userName, aPublicationA.id, "gran viajeA", Visibilidad.Publico)
+		var aPublicationB = agregarPublicacion(pepita.userName, "hola pepita", Visibilidad.Publico , destinoB)
+		agregarComentario  	 (pepita.userName, aPublicationB.id, "gran viajeB", Visibilidad.Publico)
+		
+		var perfil = perfilService.verPerfil(pepita.userName,jose.userName)
+		
+		assertEquals(perfil.publications.size,2 )
+		assertTrue(perfil.publications.stream.anyMatch[it.comentarios.size.equals(3)])
+		assertTrue(perfil.publications.stream.anyMatch[it.comentarios.size.equals(2)])
+		
+	}
+	
 	def agregarPublicacionesYComentariosDeJoseYPepita() {
-		var unaPublicacion1 = agregarPublicacionAJose(jose.userName, "Hola pepita"      , Visibilidad.Privado   , destino )
-		var unaPublicacion2 = agregarPublicacionAJose(jose.userName, "Como andas pepita", Visibilidad.SoloAmigos, destino2)	
-		var unaPublicacion3 = agregarPublicacionAJose(jose.userName, "Chau pepita"      , Visibilidad.Publico   , destino3)
+		var unaPublicacion1 = agregarPublicacion(jose.userName, "Hola pepita"      , Visibilidad.Privado   , destino )
+		var unaPublicacion2 = agregarPublicacion(jose.userName, "Como andas pepita", Visibilidad.SoloAmigos, destino2)	
+		var unaPublicacion3 = agregarPublicacion(jose.userName, "Chau pepita"      , Visibilidad.Publico   , destino3)
 		
-		agregarComentario  	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.Privado)
-		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.SoloAmigos)
-		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje", Visibilidad.Publico)
+		agregarComentario  	 (jose.userName, unaPublicacion1.id, "Alto viaje1", Visibilidad.Privado)
+		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje2", Visibilidad.SoloAmigos)
+		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje3", Visibilidad.Publico)
 		
-		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.Privado)
-		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.SoloAmigos)
-		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje", Visibilidad.Publico)
+		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje4", Visibilidad.Privado)
+		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje5", Visibilidad.SoloAmigos)
+		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje6", Visibilidad.Publico)
 		
-		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Privado)
-		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.SoloAmigos)
-		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Publico)
+		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje7", Visibilidad.Privado)
+		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje8", Visibilidad.SoloAmigos)
+		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje9", Visibilidad.Publico)
 		
-		agregarComentario	 (pepita.userName, unaPublicacion3.id, "Alto viaje", Visibilidad.Privado)
+		agregarComentario	 (pepita.userName,unaPublicacion3.id,"Alto viaje0", Visibilidad.Privado)
 	}
 	
 	
@@ -844,10 +883,10 @@ class TestPerfilService {
 		perfilService.agregarComentario(idPublication, aComentary)
 	}
 
-	def Publication agregarPublicacionAJose(String aUserName, String aCampo, Visibilidad aVisibilidad, Destino unDestino) {
+	def Publication agregarPublicacion(String aUserName, String aCampo, Visibilidad aVisibilidad, Destino unDestino) {
 
 		var aPublication = new Publication(aUserName, aCampo, aVisibilidad, unDestino)
-		perfilService.agregarPublicación(jose.userName, aPublication)
+		perfilService.agregarPublicación(aUserName, aPublication)
 	}
 
    
