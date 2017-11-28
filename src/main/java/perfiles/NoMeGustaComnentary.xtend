@@ -1,13 +1,13 @@
 package perfiles
 
-class NoMeGustaComnentary  extends PublicationOfCommentary{
+class NoMeGustaComnentary extends PublicationOfCommentary{
 	
 	new(){}
 		
 	override execute() {
-		comentary.agregarNoMeGusta(aUserId)
-		comentary.quitarMeGusta(aUserId)
-		profileService.update(publication)	
+
+		profileService.agregarNoMeGusta(comentary.id, aUserId)
+		profileService.quitarMeGusta(   comentary.id, aUserId)
 	}
 	
 	

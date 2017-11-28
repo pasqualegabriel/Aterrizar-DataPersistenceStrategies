@@ -5,14 +5,14 @@ class NoMeGustaPublication extends PublicationOfNote {
 	
 	
 	new( String aUser, ProfileService service) {
-		aUserId = aUser
+		aUserId        = aUser
 		profileService = service
 	}
 	
 	override execute() {
-		publication.agregarNoMeGusta(aUserId)
-		publication.quitarMeGusta(   aUserId)
-		profileService.update(publication)
+		
+		profileService.agregarNoMeGusta(publication.id, aUserId)
+		profileService.quitarMeGusta(   publication.id, aUserId)
 	}
 	
 }

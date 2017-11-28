@@ -8,7 +8,7 @@ abstract class PublicationOfNote {
 	
 	protected Publication 		publication
 	protected ProfileService	profileService
-	protected String aUserId
+	protected String            aUserId
 	
 	def void execute()
 

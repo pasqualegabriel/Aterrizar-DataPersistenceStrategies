@@ -28,7 +28,7 @@ class ProfileService implements PerfilService{
 	}
 	
 	def sePublico(String aUser, Publication aPublication) {
-		publicationDAO.hayPublicacion(aUser,aPublication)
+		publicationDAO.hayPublicacion(aUser, aPublication)
 	}
 	
 	def visito(String aUser, Publication aPublication) {
@@ -36,47 +36,41 @@ class ProfileService implements PerfilService{
 			hibernateUserDAO.visito(aUser, aPublication.destino.id) 
 		]
 	}
-	
-	
 
 	override agregarComentario(String anIdPublication, Comentary aComentary) {
 		
-		val command       = new PublicationOfCommentary(aComentary, this) 
-		publicitarNota (anIdPublication,command,aComentary.author  )
+		val command = new PublicationOfCommentary(aComentary, this) 
+		publicitarNota(anIdPublication, command, aComentary.author)
 	
 		aComentary
 	}
 
 	override meGusta(String aUser, String anIdPublication) {
 		
-		val command       = new MeGustaPublication(aUser, this) 
-		publicitarNota (anIdPublication,command,aUser )
-		
+		val command = new MeGustaPublication(aUser, this) 
+		publicitarNota(anIdPublication, command, aUser)
 	}
 
 	override noMeGusta(String aUser, String anIdPublication) {
 		
-		val command       = new NoMeGustaPublication(aUser, this) 
-		publicitarNota (anIdPublication,command,aUser  )
+		val command = new NoMeGustaPublication(aUser, this) 
+		publicitarNota(anIdPublication, command, aUser)
 	}
 	
 	def publicitarComentario(Publication publication, Comentary aComentary) {
 		
-		aComentary.id =  UUID.randomUUID
-		publication.agregarComentario(aComentary)
-		
-		publicationDAO.update(publication)
+		aComentary.id = UUID.randomUUID
+		publicationDAO.addComment(publication.id, aComentary)
 	}
 
-	def update(Publication publication){
-		publicationDAO.update(publication)
-	}
+//	def update(Publication publication){
+//		publicationDAO.update(publication)
+//	}
 
 	override meGusta(String aUser, UUID idCommentary) {
 
 		var strategy = new MeGustaComnentary
 		rateComment(aUser, idCommentary, strategy)	
-	
 	}
 	
 	override noMeGusta(String aUser, UUID idCommentary) {
@@ -85,43 +79,6 @@ class ProfileService implements PerfilService{
 		rateComment(aUser, idCommentary, strategy)
 	}
 	
-
-	
-//	override verPerfil(String aUser, String otherUser) {
-//
-//		var aProfile = new Profile =>  [ publications=	publicationDAO.loadAllPublications(otherUser) ]
-//		filtrarPublicacionesPermitidas(aProfile, aUser)
-//		filtrarComentariosEnPublicaciones(aProfile, aUser)
-//		
-//		aProfile
-//	}
-//	
-//	def void filtrarPublicacionesPermitidas(Profile aProfile, String aUser) {
-//		
-//		
-//		
-//		val filteredPublications = aProfile.publications.filter[aPublication| aPrivacyHandler.hasPermition(aPublication, aUser)].toList
-//		aProfile.publications    = filteredPublications
-//	}
-//	
-//	
-//	def filtrarComentariosEnPublicaciones(Profile aProfile, String aUser) {
-//
-//		aProfile.publications.forEach[aPublication| filtrarComentariosPermitidos(aPublication, aUser)]
-//	}
-//	
-//	def filtrarComentariosPermitidos(Publication publication, String aUser) {
-//	
-//		
-//		var filteredComentaries = publication.comentarios.filter[aComentary | aPrivacyHandler.hasPermition(aComentary, aUser)].toList
-//		publication.comentarios = filteredComentaries
-//	}
-	
-	
-	
-	
-	
-	
 	def rateComment(String aUser, UUID idCommentary, PublicationOfCommentary strategyOfCommentary){
 		
 		var aPublication   = publicationDAO.loadForCommentary(idCommentary)
@@ -129,17 +86,20 @@ class ProfileService implements PerfilService{
   		
  		strategyOfCommentary.initialize(aPublication, aUser, aCommentary, this)
 		
-	
 		aPrivacyHandler.permitPublicationAccess(aCommentary, strategyOfCommentary, aUser) 
 	}
 	
-	
 	def publicitarNota(String anIdPublication, PublicationOfNote command, String aUser){
-		val unaPublicacion = publicationDAO.load(anIdPublication) 
+		
+		val unaPublicacion = load(anIdPublication) 
 		
 		command.publication = unaPublicacion
 		 
 		aPrivacyHandler.permitPublicationAccess(unaPublicacion, command, aUser) 
+	}
+	
+	def load(String idPublication) {
+		publicationDAO.loadWithOnlyTheVisibilityAndTheAuthor(idPublication)
 	}
 	
 	def save(Publication publication) {
@@ -154,6 +114,38 @@ class ProfileService implements PerfilService{
 		aProfile.publications =	publicationDAO.loadProfile(aUserName, author, amigos)
 			
 		aProfile
+	}
+	
+	def agregarMeGusta(String idPublicacion, String userName) {
+		publicationDAO.agregarMeGustaPublicacion(idPublicacion, userName)
+	}
+	
+	def quitarNoMeGusta(String idPublicacion, String userName) {
+		publicationDAO.quitarNoMeGustaPublicacion(idPublicacion, userName)
+	}
+	
+	def agregarNoMeGusta(String idPublicacion, String userName) {
+		publicationDAO.agregarNoMeGustaPublicacion(idPublicacion, userName)
+	}
+	
+	def quitarMeGusta(String idPublicacion, String userName) {
+		publicationDAO.quitarMeGustaPublicacion(idPublicacion, userName)
+	}
+	
+	def agregarMeGusta(UUID idComentario, String userName) {
+		publicationDAO.agregarMeGustaComentario(idComentario, userName)
+	}
+	
+	def quitarNoMeGusta(UUID idComentario, String userName) {
+		publicationDAO.quitarNoMeGustaComentario(idComentario, userName)
+	}
+	
+	def agregarNoMeGusta(UUID idComentario, String userName) {
+		publicationDAO.agregarNoMeGustaComentario(idComentario, userName)
+	}
+	
+	def quitarMeGusta(UUID idComentario, String userName) {
+		publicationDAO.quitarMeGustaComentario(idComentario, userName)
 	}
 
 

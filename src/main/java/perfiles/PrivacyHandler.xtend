@@ -13,11 +13,11 @@ class PrivacyHandler {
 	}
 	
 	
-	def permitViewAccess(String author ,PublicationOfNote strategy, String aUser){
-		
-		#[new OnlyFriendsAcess, new PublicAcess, new PrivateAcess].findFirst[it.canHandle(author, aUser)].permitView(strategy)
-	
-	}
+//	def permitViewAccess(String author ,PublicationOfNote strategy, String aUser){
+//		
+//		#[new OnlyFriendsAcess, new PublicAcess, new PrivateAcess].findFirst[it.canHandle(author, aUser)].permitView(strategy)
+//	
+//	}
 	
 	
 	

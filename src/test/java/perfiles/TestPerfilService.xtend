@@ -194,7 +194,7 @@ class TestPerfilService {
 	@Test
 	def testPepitaUserAregaUnComentarioALaPublicacionConVisibilidadSoloAmigosDeSuAmigoHunterJose() {
 		/** creando relacion de amistad entre jose y pepita */
-		relacionesDeAmistades.mandarSolicitud(jose.userName,pepita.userName)
+		relacionesDeAmistades.mandarSolicitud( jose.userName,pepita.userName)
 		relacionesDeAmistades.aceptarSolicitud(pepita.userName,jose.userName)
 		
 		// Exercise

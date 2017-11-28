@@ -4,12 +4,12 @@ package perfiles
 
 class PublicationOfCommentary extends PublicationOfNote{
 		
-	protected Comentary			comentary
+	protected Comentary	comentary
 	
 	new(){}
 		
 	new(Comentary comentary, ProfileService service) {
-		this.comentary= comentary
+		this.comentary      = comentary
 		this.profileService = service
 	}
 	
@@ -22,7 +22,7 @@ class PublicationOfCommentary extends PublicationOfNote{
 	
 
 	override execute() {
-		profileService.publicitarComentario(publication,comentary)
+		profileService.publicitarComentario(publication, comentary)
 	}
 }
 

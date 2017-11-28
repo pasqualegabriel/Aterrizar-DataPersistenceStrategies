@@ -5,9 +5,10 @@ class MeGustaComnentary extends PublicationOfCommentary{
 	new(){}
 
 	override execute() {
-		comentary.agregarMeGusta(aUserId)
-		comentary.quitarNoMeGusta(aUserId)
-		profileService.update(publication)	
+	
+		profileService.agregarMeGusta( comentary.id, aUserId)
+		profileService.quitarNoMeGusta(comentary.id, aUserId)
+		
 	}
 	
 

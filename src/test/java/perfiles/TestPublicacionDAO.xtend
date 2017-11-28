@@ -116,14 +116,27 @@ class TestPublicacionDAO {
 ////		
 ////		assertEquals(1, perfil.publications.size)
 ////		assertEquals(2, perfil.publications.get(0).comentarios.size)
+////		publicationDao.agregarMeGustaPublicacion(publication2.id, "nahui")
+////		publicationDao.quitarMeGustaPublicacion( publication2.id, "nahui")
+//		assertEquals(1,1)
+////		publicationDao.agregarMeGustaComentario(aComentary6.id, "nahui")
+////		publicationDao.quitarMeGustaComentario( aComentary6.id, "nahui")
+////		var r = publicationDao.loadWithOnlyTheVisibilityAndTheAuthor(publication2.id)
+////		assertNotNull(r)
+//        val profileService = new ProfileService(publicationDao, new HibernateUserDAO)
+//        profileService.agregarMeGusta(publication2.id, "nahuelito")
+//
+//		var publicacion = publicationDao.load(publication2.id)
+//
+//		// Assertion
+//		assertTrue(publicacion.meGustan.contains("nahuelito"))
+//	}
+//	
+//	@Test
+//	def borrar(){
+//		publicationDao.deleteAll
 //		assertEquals(1,1)
 //	}
-	
-	@Test
-	def te(){
-		publicationDao.deleteAll
-		assertEquals(1,1)
-	}
 	
 	@After
 	def void tearDown(){
