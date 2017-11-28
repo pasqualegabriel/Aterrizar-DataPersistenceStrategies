@@ -6,6 +6,7 @@ import daoImplementacion.PublicationDAO
 import runner.Runner
 import java.util.UUID
 import unq.amistad.RelacionesDeAmistades
+import Excepciones.ExceptionNoTienePermisoParaInteractuarConLaPublicacion
 
 class ProfileService implements PerfilService{
 	
@@ -21,85 +22,98 @@ class ProfileService implements PerfilService{
         this.relacionesDeAmistades = new RelacionesDeAmistades
 	}
 	
-	override agregarPublicación(String aUser, Publication aPublication) {
+	override agregarPublicación(Publication aPublication) {
 		
 		var newPublication = new NewPublication 
-		newPublication.canPublish(aUser, aPublication, this)
+		newPublication.canPublish(aPublication, this)
 	}
 	
-	def sePublico(String aUser, Publication aPublication) {
-		publicationDAO.hayPublicacion(aUser, aPublication)
+	def sePublico(Publication aPublication) {
+		publicationDAO.hayPublicacion(aPublication)
 	}
 	
-	def visito(String aUser, Publication aPublication) {
+	def visito(Publication aPublication) {
 		Runner.runInSession [
-			hibernateUserDAO.visito(aUser, aPublication.destino.id) 
+			hibernateUserDAO.visito(aPublication.author, aPublication.destino.id) 
 		]
 	}
 
 	override agregarComentario(String anIdPublication, Comentary aComentary) {
 		
-		val command = new PublicationOfCommentary(aComentary, this) 
-		publicitarNota(anIdPublication, command, aComentary.author)
+//		val command = new PublicationOfCommentary(aComentary, this) 
+//		publicitarNota(anIdPublication, command, aComentary.author)
+		verifyPermissions(anIdPublication, aComentary.author)
+		publicitarComentario(anIdPublication, aComentary)
 	
 		aComentary
 	}
 
 	override meGusta(String aUser, String anIdPublication) {
 		
-		val command = new MeGustaPublication(aUser, this) 
-		publicitarNota(anIdPublication, command, aUser)
+//		val command = new MeGustaPublication(aUser, this) 
+//		publicitarNota(anIdPublication, command, aUser)
+		verifyPermissions(anIdPublication, aUser)
+		publicationDAO.agregarMeGustaPublicacion( anIdPublication, aUser)
+		publicationDAO.quitarNoMeGustaPublicacion(anIdPublication, aUser)
+	}
+	
+	def havePermissions(String anIdPublication, String aUser) {
+		var amigos = amigos(aUser)
+		publicationDAO.tienePermisosParaInteractuarConLaPublicacion(anIdPublication, aUser, amigos)
+	}
+	
+	def amigos(String aUser) {
+		relacionesDeAmistades.userNames(aUser)
 	}
 
 	override noMeGusta(String aUser, String anIdPublication) {
 		
-		val command = new NoMeGustaPublication(aUser, this) 
-		publicitarNota(anIdPublication, command, aUser)
+//		val command = new NoMeGustaPublication(aUser, this) 
+//		publicitarNota(anIdPublication, command, aUser)
+		verifyPermissions(anIdPublication, aUser)
+		publicationDAO.agregarNoMeGustaPublicacion(anIdPublication, aUser)
+		publicationDAO.quitarMeGustaPublicacion(   anIdPublication, aUser)
 	}
 	
-	def publicitarComentario(Publication publication, Comentary aComentary) {
+	def publicitarComentario(String anIdPublication, Comentary aComentary) {
 		
 		aComentary.id = UUID.randomUUID
-		publicationDAO.addComment(publication.id, aComentary)
+		publicationDAO.addComment(anIdPublication, aComentary)
 	}
-
-//	def update(Publication publication){
-//		publicationDAO.update(publication)
-//	}
 
 	override meGusta(String aUser, UUID idCommentary) {
 
-		var strategy = new MeGustaComnentary
-		rateComment(aUser, idCommentary, strategy)	
+//		var strategy = new MeGustaComnentary
+//		rateComment(aUser, idCommentary, strategy)	
+		verifyPermissions(idCommentary, aUser)
+		publicationDAO.agregarMeGustaComentario( idCommentary, aUser)
+		publicationDAO.quitarNoMeGustaComentario(idCommentary, aUser)
+	}
+	
+	def havePermissions(UUID idCommentary, String aUser) {
+		var amigos = amigos(aUser)
+		publicationDAO.tienePermisosParaInteractuarConElComentario(idCommentary, aUser, amigos)
+	}
+	// Sacar if y logica repetida
+	def verifyPermissions(UUID idCommentary, String aUser){
+		if(!havePermissions(idCommentary, aUser)){
+			throw new ExceptionNoTienePermisoParaInteractuarConLaPublicacion("El usuario no tiene permiso para interactuar con la publicacion")
+		}
+	}
+	// Sacar if y logica repetida
+	def verifyPermissions(String idPublication, String aUser){
+		if(!havePermissions(idPublication, aUser)){
+			throw new ExceptionNoTienePermisoParaInteractuarConLaPublicacion("El usuario no tiene permiso para interactuar con la publicacion")
+		}
 	}
 	
 	override noMeGusta(String aUser, UUID idCommentary) {
 		
-		var strategy = new NoMeGustaComnentary
-		rateComment(aUser, idCommentary, strategy)
-	}
-	
-	def rateComment(String aUser, UUID idCommentary, PublicationOfCommentary strategyOfCommentary){
-		
-		var aPublication   = publicationDAO.loadForCommentary(idCommentary)
-		val aCommentary    = aPublication.searchCommentary(idCommentary)
-  		
- 		strategyOfCommentary.initialize(aPublication, aUser, aCommentary, this)
-		
-		aPrivacyHandler.permitPublicationAccess(aCommentary, strategyOfCommentary, aUser) 
-	}
-	
-	def publicitarNota(String anIdPublication, PublicationOfNote command, String aUser){
-		
-		val unaPublicacion = load(anIdPublication) 
-		
-		command.publication = unaPublicacion
-		 
-		aPrivacyHandler.permitPublicationAccess(unaPublicacion, command, aUser) 
-	}
-	
-	def load(String idPublication) {
-		publicationDAO.loadWithOnlyTheVisibilityAndTheAuthor(idPublication)
+//		var strategy = new NoMeGustaComnentary
+//		rateComment(aUser, idCommentary, strategy)
+		verifyPermissions(idCommentary, aUser)
+		publicationDAO.agregarNoMeGustaComentario(idCommentary, aUser)
+		publicationDAO.quitarMeGustaComentario(   idCommentary, aUser)
 	}
 	
 	def save(Publication publication) {
@@ -116,37 +130,30 @@ class ProfileService implements PerfilService{
 		aProfile
 	}
 	
-	def agregarMeGusta(String idPublicacion, String userName) {
-		publicationDAO.agregarMeGustaPublicacion(idPublicacion, userName)
-	}
-	
-	def quitarNoMeGusta(String idPublicacion, String userName) {
-		publicationDAO.quitarNoMeGustaPublicacion(idPublicacion, userName)
-	}
-	
-	def agregarNoMeGusta(String idPublicacion, String userName) {
-		publicationDAO.agregarNoMeGustaPublicacion(idPublicacion, userName)
-	}
-	
-	def quitarMeGusta(String idPublicacion, String userName) {
-		publicationDAO.quitarMeGustaPublicacion(idPublicacion, userName)
-	}
-	
-	def agregarMeGusta(UUID idComentario, String userName) {
-		publicationDAO.agregarMeGustaComentario(idComentario, userName)
-	}
-	
-	def quitarNoMeGusta(UUID idComentario, String userName) {
-		publicationDAO.quitarNoMeGustaComentario(idComentario, userName)
-	}
-	
-	def agregarNoMeGusta(UUID idComentario, String userName) {
-		publicationDAO.agregarNoMeGustaComentario(idComentario, userName)
-	}
-	
-	def quitarMeGusta(UUID idComentario, String userName) {
-		publicationDAO.quitarMeGustaComentario(idComentario, userName)
-	}
+//	def rateComment(String aUser, UUID idCommentary, PublicationOfCommentary strategyOfCommentary){
+//		
+//		var aPublication   = publicationDAO.loadForCommentary(idCommentary)
+//		val aCommentary    = aPublication.searchCommentary(idCommentary)
+//  		
+// 		strategyOfCommentary.initialize(aPublication, aUser, aCommentary, this)
+//		
+//		aPrivacyHandler.permitPublicationAccess(aCommentary, strategyOfCommentary, aUser) 
+//	}
+//	
+//	def publicitarNota(String anIdPublication, PublicationOfNote command, String aUser){
+//		
+//		val unaPublicacion = load(anIdPublication) 
+//		
+//		command.publication = unaPublicacion
+//		 
+//		aPrivacyHandler.permitPublicationAccess(unaPublicacion, command, aUser) 
+//	}
+//	
+//	def load(String idPublication) {
+//		publicationDAO.loadWithOnlyTheVisibilityAndTheAuthor(idPublication)
+//	}
+//	
+
 
 
 	

@@ -4,11 +4,11 @@ import Excepciones.ExceptionYaExisteUnaPublicacionSobreElDestino
 
 class YaPublico implements CanPublish {
 	
-	override canHandle(String aUserName, Publication publication, ProfileService service) {
-		service.sePublico(aUserName, publication)
+	override canHandle(Publication publication, ProfileService service) {
+		service.sePublico(publication)
 	}
 	
-	override execute(String aUserName, Publication publication, ProfileService service) {
+	override execute(Publication publication, ProfileService service) {
 		throw new ExceptionYaExisteUnaPublicacionSobreElDestino("Ya existe una publicacion sobre el destino")
 	}
 }

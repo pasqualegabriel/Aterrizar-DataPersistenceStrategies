@@ -13,34 +13,40 @@ class PublicationDAO extends GenericMongoDAO<Publication>{
 		super(Publication)
 	}
 	
-	def boolean hayPublicacion(String aUserName, Publication publication) {
+	def boolean hayPublicacion(Publication publication) {
 
 		var result = this.find(
 					     "{ author: # , destino: { id : #, nombre : # } }", 
-					     aUserName, publication.idDestino, publication.nombreDestino)	
+					     publication.author, publication.idDestino, publication.nombreDestino)	
 		!result.empty
 	}
+
+	def tienePermisosParaInteractuarConLaPublicacion(String idPublicacion, String userName, List<String> amigos) {
+		var result = mongoCollection.findOne('{ $and: [ { _id: # },
+                                                        { $or: [ { author: # },
+			                                                     { visibilidad: "Publico" },
+											                     { $and: [ { visibilidad: "SoloAmigos" }, 
+			                                                               { author: { $in: # } } ] } ] } ] }, 
+                             { author:0, visibilidad:0, cuerpo:0, meGustan:0, noMeGustan:0 }', 
+                             new ObjectId(idPublicacion), userName, amigos).^as(Publication)
+		result != null
+	}
 	
-//	def loadForCommentary2(UUID idCommentary) {
-//			
-//		var result=find("{ comentarios.id: # }", idCommentary)
-//		result.get(0)
-//	}
-	
-	def loadForCommentary(UUID idCommentary) {
-			
-		mongoCollection.findOne("{ comentarios.id: # }, 
-                                 { author:1, visibilidad:1, cuerpo:0, meGustan:0, noMeGustan:0 }", 
-                                 idCommentary).^as(Publication)
-//		var result = mongoCollection
-//			.aggregate('{ $match: { comentarios.id: # } }', 
-//                      idCommentary)
-//			.and('{ $project: { comentarios: { $filter: { input: "$comentarios", as: "coments", cond: 
-//				  {	$eq:  [ "$$coments.id", # ] } } }, 
-//				  author:1, visibilidad:1, cuerpo:0, meGustan:0, noMeGustan:0 } }',
-//				      idCommentary).^as(Publication)
-//				        
-//		copyToList(result).get(0)
+    def tienePermisosParaInteractuarConElComentario(UUID idCommentary, String userName, List<String> amigos) {
+		var result = mongoCollection
+			.aggregate('{ $match: { comentarios.id: # } }', 
+                      idCommentary)
+			.and('{ $project: { comentarios: { $filter: { input: "$comentarios", as: "coments", cond: 
+				{ $and: [ { $eq: ["$$coments.id", # ] },
+					      { $or: [ { $eq:  [ "$$coments.visibilidad", "Publico" ] },  
+						           { $eq:  [ "$$coments.author", # ] }, 
+						           { $and: [ { $eq: [ "$$coments.visibilidad", "SoloAmigos" ] }, 
+						                     { $in: [ "$$coments.author", # ] } ] } ] } ] } } } } }',
+				      idCommentary, userName, amigos).^as(Publication)
+				        
+		var res = copyToList(result)
+
+		!res.empty && res.get(0).comentarios.size > 0
 	}
 
 	// userName es quien busca el perfil del author
@@ -62,11 +68,6 @@ class PublicationDAO extends GenericMongoDAO<Publication>{
 				      userName, amigos).^as(Publication)
 				        
 		copyToList(result)
-	}
-	
-	def loadWithOnlyTheVisibilityAndTheAuthor(String idPublication) {
-		
-		mongoCollection.findOne("{ _id: # }, { author: 1, visibilidad: 1 }", new ObjectId(idPublication)).^as(Publication)
 	}
 	
 	def addComment(String idPublication, Comentary comentary) {

@@ -2,14 +2,12 @@ package perfiles
 
 class PuedePublicar implements CanPublish {
 	
-	override canHandle(String aUserName, Publication publication, ProfileService service) {
-		!service.sePublico(aUserName, publication) && service.visito(aUserName, publication)
+	override canHandle(Publication publication, ProfileService service) {
+		!service.sePublico(publication) && service.visito(publication)
 	}
 	
-	override execute(String aUserName, Publication publication, ProfileService service) {
-		publication.author = aUserName
+	override execute(Publication publication, ProfileService service) {
 		service.save(publication)
-
 		publication
 	}
 }

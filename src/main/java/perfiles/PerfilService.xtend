@@ -4,7 +4,7 @@ import java.util.UUID
 
 interface PerfilService {
 	
-	def Publication agregarPublicación(String aUser, Publication aPublication) 
+	def Publication agregarPublicación(Publication aPublication) 
 	
 	def Comentary agregarComentario(String aPublication, Comentary aComentary)
 	

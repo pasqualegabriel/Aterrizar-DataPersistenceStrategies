@@ -180,7 +180,7 @@ class TestPerfilService {
 		// Exercise
 		var aPublication = new Publication(jose.userName, "unCampo", Visibilidad.SoloAmigos, destino)
 		
-		perfilService.agregarPublicación(jose.userName, aPublication)
+		perfilService.agregarPublicación(aPublication)
 		
 		val unComentario = agregarComentario(jose.userName, aPublication.id, "Alto viaje", Visibilidad.Publico)
 		
@@ -202,7 +202,7 @@ class TestPerfilService {
 	
 		var aPublication = new Publication(jose.userName, "unCampo", Visibilidad.SoloAmigos, destino)
 		
-		perfilService.agregarPublicación(jose.userName, aPublication)
+		perfilService.agregarPublicación(aPublication)
 		
 		val unComentario = agregarComentario(pepita.userName, aPublication.id, "Alto viaje", Visibilidad.Publico)
 		
@@ -218,7 +218,7 @@ class TestPerfilService {
 
 		var aPublication = new Publication(jose.userName, "unCampo", Visibilidad.SoloAmigos, destino)
 		
-		perfilService.agregarPublicación(jose.userName, aPublication)
+		perfilService.agregarPublicación(aPublication)
 		
 		agregarComentario(pepita.userName, aPublication.id, "Alto viaje", Visibilidad.Publico)
 
@@ -230,7 +230,7 @@ class TestPerfilService {
 		
 		var aPublication = new Publication(jose.userName, "unCampo", Visibilidad.Privado, destino)
 		
-		perfilService.agregarPublicación(jose.userName, aPublication)
+		perfilService.agregarPublicación(aPublication)
 		
 		var unComentario = agregarComentario(jose.userName, aPublication.id, "Alto viaje", Visibilidad.Privado)
 		
@@ -246,7 +246,7 @@ class TestPerfilService {
 		
 		var aPublication = new Publication(jose.userName, "unCampo", Visibilidad.Privado, destino)
 		
-		perfilService.agregarPublicación(jose.userName, aPublication)
+		perfilService.agregarPublicación(aPublication)
 		
 		agregarComentario(pepita.userName, aPublication.id, "Alto viaje", Visibilidad.Privado)
 		
@@ -262,7 +262,7 @@ class TestPerfilService {
 		
 		var aPublication = new Publication(jose.userName, "unCampo", Visibilidad.Privado, destino)
 		
-		perfilService.agregarPublicación(jose.userName, aPublication)
+		perfilService.agregarPublicación(aPublication)
 		
 		agregarComentario(pepita.userName, aPublication.id, "Alto viaje", Visibilidad.Privado)
 		
@@ -861,19 +861,19 @@ class TestPerfilService {
 		var unaPublicacion2 = agregarPublicacion(jose.userName, "Como andas pepita", Visibilidad.SoloAmigos, destino2)	
 		var unaPublicacion3 = agregarPublicacion(jose.userName, "Chau pepita"      , Visibilidad.Publico   , destino3)
 		
-		agregarComentario  	 (jose.userName, unaPublicacion1.id, "Alto viaje1", Visibilidad.Privado)
-		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje2", Visibilidad.SoloAmigos)
-		agregarComentario	 (jose.userName, unaPublicacion1.id, "Alto viaje3", Visibilidad.Publico)
+		agregarComentario(jose.userName, unaPublicacion1.id, "Alto viaje1", Visibilidad.Privado)
+		agregarComentario(jose.userName, unaPublicacion1.id, "Alto viaje2", Visibilidad.SoloAmigos)
+		agregarComentario(jose.userName, unaPublicacion1.id, "Alto viaje3", Visibilidad.Publico)
 		
-		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje4", Visibilidad.Privado)
-		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje5", Visibilidad.SoloAmigos)
-		agregarComentario	 (jose.userName, unaPublicacion2.id, "Alto viaje6", Visibilidad.Publico)
+		agregarComentario(jose.userName, unaPublicacion2.id, "Alto viaje4", Visibilidad.Privado)
+		agregarComentario(jose.userName, unaPublicacion2.id, "Alto viaje5", Visibilidad.SoloAmigos)
+		agregarComentario(jose.userName, unaPublicacion2.id, "Alto viaje6", Visibilidad.Publico)
 		
-		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje7", Visibilidad.Privado)
-		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje8", Visibilidad.SoloAmigos)
-		agregarComentario	 (jose.userName, unaPublicacion3.id, "Alto viaje9", Visibilidad.Publico)
+		agregarComentario(jose.userName, unaPublicacion3.id, "Alto viaje7", Visibilidad.Privado)
+		agregarComentario(jose.userName, unaPublicacion3.id, "Alto viaje8", Visibilidad.SoloAmigos)
+		agregarComentario(jose.userName, unaPublicacion3.id, "Alto viaje9", Visibilidad.Publico)
 		
-		agregarComentario	 (pepita.userName,unaPublicacion3.id,"Alto viaje0", Visibilidad.Privado)
+		agregarComentario(pepita.userName,unaPublicacion3.id,"Alto viaje0", Visibilidad.Privado)
 	}
 	
 	
@@ -886,16 +886,9 @@ class TestPerfilService {
 	def Publication agregarPublicacion(String aUserName, String aCampo, Visibilidad aVisibilidad, Destino unDestino) {
 
 		var aPublication = new Publication(aUserName, aCampo, aVisibilidad, unDestino)
-		perfilService.agregarPublicación(aUserName, aPublication)
+		perfilService.agregarPublicación(aPublication)
 	}
 
-   
-
-	@Test
-	def limpiador(){
-		
-		assertTrue(true)
-	}
 
 	@After
 	def void tearDown() {
