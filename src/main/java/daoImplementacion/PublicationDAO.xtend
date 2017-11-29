@@ -27,7 +27,7 @@ class PublicationDAO extends GenericMongoDAO<Publication>{
 			                                                     { visibilidad: "Publico" },
 											                     { $and: [ { visibilidad: "SoloAmigos" }, 
 			                                                               { author: { $in: # } } ] } ] } ] }, 
-                             { author:0, visibilidad:0, cuerpo:0, meGustan:0, noMeGustan:0 }', 
+                             { author:1, visibilidad:0, cuerpo:0, meGustan:0, noMeGustan:0 }', 
                              new ObjectId(idPublicacion), userName, amigos).^as(Publication)
 		result != null
 	}

@@ -444,10 +444,74 @@ class TestPublicacionDAO {
 		assertFalse(publicationDAO.tienePermisosParaInteractuarConElComentario(aComentary.id, "Jose", #["Pepita"]))
 	}
 	
+	@Test
+	def elUsuarioJoseVeElPerfilDeSuAmigoHunterJuan(){
+		var publication2 = new Publication("HunterJuan", "re COOL el viaje a nordelta", Visibilidad.Publico, new Destino("Cordoba"))
+		var publication3 = new Publication("Jose",       "re COOL el viaje a Rosario",  Visibilidad.Publico, new Destino("Rosario"))
+    	publicationDAO.save(publication)
+    	publicationDAO.save(publication2)
+    	publicationDAO.save(publication3)
+    	var aComentary1 = new Comentary("HunterJuan", "cool", Visibilidad.Privado) => [ id = UUID.randomUUID ]
+		publicationDAO.addComment(publication.id, aComentary1)
+		var aComentary2 = new Comentary("HunterJuan", "cool", Visibilidad.Publico) => [ id = UUID.randomUUID ]
+		publicationDAO.addComment(publication3.id, aComentary2)
+		
+		val publicaciones = publicationDAO.loadProfile("Jose", "HunterJuan", #[])
+		
+		publication  = publicationDAO.load(publication.id)
+		publication2 = publicationDAO.load(publication2.id)
+    	
+    	assertEquals(2, publicaciones.size)
+    }
+    
+   	@Test
+	def elUsuarioPepitaVeElPerfilDeSuAmigoHunterJuan(){
+		publication.visibilidad = Visibilidad.SoloAmigos
+		var publication2 = new Publication("HunterJuan", "buen viaje",   Visibilidad.Privado,    new Destino("Cordoba"))
+		var publication3 = new Publication("Pepita", "re COOL el viaje", Visibilidad.SoloAmigos, new Destino("Rosario"))
+    	publicationDAO.save(publication)
+    	publicationDAO.save(publication2)
+    	publicationDAO.save(publication3)
+    	var aComentary1 = new Comentary("HunterJuan", "cool", Visibilidad.Privado) => [ id = UUID.randomUUID ]
+		publicationDAO.addComment(publication.id, aComentary1)
+		var aComentary2 = new Comentary("HunterJuan", "cool", Visibilidad.SoloAmigos) => [ id = UUID.randomUUID ]
+		publicationDAO.addComment(publication3.id, aComentary2)
+		
+		val publicaciones = publicationDAO.loadProfile("Pepita", "HunterJuan", #["HunterJuan"])
+		
+    	assertEquals(1, publicaciones.size)
+    }
+    
+    @Test
+	def elUsuarioDionisiaVeElPerfilDeHunterJuan(){
+		publication.visibilidad = Visibilidad.Publico
+		var publication2 = new Publication("HunterJuan", "buen viaje",     Visibilidad.Privado,    new Destino("Cordoba"))
+		var publication3 = new Publication("Dionisia", "re COOL el viaje", Visibilidad.SoloAmigos, new Destino("Rosario"))
+    	publicationDAO.save(publication)
+    	publicationDAO.save(publication2)
+    	publicationDAO.save(publication3)
+    	var aComentary1 = new Comentary("HunterJuan", "cool", Visibilidad.Privado) => [ id = UUID.randomUUID ]
+		publicationDAO.addComment(publication.id, aComentary1)
+		var aComentary2 = new Comentary("HunterJuan", "cool", Visibilidad.SoloAmigos) => [ id = UUID.randomUUID ]
+		publicationDAO.addComment(publication3.id, aComentary2)
+		var aComentary3 = new Comentary("HunterJuan", "cool", Visibilidad.Publico) => [ id = UUID.randomUUID ]
+		publicationDAO.addComment(publication.id, aComentary3)
+		var aComentary4 = new Comentary("Pepita", "cool", Visibilidad.Publico) => [ id = UUID.randomUUID ]
+		publicationDAO.addComment(publication.id, aComentary4)
+		var aComentary5 = new Comentary("Dionisia", "cool", Visibilidad.Privado) => [ id = UUID.randomUUID ]
+		publicationDAO.addComment(publication.id, aComentary5)
+		var aComentary6 = new Comentary("HunterJuan", "cool", Visibilidad.Publico) => [ id = UUID.randomUUID ]
+		publicationDAO.addComment(publication2.id, aComentary6)
+		
+		val publicaciones = publicationDAO.loadProfile("Dionisia", "HunterJuan", #["Pepita"])
+    	
+    	assertEquals(1, publicaciones.size)
+    	assertEquals(3, publicaciones.get(0).comentarios.size)
+    }
+    	
 	@After
 	def void tearDown(){
 		publicationDAO.deleteAll
-		
 	}
 }
 
