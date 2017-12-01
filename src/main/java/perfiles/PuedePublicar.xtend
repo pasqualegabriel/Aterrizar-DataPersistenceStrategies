@@ -2,8 +2,8 @@ package perfiles
 
 class PuedePublicar implements StateOfTheNewPublication {
 	
-	override canHandle(Publication publication, ProfileService service) {
-		!service.sePublico(publication) && service.visito(publication)
+	override canHandle(Boolean sePublico, Boolean seVisito) {
+		!sePublico && seVisito
 	}
 	
 	override execute(Publication publication, ProfileService service) {

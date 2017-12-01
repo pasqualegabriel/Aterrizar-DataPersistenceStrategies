@@ -4,8 +4,8 @@ import Excepciones.ExceptionYaExisteUnaPublicacionSobreElDestino
 
 class YaPublico implements StateOfTheNewPublication {
 	
-	override canHandle(Publication publication, ProfileService service) {
-		service.sePublico(publication)
+	override canHandle(Boolean sePublico, Boolean seVisito ) {
+		sePublico
 	}
 	
 	override execute(Publication publication, ProfileService service) {

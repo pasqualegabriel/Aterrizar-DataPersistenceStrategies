@@ -15,9 +15,12 @@ class NewPublication {
 		publicationPermissions = #[new YaPublico, new NoVisitoDestino, new PuedePublicar]
 	}
 	
-	def canPublish(Publication aPublication, ProfileService service) {
+	def Publication canPublish(Publication aPublication, ProfileService service) {
 		
-		publicationPermissions.findFirst[it.canHandle(aPublication, service)].execute(aPublication, service)
+		val sePublico = service.sePublico(aPublication)
+		val seVisito = service.visitoDestino(aPublication)
+		
+		publicationPermissions.findFirst[it.canHandle(sePublico, seVisito)].execute(aPublication, service)
 	}
 	
 }

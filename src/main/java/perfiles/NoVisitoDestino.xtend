@@ -4,8 +4,8 @@ import Excepciones.ExceptionNoVisitoDestino
 
 class NoVisitoDestino implements StateOfTheNewPublication {
 	
-	override canHandle(Publication publication, ProfileService service) {
-		!service.visito(publication)
+	override canHandle(Boolean sePublico, Boolean seVisito) {
+		!seVisito
 	}
 	
 	override execute(Publication publication, ProfileService service) {
