@@ -3,10 +3,12 @@ package perfiles
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 
+// Responsabilidad: Se hace cargo de proveer el estado adecuado para la nueva publicacion
+
 @Accessors
 class NewPublication {
 	
-	List<CanPublish> publicationPermissions
+	List<StateOfTheNewPublication> publicationPermissions
 	
 	new(){
 		super()

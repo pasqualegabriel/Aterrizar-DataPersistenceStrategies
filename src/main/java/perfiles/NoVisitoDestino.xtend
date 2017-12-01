@@ -2,7 +2,7 @@ package perfiles
 
 import Excepciones.ExceptionNoVisitoDestino
 
-class NoVisitoDestino implements CanPublish {
+class NoVisitoDestino implements StateOfTheNewPublication {
 	
 	override canHandle(Publication publication, ProfileService service) {
 		!service.visito(publication)

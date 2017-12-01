@@ -8,11 +8,11 @@ class NoMeGustaPublication extends PublicationOfNote {
 //		aUserId        = aUser
 //		profileService = service
 //	}
-	
-	override execute() {
+//	
+//	override execute() {
 //		
 //		profileService.agregarNoMeGusta(publication.id, aUserId)
 //		profileService.quitarMeGusta(   publication.id, aUserId)
-	}
+//	}
 	
 }

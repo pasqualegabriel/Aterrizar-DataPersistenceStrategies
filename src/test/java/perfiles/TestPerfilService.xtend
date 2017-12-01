@@ -36,6 +36,7 @@ import unq.amistad.AmigoService
 import unq.amistad.RelacionesDeAmistades
 import Excepciones.ExceptionYaExisteUnaPublicacionSobreElDestino
 import Excepciones.ExceptionNoTienePermisoParaInteractuarConLaPublicacion
+import Excepciones.ExceptionNoTienePermisoParaInteractuarConElComentario
 
 class TestPerfilService {
 
@@ -618,7 +619,7 @@ class TestPerfilService {
 		assertTrue(publicacion.comentarios.stream.anyMatch[comentario | comentario.meGustan.contains(pepita.userName)]);
 	}
 	
-	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConElComentario)
 	def testPepitaUserAgregaUnMeGustaAElComentarioConVisibilidadSoloAmigosDeHunterJose() {
 		
 		// Exercise
@@ -644,7 +645,7 @@ class TestPerfilService {
 		assertTrue(publicacion.comentarios.stream.anyMatch[comentario |  comentario.meGustan.contains(jose.userName)]);
 	}
 	
-	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConElComentario)
 	def testPepitaUserAmigoDeHunterJoseNoPuedeAgregarUnMeGustaAElComentarioConVisibilidadPrivadaDeHunterJose() {
 		
 		/** creando relacion de amistad entre jose y pepita */
@@ -659,7 +660,7 @@ class TestPerfilService {
 		fail
 	}
 	
-	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConElComentario)
 	def testPepitaUserAgregaUnMeGustaAElComentarioConVisibilidadPrivadaDeHunterJose() {
 		
 		// Exercise
@@ -720,7 +721,7 @@ class TestPerfilService {
 		assertTrue(publicacion.comentarios.stream.anyMatch[comentario | comentario.noMeGustan.contains(pepita.userName)]);
 	}
 	
-	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConElComentario)
 	def testPepitaUserAgregaUnNoMeGustaAElComentarioConVisibilidadSoloAmigosDeHunterJose() {
 		
 		// Exercise
@@ -746,7 +747,7 @@ class TestPerfilService {
 		assertTrue(publicacion.comentarios.stream.anyMatch[comentario | comentario.noMeGustan.contains(jose.userName)]);
 	}
 	
-	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConElComentario)
 	def testPepitaUserAmigoDeHunterJoseNoPuedeAgregarUnNoMeGustaAElComentarioConVisibilidadPrivadaDeHunterJose() {
 		
 		/** creando relacion de amistad entre jose y pepita */
@@ -761,7 +762,7 @@ class TestPerfilService {
 		fail
 	}
 	
-	@Test(expected=ExceptionNoTienePermisoParaInteractuarConLaPublicacion)
+	@Test(expected=ExceptionNoTienePermisoParaInteractuarConElComentario)
 	def testPepitaUserAgregaUnNoMeGustaAElComentarioConVisibilidadPrivadaDeHunterJose() {
 		
 		// Exercise

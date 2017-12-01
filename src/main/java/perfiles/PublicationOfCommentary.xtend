@@ -2,7 +2,7 @@ package perfiles
 
 
 
-class PublicationOfCommentary extends PublicationOfNote{
+class PublicationOfCommentary{// extends PublicationOfNote{
 		
 //	protected Comentary	comentary
 //	
@@ -21,9 +21,9 @@ class PublicationOfCommentary extends PublicationOfNote{
 //	}
 //	
 //
-	override execute() {
+//	override execute() {
 //		profileService.publicitarComentario(publication, comentary)
-	}
+//	}
 }
 
 

@@ -2,7 +2,7 @@ package perfiles
 
 import Excepciones.ExceptionYaExisteUnaPublicacionSobreElDestino
 
-class YaPublico implements CanPublish {
+class YaPublico implements StateOfTheNewPublication {
 	
 	override canHandle(Publication publication, ProfileService service) {
 		service.sePublico(publication)

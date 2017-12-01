@@ -1,24 +1,22 @@
 package perfiles
 
-
 import daoImplementacion.HibernateUserDAO
 import daoImplementacion.PublicationDAO
 import runner.Runner
 import java.util.UUID
 import unq.amistad.RelacionesDeAmistades
 import Excepciones.ExceptionNoTienePermisoParaInteractuarConLaPublicacion
+import Excepciones.ExceptionNoTienePermisoParaInteractuarConElComentario
 
-class ProfileService implements PerfilService{
+class ProfileService implements PerfilService {
 	
 	HibernateUserDAO 	  hibernateUserDAO
 	PublicationDAO		  publicationDAO
-    PrivacyHandler        aPrivacyHandler
     RelacionesDeAmistades relacionesDeAmistades
 	
 	new(PublicationDAO aPublicationDAO, HibernateUserDAO aHibernateUserDAO) {
 		this.hibernateUserDAO	   = aHibernateUserDAO
 		this.publicationDAO		   = aPublicationDAO
-		this.aPrivacyHandler       = new PrivacyHandler
         this.relacionesDeAmistades = new RelacionesDeAmistades
 	}
 	
@@ -97,7 +95,7 @@ class ProfileService implements PerfilService{
 	// Sacar if y logica repetida
 	def verifyPermissions(UUID idCommentary, String aUser){
 		if(!havePermissions(idCommentary, aUser)){
-			throw new ExceptionNoTienePermisoParaInteractuarConLaPublicacion("El usuario no tiene permiso para interactuar con la publicacion")
+			throw new ExceptionNoTienePermisoParaInteractuarConElComentario("El usuario no tiene permiso para interactuar con el comentario")
 		}
 	}
 	// Sacar if y logica repetida
@@ -122,7 +120,7 @@ class ProfileService implements PerfilService{
 	
 	override verPerfil(String aUserName, String author) {
 		
-		var amigos = relacionesDeAmistades.userNames(aUserName)
+		var amigos = amigos(aUserName)
 	
 		var aProfile = new Profile  
 		aProfile.publications =	publicationDAO.loadProfile(aUserName, author, amigos)
