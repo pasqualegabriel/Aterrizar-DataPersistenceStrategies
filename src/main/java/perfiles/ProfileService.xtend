@@ -7,17 +7,21 @@ import java.util.UUID
 import unq.amistad.RelacionesDeAmistades
 import Excepciones.ExceptionNoTienePermisoParaInteractuarConLaPublicacion
 import Excepciones.ExceptionNoTienePermisoParaInteractuarConElComentario
+import cacheDePerfil.CacheDePerfil
+import cacheDePerfil.KeyDeCacheDePerfil
 
 class ProfileService implements PerfilService {
 	
 	HibernateUserDAO 	  hibernateUserDAO
 	PublicationDAO		  publicationDAO
     RelacionesDeAmistades relacionesDeAmistades
+    CacheDePerfil         cachePerfil
 	
 	new(PublicationDAO aPublicationDAO, HibernateUserDAO aHibernateUserDAO) {
 		this.hibernateUserDAO	   = aHibernateUserDAO
 		this.publicationDAO		   = aPublicationDAO
         this.relacionesDeAmistades = new RelacionesDeAmistades
+        this.cachePerfil           = new CacheDePerfil
 	}
 	
 	override agregarPublicación(Publication aPublication) {
@@ -116,14 +120,14 @@ class ProfileService implements PerfilService {
 		publicationDAO.save(publication)
 	}
 	
-	override verPerfil(String aUserName, String author) {
+	override verPerfil(String observer, String author) {
 		
-		var amigos = amigos(aUserName)
-	
-		var aProfile = new Profile  
-		aProfile.publications =	publicationDAO.loadProfile(aUserName, author, amigos)
+		val amigos   = amigos(observer)
+		val key      = new KeyDeCacheDePerfil(observer,author)
 			
-		aProfile
+		cachePerfil.getProfile(key, [publicationDAO.loadProfile(observer, author, amigos)])	 
+		
+			
 	}
 	
 

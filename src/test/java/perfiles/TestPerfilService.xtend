@@ -37,6 +37,9 @@ import unq.amistad.RelacionesDeAmistades
 import Excepciones.ExceptionYaExisteUnaPublicacionSobreElDestino
 import Excepciones.ExceptionNoTienePermisoParaInteractuarConLaPublicacion
 import Excepciones.ExceptionNoTienePermisoParaInteractuarConElComentario
+import java.util.stream.Collectors
+import cacheDePerfil.CacheDePerfil
+import cacheDePerfil.KeyDeCacheDePerfil
 
 class TestPerfilService {
 
@@ -57,7 +60,8 @@ class TestPerfilService {
 	UserNeo4jDAO 		neo4jDao
 	PublicationDAO 		publicationDAO
 	Aereolinea          aerolinea
-
+	CacheDePerfil		cache
+	
 	@Before
 	def void setUp() {
 		
@@ -78,6 +82,7 @@ class TestPerfilService {
 		destino 				= new Destino("Rosario")
 		destino2 				= new Destino("Fuerte Apache")
 		destino3				= new Destino("La Plato")
+		cache					= new CacheDePerfil
 		
 		this.inicializarBaseDePrueba
 	}
@@ -891,11 +896,54 @@ class TestPerfilService {
 	}
 
 
+	@Test
+	def pepitaVeSuPropiaPublicacionYSiElServiceLaVuelveABuscarEnElCacheLaEncuentra() {
+		
+		var perfil = perfilService.verPerfil(pepita.userName,pepita.userName)
+		
+		var key = new KeyDeCacheDePerfil(pepita.userName,pepita.userName);
+		var profileResultado = this.cache.get(key)
+		
+		assertTrue(perfil.publications.map[it.id].containsAll(profileResultado.publications.map[it.id] ))
+		assertTrue(cache.jedis.exists(key.generateValue))
+		
+	}
+	
+	@Test
+	def  pepitaVeSuPropioPerfilYSiElServiceLaVuelveABuscarLaPublicacionDespuesDeUnMinutoNoLaEncuentraEnElCache() {
+		perfilService.verPerfil(pepita.userName,pepita.userName)
+		var key = new KeyDeCacheDePerfil(pepita.userName,pepita.userName);
+		var unMinuto = 1000 * 60
+		Thread.sleep(unMinuto)
+		var profileResultado = this.cache.get(key)
+		
+		 assertNull(profileResultado)
+		 assertFalse(cache.jedis.exists(key.generateValue))
+		
+		
+	}
+	
+//	@Test
+//	def  pepitaVeSuPropioPerfil_HaceUnNuevoComentarioYSiElServiceLaVuelveABuscarLaPublicacionDespuesDeUnMinutoNoLaEncuentraEnElCache() {
+//		
+//		
+//	}
+	
+	
+//	@Test
+//	def  pepitaVeSuPropioPerfil_HaceUnaNuevaPublicacionYSiElServiceLaVuelveABuscarLaPublicacionDespuesDeUnMinutoNoLaEncuentraEnElCache() {
+//		
+//		
+//	}
+	
+
+	
 	@After
 	def void tearDown() {
 		neo4jDao.clearAll
 		publicationDAO.deleteAll
 		new TruncateTables => [vaciarTablas]
+		cache.clear();
 	}
 
 }

@@ -41,6 +41,7 @@ import perfiles.Comentary
 import perfiles.Publication
 import perfiles.Visibilidad
 import perfiles.Profile
+import java.util.stream.Collectors
 
 class TestCacheDePerfilRedis {
 	
@@ -65,8 +66,8 @@ class TestCacheDePerfilRedis {
 	Profile				perfilDeJosePublico
 	Profile				perfilDeJoseSoloAmigos
 	
-	KeyDeCacheDePerfil  keyJosePublico
-	KeyDeCacheDePerfil  keyJoseAmigos
+	KeyDeCacheDePerfil  keyJoseJose
+	KeyDeCacheDePerfil  keyJosePepita
 	
 	@Before
 	def void setUp() {
@@ -99,8 +100,8 @@ class TestCacheDePerfilRedis {
         this.perfilDeJosePublico 	 = perfilService.verPerfil(dionisia.userName,jose.userName)
         this.perfilDeJoseSoloAmigos  =  perfilService.verPerfil(pepita.userName,jose.userName);
         
-        keyJosePublico = new KeyDeCacheDePerfil(jose.userName, Visibilidad.Publico);
-        keyJoseAmigos = new KeyDeCacheDePerfil(jose.userName, Visibilidad.SoloAmigos);
+        keyJoseJose   = new KeyDeCacheDePerfil(jose.userName, jose.userName);
+        keyJosePepita = new KeyDeCacheDePerfil(pepita.userName,jose.userName);
 
       
 		
@@ -183,15 +184,16 @@ class TestCacheDePerfilRedis {
 	
 	@Test
 	def void testAlGuardarYLuegoRecuperarAlUsuarioSeObtienenObjetosSimilares() {
-		this.cache.put(keyJosePublico, perfilDeJosePublico)
-        this.cache.put(keyJoseAmigos, perfilDeJoseSoloAmigos)
+		this.cache.put(keyJoseJose, perfilDeJosePublico)
+        this.cache.put(keyJosePepita, perfilDeJoseSoloAmigos)
 		
-		var profileResultado  = this.cache.get(keyJosePublico)
-		var profileResultado2 = this.cache.get(keyJoseAmigos)
+		var profileResultado  = this.cache.get(keyJoseJose)
+		var profileResultado2 = this.cache.get(keyJosePepita)
 		
-		assertEquals(profileResultado , perfilDeJosePublico)
-		assertEquals(profileResultado2, perfilDeJoseSoloAmigos)
-		 
+		assertTrue(profileResultado.publications.stream.map[it.id].collect(Collectors.toList()).containsAll(perfilDeJosePublico    .publications.stream.map[it.id].collect(Collectors.toList()) ))
+		assertTrue(profileResultado2.publications.stream.map[it.id].collect(Collectors.toList()).containsAll(perfilDeJoseSoloAmigos.publications.stream.map[it.id].collect(Collectors.toList()) ))
+	
+		
 	}
 	
 	

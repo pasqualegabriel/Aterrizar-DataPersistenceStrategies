@@ -1,19 +1,17 @@
 package cacheDePerfil
 
-import perfiles.Visibilidad
-
 class KeyDeCacheDePerfil {
 	
-	String userName;
-	Visibilidad visibilidad;
+	String author;
+	String observer;
 	
-	new(String unUserName, Visibilidad unaVisibilidad) {
-		userName    = unUserName
-		visibilidad = unaVisibilidad
+	new(String anObserver, String anAuthor) {
+		author      = anAuthor
+		observer    = anObserver
 	}
 	
 	def generateValue() {
-		userName+visibilidad.toString
+		author + observer
 	}
 	
 }
