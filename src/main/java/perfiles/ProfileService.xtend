@@ -17,11 +17,11 @@ class ProfileService implements PerfilService {
     RelacionesDeAmistades relacionesDeAmistades
     CacheDePerfil         cachePerfil
 	
-	new(PublicationDAO aPublicationDAO, HibernateUserDAO aHibernateUserDAO) {
+	new(PublicationDAO aPublicationDAO, HibernateUserDAO aHibernateUserDAO, CacheDePerfil aCacheDePerfil) {
 		this.hibernateUserDAO	   = aHibernateUserDAO
 		this.publicationDAO		   = aPublicationDAO
         this.relacionesDeAmistades = new RelacionesDeAmistades
-        this.cachePerfil           = new CacheDePerfil
+        this.cachePerfil           = aCacheDePerfil
 	}
 	
 	override agregarPublicación(Publication aPublication) {
@@ -44,6 +44,7 @@ class ProfileService implements PerfilService {
 	override agregarComentario(String anIdPublication, Comentary aComentary) {
 
 		verifyPermissionsForPublication(anIdPublication, aComentary.author)
+		
 		publicitarComentario(anIdPublication, aComentary)
 	
 		aComentary
@@ -73,6 +74,11 @@ class ProfileService implements PerfilService {
 		
 		aComentary.id = UUID.randomUUID
 		publicationDAO.addComment(anIdPublication, aComentary)
+		var publication = publicationDAO.load(anIdPublication)
+		
+	
+		cachePerfil.borrarPerfil(publication.author)	 
+		
 	}
 
 	override meGusta(String aUser, UUID idCommentary) {
@@ -118,9 +124,12 @@ class ProfileService implements PerfilService {
 	
 	def save(Publication publication) {
 		publicationDAO.save(publication)
+		
+		cachePerfil.borrarPerfil(publication.author)	 
 	}
 	
 	override verPerfil(String observer, String author) {
+		
 		
 		val amigos   = amigos(observer)
 		val key      = new KeyDeCacheDePerfil(observer,author)

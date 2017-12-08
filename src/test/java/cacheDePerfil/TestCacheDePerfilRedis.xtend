@@ -84,19 +84,15 @@ class TestCacheDePerfilRedis {
 		jose 					= serviceTest.singUp("Jose", "ElJose", "HunterJose", "jose@gmail.com", "password", new Date())
 		pepita 					= serviceTest.singUp("Pepita", "LaGolondrina", "PepitaUser", "pepitagolondrina@gmail.com", "password", new Date())
 		dionisia 				= serviceTest.singUp("Dionisia", "LaGolondrinaVieja", "DionisiaUser", "dionisia@gmail.com", "password", new Date())
-		perfilService 			= new ProfileService(publicationDAO, hibernateUserDAO)
+		cache                   = new CacheDePerfil(100 * 60)
+		perfilService 			= new ProfileService(publicationDAO, hibernateUserDAO, cache)
 		reservaCompraDeAsientos = new ReservaCompraDeAsientos(hibernateUserDAO, asientoDAO, new HibernateReservaDAO, new HibernateTramoDAO, new HibernateCompraDAO)
 		destino 				= new Destino("Rosario")
 		destino2 				= new Destino("Fuerte Apache")
 		destino3				= new Destino("La Plato")
 		
 		this.inicializarBaseDePrueba
-		
-		
-		this.cache = new CacheDePerfil();
 
-		
-		
         this.perfilDeJosePublico 	 = perfilService.verPerfil(dionisia.userName,jose.userName)
         this.perfilDeJoseSoloAmigos  =  perfilService.verPerfil(pepita.userName,jose.userName);
         

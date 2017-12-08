@@ -3,6 +3,7 @@ package perfiles
 import org.junit.Before
 import org.junit.Test
 import static org.junit.Assert.*
+import static org.mockito.Mockito.*
 import org.junit.After
 import service.User
 import aereolinea.Destino
@@ -37,9 +38,10 @@ import unq.amistad.RelacionesDeAmistades
 import Excepciones.ExceptionYaExisteUnaPublicacionSobreElDestino
 import Excepciones.ExceptionNoTienePermisoParaInteractuarConLaPublicacion
 import Excepciones.ExceptionNoTienePermisoParaInteractuarConElComentario
-import java.util.stream.Collectors
 import cacheDePerfil.CacheDePerfil
 import cacheDePerfil.KeyDeCacheDePerfil
+import redis.clients.jedis.Jedis
+import Excepciones.ExeptionRedisDisconnected
 
 class TestPerfilService {
 
@@ -61,6 +63,7 @@ class TestPerfilService {
 	PublicationDAO 		publicationDAO
 	Aereolinea          aerolinea
 	CacheDePerfil		cache
+	@Mock Jedis         jedis
 	
 	@Before
 	def void setUp() {
@@ -77,12 +80,13 @@ class TestPerfilService {
 		jose 					= serviceTest.singUp("Jose", "ElJose", "HunterJose", "jose@gmail.com", "password", new Date())
 		pepita 					= serviceTest.singUp("Pepita", "LaGolondrina", "PepitaUser", "pepitagolondrina@gmail.com", "password", new Date())
 		dionisia 				= serviceTest.singUp("Dionisia", "LaGolondrinaVieja", "DionisiaUser", "dionisia@gmail.com", "password", new Date())
-		perfilService 			= new ProfileService(publicationDAO, hibernateUserDAO)
+		var tresSegundos        = 3
+		cache					= new CacheDePerfil(tresSegundos)
+		perfilService 			= new ProfileService(publicationDAO, hibernateUserDAO, cache)
 		reservaCompraDeAsientos = new ReservaCompraDeAsientos(hibernateUserDAO, asientoDAO, new HibernateReservaDAO, new HibernateTramoDAO, new HibernateCompraDAO)
 		destino 				= new Destino("Rosario")
 		destino2 				= new Destino("Fuerte Apache")
 		destino3				= new Destino("La Plato")
-		cache					= new CacheDePerfil
 		
 		this.inicializarBaseDePrueba
 	}
@@ -912,9 +916,9 @@ class TestPerfilService {
 	@Test
 	def  pepitaVeSuPropioPerfilYSiElServiceLaVuelveABuscarLaPublicacionDespuesDeUnMinutoNoLaEncuentraEnElCache() {
 		perfilService.verPerfil(pepita.userName,pepita.userName)
-		var key = new KeyDeCacheDePerfil(pepita.userName,pepita.userName);
-		var unMinuto = 1000 * 60
-		Thread.sleep(unMinuto)
+		var key = new KeyDeCacheDePerfil(pepita.userName,pepita.userName)
+		
+		Thread.sleep(3500)
 		var profileResultado = this.cache.get(key)
 		
 		 assertNull(profileResultado)
@@ -923,21 +927,98 @@ class TestPerfilService {
 		
 	}
 	
-//	@Test
-//	def  pepitaVeSuPropioPerfil_HaceUnNuevoComentarioYSiElServiceLaVuelveABuscarLaPublicacionDespuesDeUnMinutoNoLaEncuentraEnElCache() {
-//		
-//		
-//	}
+	@Test
+	def  yyyy() {
+		perfilService.verPerfil(jose.userName,pepita.userName)
+		perfilService.verPerfil(jose.userName,pepita.userName)
+		
+		var key = new KeyDeCacheDePerfil(jose.userName,pepita.userName)
+		
+		var profileResultado = this.cache.get(key)
+		
+		 assertNotNull(profileResultado)
+		 assertTrue(cache.jedis.exists(key.generateValue))
+		
+		
+	}
+	
+	@Test
+	def joseVeSuPropioPerfil_HaceUnaNuevaPublicacionYSiElServiceLaVuelveABuscarLaPublicacionNoLaEncuentraEnElCache() {
+		perfilService.verPerfil         (jose.userName,jose.userName)
+		perfilService.verPerfil         (pepita.userName,jose.userName)
+		var key       = new KeyDeCacheDePerfil(jose.userName,jose.userName);
+		var keypepita = new KeyDeCacheDePerfil(pepita.userName,jose.userName);
+		
+		var profileResultado  = this.cache.get(key)
+		var profileResultado2 = this.cache.get(keypepita)
+		
+		assertNotNull(profileResultado)
+		assertNotNull(profileResultado2)
+		assertTrue(cache.jedis.exists(key.generateValue))
+		assertTrue(cache.jedis.exists(keypepita.generateValue))
+		
+		agregarPublicacion              (jose.userName, "Hola pepita"      , Visibilidad.Privado   , destino )
+		
+		
+		profileResultado  = this.cache.get(key)
+		profileResultado2 = this.cache.get(keypepita)
+		
+		assertNull(profileResultado)
+		assertNull(profileResultado2)
+		assertFalse(cache.jedis.exists(key.generateValue))
+		assertFalse(cache.jedis.exists(keypepita.generateValue))
+		
+	}
 	
 	
-//	@Test
-//	def  pepitaVeSuPropioPerfil_HaceUnaNuevaPublicacionYSiElServiceLaVuelveABuscarLaPublicacionDespuesDeUnMinutoNoLaEncuentraEnElCache() {
-//		
-//		
-//	}
+	@Test
+	def  joseVeSuPropioPerfil_HaceUnNuevoComentarioYSiElServiceLaVuelveABuscarLaPublicacionDespuesDeUnMinutoNoLaEncuentraEnElCache() {
+		
+		val pub = agregarPublicacion(jose.userName, "Hola pepita"      , Visibilidad.Privado   , destino )
+		
+		perfilService.verPerfil         (jose.userName,jose.userName)
+		perfilService.verPerfil         (pepita.userName,jose.userName)
+		var key       = new KeyDeCacheDePerfil(jose.userName,jose.userName);
+		var keypepita = new KeyDeCacheDePerfil(pepita.userName,jose.userName);
+		
+		var profileResultado  = this.cache.get(key)
+		var profileResultado2 = this.cache.get(keypepita)
+		
+		assertNotNull(profileResultado)
+		assertNotNull(profileResultado2)
+		assertTrue(cache.jedis.exists(key.generateValue))
+		assertTrue(cache.jedis.exists(keypepita.generateValue))
+		
+	
+		agregarComentario(jose.userName, pub.id, "Alto viaje1", Visibilidad.Privado)	
+		
+		profileResultado  = this.cache.get(key)
+		profileResultado2 = this.cache.get(keypepita)
+		
+		assertNull(profileResultado)
+		assertNull(profileResultado2)
+		assertFalse(cache.jedis.exists(key.generateValue))
+		assertFalse(cache.jedis.exists(keypepita.generateValue))
+		
+	}
+	
+	@Test(expected=ExeptionRedisDisconnected)
+	def xx() {
+		
+		agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
+		
+		var tresSegundos        = 3
+		cache					= new CacheDePerfil(tresSegundos)
+		cache.jedis             = jedis
+		var perfilService2 		= new ProfileService(publicationDAO, hibernateUserDAO, cache)
+		
+		doReturn(false).when(jedis).connected
+		perfilService2.verPerfil(jose.userName,jose.userName)
+
+		fail()
+	}
 	
 
-	
 	@After
 	def void tearDown() {
 		neo4jDao.clearAll

@@ -1,5 +1,8 @@
 package cacheDePerfil
 
+import org.eclipse.xtend.lib.annotations.Accessors
+
+@Accessors
 class KeyDeCacheDePerfil {
 	
 	String author;
@@ -11,7 +14,8 @@ class KeyDeCacheDePerfil {
 	}
 	
 	def generateValue() {
-		author + observer
+		author+observer
 	}
 	
+
 }
