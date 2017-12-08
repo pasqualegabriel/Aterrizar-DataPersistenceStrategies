@@ -7,7 +7,7 @@ import perfiles.Publication
 
 abstract class RedisProfile {
 	
-	def Boolean canHandle(boolean isConnected, Boolean existsKey)
+	def Boolean canHandle(Boolean existsKey)
 	
 	def Profile execute(KeyDeCacheDePerfil key, Supplier<List<Publication>> bloque, CacheDePerfil aCacheDePerfil)
 	

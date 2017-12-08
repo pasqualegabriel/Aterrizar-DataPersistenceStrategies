@@ -3,7 +3,6 @@ package perfiles
 import org.junit.Before
 import org.junit.Test
 import static org.junit.Assert.*
-import static org.mockito.Mockito.*
 import org.junit.After
 import service.User
 import aereolinea.Destino
@@ -40,8 +39,6 @@ import Excepciones.ExceptionNoTienePermisoParaInteractuarConLaPublicacion
 import Excepciones.ExceptionNoTienePermisoParaInteractuarConElComentario
 import cacheDePerfil.CacheDePerfil
 import cacheDePerfil.KeyDeCacheDePerfil
-import redis.clients.jedis.Jedis
-import Excepciones.ExeptionRedisDisconnected
 
 class TestPerfilService {
 
@@ -63,7 +60,6 @@ class TestPerfilService {
 	PublicationDAO 		publicationDAO
 	Aereolinea          aerolinea
 	CacheDePerfil		cache
-	@Mock Jedis         jedis
 	
 	@Before
 	def void setUp() {
@@ -928,11 +924,17 @@ class TestPerfilService {
 	}
 	
 	@Test
-	def  yyyy() {
-		perfilService.verPerfil(jose.userName,pepita.userName)
-		perfilService.verPerfil(jose.userName,pepita.userName)
+	def joseVuelveAVerElPerfilDePepitaYEsteSeEncuentraEnLaCache() {
 		
 		var key = new KeyDeCacheDePerfil(jose.userName,pepita.userName)
+		
+		assertFalse(cache.jedis.exists(key.generateValue))
+		
+		perfilService.verPerfil(jose.userName,pepita.userName)
+		
+		assertTrue(cache.jedis.exists(key.generateValue))
+		
+		perfilService.verPerfil(jose.userName,pepita.userName)
 		
 		var profileResultado = this.cache.get(key)
 		
@@ -944,6 +946,10 @@ class TestPerfilService {
 	
 	@Test
 	def joseVeSuPropioPerfil_HaceUnaNuevaPublicacionYSiElServiceLaVuelveABuscarLaPublicacionNoLaEncuentraEnElCache() {
+		
+		//jose ve su propio perfil, y pepita ve el perfil de jose
+		//y nos fijamos que esos visados esten en el cache
+		
 		perfilService.verPerfil         (jose.userName,jose.userName)
 		perfilService.verPerfil         (pepita.userName,jose.userName)
 		var key       = new KeyDeCacheDePerfil(jose.userName,jose.userName);
@@ -957,9 +963,11 @@ class TestPerfilService {
 		assertTrue(cache.jedis.exists(key.generateValue))
 		assertTrue(cache.jedis.exists(keypepita.generateValue))
 		
+		//Agregamos una nueva publicacion y nos fijamos que los visados de perfiles anteriores
+		//ahora esten invalidados
+		
 		agregarPublicacion              (jose.userName, "Hola pepita"      , Visibilidad.Privado   , destino )
-		
-		
+	
 		profileResultado  = this.cache.get(key)
 		profileResultado2 = this.cache.get(keypepita)
 		
@@ -972,52 +980,142 @@ class TestPerfilService {
 	
 	
 	@Test
-	def  joseVeSuPropioPerfil_HaceUnNuevoComentarioYSiElServiceLaVuelveABuscarLaPublicacionDespuesDeUnMinutoNoLaEncuentraEnElCache() {
+	def joseVeSuPropioPerfil_HaceUnNuevoComentarioYSiElServiceLaVuelveABuscarLaPublicacionDespuesDeUnMinutoNoLaEncuentraEnElCache() {
 		
-		val pub = agregarPublicacion(jose.userName, "Hola pepita"      , Visibilidad.Privado   , destino )
+			
+		//jose ve su propio perfil, y pepita ve el perfil de jose. Pepita ve tambien el perfil de dionisia
+		//y nos fijamos que esos visados esten en el cache
 		
-		perfilService.verPerfil         (jose.userName,jose.userName)
-		perfilService.verPerfil         (pepita.userName,jose.userName)
-		var key       = new KeyDeCacheDePerfil(jose.userName,jose.userName);
-		var keypepita = new KeyDeCacheDePerfil(pepita.userName,jose.userName);
+		val publicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Privado, destino )
+		
+		perfilService.verPerfil(jose.userName,jose.userName)
+		perfilService.verPerfil(pepita.userName,jose.userName)
+		perfilService.verPerfil(pepita.userName,dionisia.userName)
+		var key       = new KeyDeCacheDePerfil(jose.userName,jose.userName)
+		var keypepita = new KeyDeCacheDePerfil(pepita.userName,jose.userName)
+		var keydionisia = new KeyDeCacheDePerfil(pepita.userName,dionisia.userName)
 		
 		var profileResultado  = this.cache.get(key)
 		var profileResultado2 = this.cache.get(keypepita)
+		var profileResultado3 = this.cache.get(keydionisia)
 		
 		assertNotNull(profileResultado)
 		assertNotNull(profileResultado2)
+		assertNotNull(profileResultado3)
 		assertTrue(cache.jedis.exists(key.generateValue))
 		assertTrue(cache.jedis.exists(keypepita.generateValue))
-		
+		assertTrue(cache.jedis.exists(keydionisia.generateValue))
 	
-		agregarComentario(jose.userName, pub.id, "Alto viaje1", Visibilidad.Privado)	
+		//Agregamos un nuevo comentario y nos fijamos que los visados de perfiles anteriores
+		//ahora esten invalidados
+		//tambien nos fijamos que el visado de pepita hacia donisia no se haya tocado
+			
+		agregarComentario(jose.userName, publicacion.id, "Alto viaje1", Visibilidad.Privado)	
 		
 		profileResultado  = this.cache.get(key)
 		profileResultado2 = this.cache.get(keypepita)
+		profileResultado3 = this.cache.get(keydionisia)
 		
 		assertNull(profileResultado)
 		assertNull(profileResultado2)
+		assertNotNull(profileResultado3)
 		assertFalse(cache.jedis.exists(key.generateValue))
 		assertFalse(cache.jedis.exists(keypepita.generateValue))
-		
+		assertTrue(cache.jedis.exists(keydionisia.generateValue))
 	}
 	
-	@Test(expected=ExeptionRedisDisconnected)
-	def xx() {
+	@Test
+	def joseVeSuPropioPerfilYLuegoAgregaUnMeGustaAUnaPublicacionDeDichoPerfil_ActualizandoseRecienCuandoExpireEltiempoDeVida() {
 		
-		agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Privado, destino)
-		
-		var tresSegundos        = 3
-		cache					= new CacheDePerfil(tresSegundos)
-		cache.jedis             = jedis
-		var perfilService2 		= new ProfileService(publicationDAO, hibernateUserDAO, cache)
-		
-		doReturn(false).when(jedis).connected
-		perfilService2.verPerfil(jose.userName,jose.userName)
+		// Jose y Pepita miran el perfil de Jose y Pepita ve el perfil de Dionisia
+ 
+		val publicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Privado, destino )
 
-		fail()
+		perfilService.verPerfil(jose.userName,jose.userName)
+		perfilService.verPerfil(pepita.userName,jose.userName)
+		perfilService.verPerfil(pepita.userName,dionisia.userName)
+		var key         = new KeyDeCacheDePerfil(jose.userName,jose.userName)
+		var keypepita   = new KeyDeCacheDePerfil(pepita.userName,jose.userName)
+		var keydionisia = new KeyDeCacheDePerfil(pepita.userName,dionisia.userName)
+		
+		var profileResultado  = this.cache.get(key)
+		var profileResultado2 = this.cache.get(keypepita)
+		var profileResultado3 = this.cache.get(keydionisia)
+		
+		// Se testea que esten en la cache dichos perfiles
+		
+		assertNotNull(profileResultado)
+		assertNotNull(profileResultado2)
+		assertNotNull(profileResultado3)
+		assertTrue(cache.jedis.exists(key.generateValue))
+		assertTrue(cache.jedis.exists(keypepita.generateValue))
+		assertTrue(cache.jedis.exists(keydionisia.generateValue))
+	
+		// Jose le da me gusta a su propia publicacion 
+		
+		perfilService.meGusta(jose.userName, publicacion.id)
+		
+		profileResultado  = this.cache.get(key)
+		profileResultado2 = this.cache.get(keypepita)
+		profileResultado3 = this.cache.get(keydionisia)
+		
+		// Se testea que no se borro el perfil de la cache al agregar un me gusta
+		
+		assertNotNull(profileResultado)
+		assertNotNull(profileResultado2)
+		assertNotNull(profileResultado3)
+		assertTrue(cache.jedis.exists(key.generateValue))
+		assertTrue(cache.jedis.exists(keypepita.generateValue))
+		assertTrue(cache.jedis.exists(keydionisia.generateValue))
+		assertFalse(profileResultado.publications.get(0).meGustan.contains(jose.userName))
 	}
 	
+	@Test
+	def joseVeSuPropioPerfilYLuegoAgregaUnMeGustaAUnComentarioDeUnaPublicacionDeDichoPerfil_ActualizandoseRecienCuandoExpireEltiempoDeVida() {
+		
+		// Jose y Pepita miran el perfil de Jose y Pepita ve el perfil de Dionisia
+ 
+		val publicacion = agregarPublicacion(jose.userName, "Hola pepita", Visibilidad.Privado, destino )
+		val comentario  = agregarComentario(jose.userName, publicacion.id, "Alto viaje1", Visibilidad.Privado)	
+
+		perfilService.verPerfil(jose.userName,jose.userName)
+		perfilService.verPerfil(pepita.userName,jose.userName)
+		perfilService.verPerfil(pepita.userName,dionisia.userName)
+		var key         = new KeyDeCacheDePerfil(jose.userName,jose.userName)
+		var keypepita   = new KeyDeCacheDePerfil(pepita.userName,jose.userName)
+		var keydionisia = new KeyDeCacheDePerfil(pepita.userName,dionisia.userName)
+		
+		var profileResultado  = this.cache.get(key)
+		var profileResultado2 = this.cache.get(keypepita)
+		var profileResultado3 = this.cache.get(keydionisia)
+		
+		// Se testea que esten en la cache dichos perfiles
+		
+		assertNotNull(profileResultado)
+		assertNotNull(profileResultado2)
+		assertNotNull(profileResultado3)
+		assertTrue(cache.jedis.exists(key.generateValue))
+		assertTrue(cache.jedis.exists(keypepita.generateValue))
+		assertTrue(cache.jedis.exists(keydionisia.generateValue))
+	
+		// Jose le da me gusta a un comentario de su propia publicacion 
+		
+		perfilService.meGusta(jose.userName, comentario.id)
+		
+		profileResultado  = this.cache.get(key)
+		profileResultado2 = this.cache.get(keypepita)
+		profileResultado3 = this.cache.get(keydionisia)
+		
+		// Se testea que no se borro el perfil de la cache al agregar un me gusta
+		
+		assertNotNull(profileResultado)
+		assertNotNull(profileResultado2)
+		assertNotNull(profileResultado3)
+		assertTrue(cache.jedis.exists(key.generateValue))
+		assertTrue(cache.jedis.exists(keypepita.generateValue))
+		assertTrue(cache.jedis.exists(keydionisia.generateValue))
+		assertFalse(profileResultado.publications.get(0).meGustan.contains(jose.userName))
+	}
 
 	@After
 	def void tearDown() {

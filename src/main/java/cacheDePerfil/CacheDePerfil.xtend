@@ -6,9 +6,6 @@ import java.util.function.Supplier
 import java.util.List
 import perfiles.Publication
 import org.eclipse.xtend.lib.annotations.Accessors
-import Excepciones.ExeptionRedisDisconnected
-import redis.clients.jedis.JedisPool
-import redis.clients.jedis.exceptions.JedisConnectionException
 
 @Accessors
 class CacheDePerfil {
@@ -49,37 +46,9 @@ class CacheDePerfil {
 	
 	def Profile getProfile(KeyDeCacheDePerfil key, Supplier<List<Publication>> bloque) {
 		
-         
-		
-//		var observedProfile = new ObservedProfile
-//		observedProfile.canObserverProfile(key, bloque, jedis, this)
-	
-		var profile = new Profile
-		
-		var pool = new JedisPool()
-try {
-    	pool.getResource();
-    // Is connected
-} catch (JedisConnectionException e) {
-	throw new ExeptionRedisDisconnected("Redis disconnected")
-    // Not connected
-}
-		
-//		if(!jedis.isConnected){
-//			throw new ExeptionRedisDisconnected("Redis disconnected")
-//		}
-		
-		if(jedis.exists(key.generateValue)){
-			profile = get(key)
-			profile
-		}
-		
-		else{
-			profile = new Profile
-			profile.publications= bloque.get
-			put(key,profile)
-			profile
-		}
+		var observedProfile = new KeyAccessor
+		observedProfile.canObserverProfile(key, bloque, jedis, this)
+
 	}
 	
 	def borrarPerfil(String author) {

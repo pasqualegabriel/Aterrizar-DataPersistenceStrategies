@@ -7,8 +7,8 @@ import perfiles.Publication
 
 class GetAndSaveProfileRedis extends RedisProfile{
 	
-	override canHandle(boolean isConnected, Boolean existsKey) {
-		isConnected && !existsKey
+	override canHandle(Boolean existsKey) {
+		!existsKey
 	}
 	
 	override execute(KeyDeCacheDePerfil key, Supplier<List<Publication>> bloque, CacheDePerfil aCacheDePerfil) {
