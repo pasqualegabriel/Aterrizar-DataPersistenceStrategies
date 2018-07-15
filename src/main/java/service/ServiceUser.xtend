@@ -10,6 +10,7 @@ import Excepciones.InvalidValidationCode
 import Excepciones.IdenticPasswords
 import Excepciones.IncorrectUsernameOrPassword
 
+
 @Accessors
 abstract class ServiceUser implements UserService {
 	
@@ -18,6 +19,7 @@ abstract class ServiceUser implements UserService {
 	EmailService  	    mailSender
 	MailGenerator	    generadorDeMail
 	CodeGenerator 	    generadorDeCodigo
+	
 	
 	new(UserDAO userDao, MailGenerator unGeneradorDeMail, CodeGenerator unGeneradorDeCodigo, EmailService unMailService) {
 		userDAO           = userDao
@@ -96,6 +98,7 @@ abstract class ServiceUser implements UserService {
 	def void saveUser(User aUser){
 		userDAO.save(aUser)
 		userNeo4JDAO.save(aUser)
+		
 	}
 		
 	def void updateUser(User aUser) {

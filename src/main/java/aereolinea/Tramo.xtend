@@ -9,6 +9,7 @@ import javax.persistence.Id
 import javax.persistence.GeneratedValue
 import javax.persistence.CascadeType
 import java.time.LocalDateTime
+import javax.persistence.FetchType
 
 @Accessors
 @Entity
@@ -17,13 +18,13 @@ class Tramo {
 	@GeneratedValue
 	public int		  id
 	 
-	@OneToMany(mappedBy="tramo")
+	@OneToMany(fetch= FetchType.LAZY,mappedBy="tramo")
 	List<Asiento> asientos = newArrayList
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	Destino   destinoOrigen
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	Destino   destinoLlegada
 	
 	 

@@ -8,7 +8,7 @@ import daoImplementacion.UserNeo4jDAO
 
 class RelacionesDeAmistades implements AmigoService {
 	
-	UserNeo4jDAO 		  userDAONeo4j
+	UserNeo4jDAO 	  userDAONeo4j
 	HibernateUserDAO  userDAOHibernate
 	ZoneId 			  zoneId = ZoneId.systemDefault
 
@@ -40,7 +40,6 @@ class RelacionesDeAmistades implements AmigoService {
 			idsDeAmigos.forEach[ users.add(userDAOHibernate.loadbyname(it)) ]
 			users
 		]
-	
 	}
 	
 	override amigosDespuesDe(String usuario, LocalDateTime fecha) {
@@ -66,6 +65,17 @@ class RelacionesDeAmistades implements AmigoService {
 			val users       = newArrayList
 			idsDeAmigos.forEach[ users.add(userDAOHibernate.loadbyname(it)) ]
 			users
+		]
+	}
+		
+	override elUsuarioEsAmigoDe(String usuario1, String usuario2){
+		userDAONeo4j.sonAmigos(usuario1,usuario2)
+	
+	}
+	
+	override userNames(String usuario) {
+		Runner.runInSession[
+			userDAONeo4j.getAmistades(usuario)
 		]
 	}
 	

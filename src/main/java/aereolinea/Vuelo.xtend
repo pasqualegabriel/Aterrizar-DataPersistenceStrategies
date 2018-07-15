@@ -8,6 +8,7 @@ import javax.persistence.Id
 import javax.persistence.GeneratedValue
 import javax.persistence.Entity
 import javax.persistence.CascadeType
+import javax.persistence.FetchType
 
 @Accessors
 @Entity
@@ -16,10 +17,10 @@ class Vuelo {
 	@GeneratedValue
 	int id
 	
-	@OneToMany
+	@OneToMany(fetch= FetchType.LAZY)
 	List<Tramo> tramos = newArrayList
 
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	Aereolinea aerolinea
 	
 	

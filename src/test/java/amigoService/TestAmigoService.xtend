@@ -23,16 +23,17 @@ import service.SimpleMailer
 import service.RandomNumberGenerator
 import mailSender.Postman
 import daoImplementacion.UserNeo4jDAO
+import unq.amistad.AmigoService
 
 class TestAmigoService {
 
-	RelacionesDeAmistades 	amigoService
-	User 				  	pepita
-	User 				  	dionisia
-	User				  	loqui
-	UserNeo4jDAO			neo4jDao
-	HibernateUserDAO	    userDAO
-	UserService             service
+	AmigoService    	amigoService
+	User 			  	pepita
+	User 			  	dionisia
+	User			  	loqui
+	UserNeo4jDAO		neo4jDao
+	HibernateUserDAO	userDAO
+	UserService         service
 	
 	@Before
 	def void setUp(){
@@ -108,6 +109,8 @@ class TestAmigoService {
 		
 		assertEquals(1, amigosDeDionisia.size)	
 		assertEquals(amigosDeDionisia.get(0).userName,"Loqui");
+		assertTrue(amigoService.elUsuarioEsAmigoDe("Loqui","DionisiaUser"))
+		assertFalse(amigoService.elUsuarioEsAmigoDe("Loqui","GokuUser"))
 		var solicitudPendienteDespuesDeAceptarUnaSolicitud = amigoService.verSolicitudes("DionisiaUser")
 		var users2 = #["PepitaUser"]
 		validarIntegridadesSolicitudes(users2,solicitudPendienteDespuesDeAceptarUnaSolicitud,1)

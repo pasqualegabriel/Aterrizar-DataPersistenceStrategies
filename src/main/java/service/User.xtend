@@ -5,11 +5,12 @@ import java.util.Date
 import java.util.List
 import asientoServicio.Reserva
 import asientoServicio.Compra
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.CascadeType
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.OneToMany
 import javax.persistence.OneToOne
+import javax.persistence.FetchType
 
 @Accessors
 @Entity
@@ -27,10 +28,10 @@ class User {
 	Double 	      monedero
 	Double 	      gastoTotal
 	
-	@OneToMany(cascade=CascadeType.ALL)
+	@OneToMany(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	List<Compra> compras  = newArrayList
 	
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(fetch= FetchType.EAGER,cascade=CascadeType.ALL)
 	Reserva reserva 
 
 	
@@ -38,23 +39,18 @@ class User {
 		super()
 		monedero		  = 0.00
 		gastoTotal		  = 0.00
-		reserva  		  = null
-		
-	}
-	new(String userName){
-		this.userName     = userName
 	}
 	
 	new(String name, String lastName, String userName, String mail, String userPassword, Date birthDate) {
 		this()
+		this.validate     = false
+		this.validateCode = ""
 		this.name 	      = name
 		this.lastName     = lastName
 		this.userName     = userName
 		this.mail         = mail
 		this.userPassword = userPassword
 		this.birthDate    = birthDate
-		this.validate     = false
-		this.validateCode = ""
 		
 
 	}

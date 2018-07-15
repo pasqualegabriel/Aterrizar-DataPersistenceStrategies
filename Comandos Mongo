@@ -1,0 +1,7 @@
+show databases  // muestra las bases de datos de la pc
+
+use epersMongo  // se mete en la base de epersMongo
+
+show tables     // muestra las tablas de epersMongo
+
+db.Profile.find()  // muestra lo que hay en Profile

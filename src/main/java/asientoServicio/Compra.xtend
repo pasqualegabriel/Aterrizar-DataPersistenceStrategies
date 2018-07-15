@@ -23,13 +23,13 @@ class Compra {
 	@GeneratedValue
 	int id
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	User comprador
 
 	@OneToMany(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	List<Asiento> asientos
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(fetch= FetchType.LAZY,cascade=CascadeType.ALL)
 	Tramo tramo
 	
 	new(){
